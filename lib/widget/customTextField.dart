@@ -15,7 +15,6 @@ class CustomTextField extends StatefulWidget {
   double distanceNextLine;
 
   CustomTextField({this.title, this.height, this.color, this.hint, this.icon, this.type, this.padding, this.borderRadius, this.distanceNextLine}) : 
-        assert(title != null),
         assert(height != null),
         assert(color != null),
         assert(hint != null),
@@ -33,14 +32,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          widget.title,
-          style: TextStyle(
-            color: widget.color,
-            fontWeight: FontWeight.bold,
-            fontFamily: defaultFont,
+        if (widget.title != null)
+          Text(
+            widget.title,
+            style: TextStyle(
+              color: widget.color,
+              fontWeight: FontWeight.bold,
+              fontFamily: defaultFont,
+            ),
           ),
-        ),
         SizedBox(height: 10.0),
         Container(
           alignment: Alignment.centerLeft,

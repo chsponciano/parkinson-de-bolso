@@ -5,8 +5,9 @@ class CustomTitlePage extends StatefulWidget {
   String title;
   Color color;
   double distanceNextLine;
+  bool addIcon;
 
-  CustomTitlePage({this.title, this.color, this.distanceNextLine}) : 
+  CustomTitlePage({this.title, this.color, this.distanceNextLine, this.addIcon = false}) : 
     assert(title != null),
     assert(color != null);
 
@@ -19,6 +20,12 @@ class _CustomTitlePageState extends State<CustomTitlePage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        if (widget.addIcon)
+          Image(
+            image: AssetImage('assets/images/icon.png'),
+            height: 120,
+          ),
+          SizedBox(height: 15),
         Text(
           widget.title,
           style: TextStyle(
@@ -27,7 +34,8 @@ class _CustomTitlePageState extends State<CustomTitlePage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: (widget.distanceNextLine == null) ? 0.0 : widget.distanceNextLine)
+        if (widget.distanceNextLine != null)
+          SizedBox(height: widget.distanceNextLine)
       ],
     );
   }

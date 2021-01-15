@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/utilities/constants.dart';
+import 'package:parkinson_de_bolso/utilities/route.dart';
 import 'package:parkinson_de_bolso/widget/customRaisedButton.dart';
 import 'package:parkinson_de_bolso/widget/customScaffold.dart';
 import 'package:parkinson_de_bolso/widget/customTextField.dart';
 import 'package:parkinson_de_bolso/widget/customTitlePage.dart';
 
-class SignUp extends StatefulWidget {
+class RedefinePassword extends StatefulWidget {
   @override
-  _SignUpState createState() => _SignUpState();
+  RedefinePasswordState createState() => RedefinePasswordState();
 }
 
-class _SignUpState extends State<SignUp> {
+class RedefinePasswordState extends State<RedefinePassword> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Stack(
-          children: <Widget>[
+          children: [
             Container(
               height: double.infinity,
               width: double.infinity,
@@ -35,53 +36,39 @@ class _SignUpState extends State<SignUp> {
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
+                  children: [
                     CustomTitlePage(
-                      title: titleSignUp,
+                      title: titleRedefinePassword,
                       color: ternaryColor,
                       distanceNextLine: 30.0,
                       addIcon: true,
                     ),
-                    CustomTextField(
-                      borderRadius: 10.0,
-                      color: ternaryColor,
-                      height: 60.0,
-                      title: 'Nome',
-                      hint: 'Digite seu nome',
-                      icon: Icons.people,
-                      padding: EdgeInsets.only(top: 14.0),
-                      type: TextInputType.name,
-                      distanceNextLine: 30.0,
+                    Text(
+                      'Esqueceu a senha? Preecha o campo abaixo para reiniciar a senha.',
+                      style: TextStyle(
+                        color: ternaryColor,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold
+                      ),
                     ),
+                    SizedBox(height: 10),
                     CustomTextField(
                       borderRadius: 10.0,
                       color: ternaryColor,
                       height: 60.0,
-                      title: 'E-mail',
-                      hint: 'Digite seu e-mail',
+                      hint: 'Digite um e-mail já cadastrado',
                       icon: Icons.email,
                       padding: EdgeInsets.only(top: 14.0),
                       type: TextInputType.emailAddress,
-                      distanceNextLine: 30.0,
-                    ),
-                    CustomTextField(
-                      borderRadius: 10.0,
-                      color: ternaryColor,
-                      height: 60.0,
-                      title: 'Senha',
-                      hint: 'Digite sua senha',
-                      icon: Icons.lock,
-                      padding: EdgeInsets.only(top: 14.0),
                       distanceNextLine: 10.0,
                     ),
-                    SizedBox(height: 15),
                     CustomRaisedButton(
-                      label: 'Criar conta',
+                      label: 'Redefinir senha',
                       width: double.infinity,
                       background: ternaryColor,
                       padding: EdgeInsets.symmetric(vertical: 25.0),
                       paddingInternal: EdgeInsets.all(15.0),
-                      onPressed: () => print('Login Button Pressed'),
+                      onPressed: () => Navigator.pushNamed(context, confirmPasswordResetRoute),
                       textColor: primaryColor,
                       elevation: 5.0,
                       style: TextStyle(
@@ -96,7 +83,7 @@ class _SignUpState extends State<SignUp> {
             ),
           ],
         ),
-      )
+      ),
     );
   }
 

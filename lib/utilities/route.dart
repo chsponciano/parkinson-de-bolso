@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:parkinson_de_bolso/widget/ConfirmPasswordReset.dart';
 import 'package:parkinson_de_bolso/widget/onboarding.dart';
+import 'package:parkinson_de_bolso/widget/redefinePassword.dart';
 import 'package:parkinson_de_bolso/widget/signIn.dart';
 import 'package:parkinson_de_bolso/widget/signUp.dart';
 
 const homePageRoute = '/onboarding';
 const signInRoute = '/signIn';
 const signUpRoute = '/signUp';
+const redefinePasswordRoute = '/redefinePassword';
+const confirmPasswordResetRoute = '/confirmPasswordReset';
 
 // RouteFactory loggedInRoutes() {
 //   return (settings) {
@@ -23,6 +27,12 @@ RouteFactory loggedOutRoutes() {
         break;
       case signUpRoute:
         screen = SignUp();
+        break;
+      case redefinePasswordRoute:
+        screen = RedefinePassword();
+        break;
+      case confirmPasswordResetRoute:
+        screen = ConfirmPasswordReset();
         break;
       default:
         screen = Onboarding();
