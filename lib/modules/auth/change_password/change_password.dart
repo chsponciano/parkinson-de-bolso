@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/utilities/constants.dart';
-import 'package:parkinson_de_bolso/widget/customized/customized.dart';
-import 'package:parkinson_de_bolso/widget/outside/outsideTheme.dart';
-import 'package:parkinson_de_bolso/widget/own/TitlePage.dart';
+import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/modules/auth/auth_module.dart';
+import 'package:parkinson_de_bolso/widget/custom_raised_button.dart';
+import 'package:parkinson_de_bolso/widget/custom_text_field.dart';
 
+// ignore: must_be_immutable
 class ChangePassword extends StatelessWidget {
-  static const routeName = '/changePasswordRoute';
+  static const String routeName = '/changePasswordRoute';
 
   @override
   Widget build(BuildContext context) {
-    return OutsideTheme(
+    return AuthModule(
+      widgetTitle: titleRedefinePassword,
       children: [
-        TitlePage(
-          title: titleRedefinePassword,
-          color: ternaryColor,
-          distanceNextLine: 30.0,
-          addIcon: true,
-        ),
         Text(
           'Digite sua nova senha!',
           style: TextStyle(
@@ -26,7 +22,7 @@ class ChangePassword extends StatelessWidget {
           ),
         ),
         SizedBox(height: 20),
-        PbTextField(
+        CustomTextField(
           borderRadius: 10.0,
           color: ternaryColor,
           height: 60.0,
@@ -36,7 +32,7 @@ class ChangePassword extends StatelessWidget {
           padding: EdgeInsets.only(top: 14.0),
           distanceNextLine: 30.0,
         ),
-        PbTextField(
+        CustomTextField(
           borderRadius: 10.0,
           color: ternaryColor,
           height: 60.0,
@@ -46,7 +42,7 @@ class ChangePassword extends StatelessWidget {
           padding: EdgeInsets.only(top: 14.0),
           distanceNextLine: 10.0,
         ),
-        PbRaisedButton(
+        CustomRaisedButton(
           label: 'Redefinir senha',
           width: double.infinity,
           background: ternaryColor,

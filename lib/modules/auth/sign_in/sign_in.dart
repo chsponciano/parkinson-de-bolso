@@ -1,31 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:parkinson_de_bolso/utilities/constants.dart';
-import 'package:parkinson_de_bolso/widget/customized/customized.dart';
-import 'package:parkinson_de_bolso/widget/outside/outsideTheme.dart';
-import 'package:parkinson_de_bolso/widget/outside/redefinePassword.dart';
-import 'package:parkinson_de_bolso/widget/outside/signUp.dart';
-import 'package:parkinson_de_bolso/widget/own/own.dart';
+import 'package:parkinson_de_bolso/config/route.dart';
+import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/modules/auth/auth_module.dart';
+import 'package:parkinson_de_bolso/modules/auth/change_password/redefine_password.dart';
+import 'package:parkinson_de_bolso/modules/auth/sign_up/sign_up.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/dashboard.dart';
+import 'package:parkinson_de_bolso/widget/custom_anchor_text.dart';
+import 'package:parkinson_de_bolso/widget/custom_checkbox.dart';
+import 'package:parkinson_de_bolso/widget/custom_raised_button.dart';
+import 'package:parkinson_de_bolso/widget/custom_text_field.dart';
 
 // ignore: must_be_immutable
 class SignIn extends StatelessWidget {
-  static const routeName = '/signInRoute';
-  Function loginAction;
-
-  SignIn({this.loginAction}):
-    assert(loginAction != null);
+  static const String routeName = '/signInRoute';
 
   @override
   Widget build(BuildContext context) {
-    return OutsideTheme(
+    return AuthModule(
+      widgetTitle: titleSignIn,
       children: [
-        TitlePage(
-          title: titleSignIn,
-          color: ternaryColor,
-          distanceNextLine: 30.0,
-          addIcon: true,
-        ),
-        PbTextField(
+        CustomTextField(
           borderRadius: 10.0,
           color: ternaryColor,
           height: 60.0,
@@ -36,7 +30,7 @@ class SignIn extends StatelessWidget {
           type: TextInputType.emailAddress,
           distanceNextLine: 30.0,
         ),
-        PbTextField(
+        CustomTextField(
           borderRadius: 10.0,
           color: ternaryColor,
           height: 60.0,
@@ -50,13 +44,13 @@ class SignIn extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            PbCheckbox(
+            CustomCheckbox(
               activeColor: ternaryColor,
               checkColor: primaryColor,
               caption: 'Lembrar',
               height: 20.0,
             ),
-            AnchorText(
+            CustomAnchorText(
               alignment: Alignment.centerRight,
               caption: 'Esqueceu a senha?',
               color: ternaryColor,
@@ -65,13 +59,17 @@ class SignIn extends StatelessWidget {
           ],
         ),
         SizedBox(height: 15),
-        PbRaisedButton(
+        CustomRaisedButton(
           label: 'Acessar',
           width: double.infinity,
           background: ternaryColor,
           padding: EdgeInsets.symmetric(vertical: 25.0),
           paddingInternal: EdgeInsets.all(15.0),
-          onPressed: () => print('Login Button Pressed'),
+          onPressed: () => {
+            RouteHandler.loggedIn = true,
+            RouteHandler.token = 'aaaaaaaa',
+            Navigator.pushNamed(context, Dashboard.routeName)
+          },
           textColor: primaryColor,
           elevation: 5.0,
           style: TextStyle(
@@ -109,10 +107,4 @@ class SignIn extends StatelessWidget {
       ],
     );
   }
-}
-
-class SignInArguments {
-  final Function loginAction;
-  SignInArguments({this.loginAction}):
-    assert(loginAction != null);
 }

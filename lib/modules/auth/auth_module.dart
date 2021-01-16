@@ -1,16 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/widget/customized/customized.dart';
-import 'package:parkinson_de_bolso/utilities/constants.dart';
+import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/widget/custom_scaffold.dart';
+import 'package:parkinson_de_bolso/widget/custom_title_page.dart';
 
 // ignore: must_be_immutable
-class OutsideTheme extends StatelessWidget {
-  List<Widget> children = const <Widget>[];
+class AuthModule extends StatefulWidget {
+  @required String widgetTitle;
+  @required List<Widget> children = const <Widget>[];
 
-  OutsideTheme({this.children}) : assert(children != null);
+  AuthModule({this.widgetTitle, this.children}) : 
+    assert(widgetTitle != null),
+    assert(children != null);
+
+  @override
+  _AuthModuleState createState() => _AuthModuleState();
+}
+
+class _AuthModuleState extends State<AuthModule> {
+  
+  @override
+  void initState() {
+    super.initState();
+    this.widget.children.insert(0, this._buildTitle());
+  }
 
   @override
   Widget build(BuildContext context) {
-    return PbScaffold(
+    return CustomScaffold(
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Stack(
@@ -32,7 +48,7 @@ class OutsideTheme extends StatelessWidget {
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: this.children
+                  children: this.widget.children
                 )
               )
             )
@@ -42,4 +58,12 @@ class OutsideTheme extends StatelessWidget {
     );
   }
 
+  Widget _buildTitle() {
+    return CustomTitlePage(
+      title: this.widget.widgetTitle,
+      color: ternaryColor,
+      distanceNextLine: 30.0,
+      addIcon: true,
+    );
+  }
 }

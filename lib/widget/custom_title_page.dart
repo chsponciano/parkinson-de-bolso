@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:parkinson_de_bolso/constant/assest_path.dart';
 
 // ignore: must_be_immutable
-class TitlePage extends StatelessWidget {
-  String title;
-  Color color;
+class CustomTitlePage extends StatelessWidget {
+  @required String title;
+  @required Color color;
   double distanceNextLine;
   bool addIcon;
 
-  TitlePage({this.title, this.color, this.distanceNextLine, this.addIcon = false}) : 
+  CustomTitlePage({this.title, this.color, this.distanceNextLine, this.addIcon = false}) : 
     assert(title != null),
     assert(color != null);
 
@@ -17,7 +18,7 @@ class TitlePage extends StatelessWidget {
       children: [
         if (this.addIcon)
           Image(
-            image: AssetImage('assets/images/icon.png'),
+            image: AssetImage(icon),
             height: 120,
           ),
           SizedBox(height: 15),

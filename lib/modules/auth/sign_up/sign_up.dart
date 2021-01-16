@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/utilities/constants.dart';
-import 'package:parkinson_de_bolso/widget/customized/customized.dart';
-import 'package:parkinson_de_bolso/widget/outside/outsideTheme.dart';
-import 'package:parkinson_de_bolso/widget/own/own.dart';
+import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/modules/auth/auth_module.dart';
+import 'package:parkinson_de_bolso/widget/custom_raised_button.dart';
+import 'package:parkinson_de_bolso/widget/custom_text_field.dart';
 
+// ignore: must_be_immutable
 class SignUp extends StatelessWidget {
-  static const routeName = '/signUpRoute';
+  static const String routeName = '/signUpRoute';
 
   @override
   Widget build(BuildContext context) {
-    return OutsideTheme(
+    return AuthModule(
+      widgetTitle: titleSignUp,
       children: [
-        TitlePage(
-          title: titleSignUp,
-          color: ternaryColor,
-          distanceNextLine: 30.0,
-          addIcon: true,
-        ),
-        PbTextField(
+        CustomTextField(
           borderRadius: 10.0,
           color: ternaryColor,
           height: 60.0,
@@ -28,7 +24,7 @@ class SignUp extends StatelessWidget {
           type: TextInputType.name,
           distanceNextLine: 30.0,
         ),
-        PbTextField(
+        CustomTextField(
           borderRadius: 10.0,
           color: ternaryColor,
           height: 60.0,
@@ -39,7 +35,7 @@ class SignUp extends StatelessWidget {
           type: TextInputType.emailAddress,
           distanceNextLine: 30.0,
         ),
-        PbTextField(
+        CustomTextField(
           borderRadius: 10.0,
           color: ternaryColor,
           height: 60.0,
@@ -50,7 +46,7 @@ class SignUp extends StatelessWidget {
           distanceNextLine: 10.0,
         ),
         SizedBox(height: 15),
-        PbRaisedButton(
+        CustomRaisedButton(
           label: 'Criar conta',
           width: double.infinity,
           background: ternaryColor,

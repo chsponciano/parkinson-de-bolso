@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class PbOutlineButton extends StatelessWidget {
-  EdgeInsets padding;
-  String label;
-  Color background;
-  Color textColor;
+class CustomOutlineButton extends StatelessWidget {
+  @required EdgeInsets padding;
+  @required String label;
+  @required Color background;
+  @required Color textColor;
   @required VoidCallback onPressed;
 
-  PbOutlineButton({this.padding, this.label, this.background, this.textColor, this.onPressed}) : 
+  CustomOutlineButton({this.padding, this.label, this.background, this.textColor, this.onPressed}) : 
         assert(padding != null),
         assert(label != null),
         assert(background != null),

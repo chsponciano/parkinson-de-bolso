@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class PbCheckbox extends StatefulWidget {
-  Color checkColor;
-  Color activeColor;
-  String caption;
-  double height;
+class CustomCheckbox extends StatefulWidget {
+  @required Color checkColor;
+  @required Color activeColor;
+  @required String caption;
+  @required double height;
 
-  PbCheckbox({this.checkColor, this.activeColor, this.caption, this.height}) :
+  CustomCheckbox({this.checkColor, this.activeColor, this.caption, this.height}) :
     assert(checkColor != null),
     assert(activeColor != null),
     assert(caption != null),
     assert(height != null);
 
   @override
-  _PbCheckboxState createState() => _PbCheckboxState();
+  _CustomCheckboxState createState() => _CustomCheckboxState();
 }
 
-class _PbCheckboxState extends State<PbCheckbox> {
+class _CustomCheckboxState extends State<CustomCheckbox> {
   bool _isChecked = false;
 
   @override

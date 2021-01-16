@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/utilities/constants.dart';
-import 'package:parkinson_de_bolso/widget/customized/customized.dart';
-import 'package:parkinson_de_bolso/widget/outside/changePassword.dart';
-import 'package:parkinson_de_bolso/widget/outside/outsideTheme.dart';
-import 'package:parkinson_de_bolso/widget/own/own.dart';
+import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/modules/auth/auth_module.dart';
+import 'package:parkinson_de_bolso/modules/auth/change_password/change_password.dart';
+import 'package:parkinson_de_bolso/widget/custom_raised_button.dart';
+import 'package:parkinson_de_bolso/widget/custom_text_field.dart';
 
+// ignore: must_be_immutable
 class VerificationCode extends StatelessWidget {
-  static const routeName = '/verificationCodeRoute';
+  static const String routeName = '/verificationCodeRoute';
 
   @override
   Widget build(BuildContext context) {
-    return OutsideTheme(
+    return AuthModule(
+      widgetTitle: titleRedefinePassword,
       children: [
-        TitlePage(
-          title: titleRedefinePassword,
-          color: ternaryColor,
-          distanceNextLine: 30.0,
-          addIcon: true,
-        ),
         Text(
           'Digite o código enviado em seu e-mail.',
           style: TextStyle(
@@ -27,7 +23,7 @@ class VerificationCode extends StatelessWidget {
           ),
         ),
         SizedBox(height: 10),
-        PbTextField(
+        CustomTextField(
           borderRadius: 10.0,
           color: ternaryColor,
           height: 60.0,
@@ -37,7 +33,7 @@ class VerificationCode extends StatelessWidget {
           type: TextInputType.number,
           distanceNextLine: 10.0,
         ),
-        PbRaisedButton(
+        CustomRaisedButton(
           label: 'Confirmar reinicio',
           width: double.infinity,
           background: ternaryColor,

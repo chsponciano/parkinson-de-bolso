@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:parkinson_de_bolso/utilities/constants.dart';
+import 'package:parkinson_de_bolso/constant/app_constant.dart';
 
 // ignore: must_be_immutable
-class PbTextField extends StatelessWidget {
+class CustomTextField extends StatelessWidget {
+  @required double height;
+  @required Color color;
+  @required String hint;
+  @required IconData icon;
+  @required EdgeInsets padding;
+  @required double borderRadius;
   String title;
-  double height;
-  Color color;
-  String hint;
-  IconData icon;
   TextInputType type;
-  EdgeInsets padding;
-  double borderRadius;
   double distanceNextLine;
 
-  PbTextField({this.title, this.height, this.color, this.hint, this.icon, this.type, this.padding, this.borderRadius, this.distanceNextLine}) : 
+  CustomTextField({this.title, this.height, this.color, this.hint, this.icon, this.type, this.padding, this.borderRadius, this.distanceNextLine}) : 
         assert(height != null),
         assert(color != null),
         assert(hint != null),

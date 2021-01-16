@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/utilities/constants.dart';
+import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/constant/assest_path.dart';
 
-class HomeScreenAnimation extends StatelessWidget {
+class InformativeIllustration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -11,7 +12,7 @@ class HomeScreenAnimation extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Image(
-            image: AssetImage('assets/images/onboarding.png'),
+            image: AssetImage(onboardingImage),
             height: 400.0,
           ),
           Text(

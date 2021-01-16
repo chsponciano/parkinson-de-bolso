@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/widget/inside/insideApp.dart';
-import 'package:parkinson_de_bolso/widget/outside/outsideApp.dart';
-
+import 'package:flutter/services.dart';
+import 'package:parkinson_de_bolso/config/route.dart';
+import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/teste.dart';
 void main() => runApp(App());
 
 class App extends StatefulWidget {
@@ -10,24 +11,25 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  bool loggedIn;
-  String token;
 
   @override
   void initState() {
     super.initState();
-    this.loggedIn = false;
-    this.token = null;
+    RouteHandler.loggedIn = false;
+    RouteHandler.token = null;
+    RouteHandler.configureRoutes();
+    SystemChrome.setEnabledSystemUIOverlays([]);
   }
 
   @override
   Widget build(BuildContext context) {
-    return (this.loggedIn) ? InsideApp() : OutsideApp(loginAction: (token) {
-      setState(() {
-        this.token = token;
-        this.loggedIn = true;
-      });
-    });
+    return MaterialApp(
+      title: applicationName,
+      theme: ThemeData(
+        fontFamily: defaultFont
+      ),
+      debugShowCheckedModeBanner: false,
+      onGenerateRoute: RouteHandler.instance.exchange(),
+    );
   }
-
 }

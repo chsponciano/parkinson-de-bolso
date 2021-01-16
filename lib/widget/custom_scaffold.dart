@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // ignore: must_be_immutable
-class PbScaffold extends StatelessWidget {
-  Widget child;
+class CustomScaffold extends StatelessWidget {
+  @required Widget child;
 
-  PbScaffold({this.child}) : 
+  CustomScaffold({this.child}) : 
     assert(child != null);
 
   @override
