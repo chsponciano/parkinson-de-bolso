@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:parkinson_de_bolso/widget/ConfirmPasswordReset.dart';
-import 'package:parkinson_de_bolso/widget/onboarding.dart';
-import 'package:parkinson_de_bolso/widget/redefinePassword.dart';
-import 'package:parkinson_de_bolso/widget/signIn.dart';
-import 'package:parkinson_de_bolso/widget/signUp.dart';
-
-const homePageRoute = '/onboarding';
-const signInRoute = '/signIn';
-const signUpRoute = '/signUp';
-const redefinePasswordRoute = '/redefinePassword';
-const confirmPasswordResetRoute = '/confirmPasswordReset';
+import 'package:parkinson_de_bolso/main.dart';
+import 'package:parkinson_de_bolso/widget/outside/changePassword.dart';
+import 'package:parkinson_de_bolso/widget/outside/redefinePassword.dart';
+import 'package:parkinson_de_bolso/widget/outside/signIn.dart';
+import 'package:parkinson_de_bolso/widget/outside/signUp.dart';
+import 'package:parkinson_de_bolso/widget/outside/verificationCode.dart';
 
 // RouteFactory loggedInRoutes() {
 //   return (settings) {
@@ -22,20 +17,24 @@ RouteFactory loggedOutRoutes() {
   return (settings) {
     Widget screen;
     switch(settings.name) {
-      case signInRoute:
-        screen = SignIn();
+      case SignIn.routeName:
+        final SignInArguments args = settings.arguments;
+        screen = SignIn(loginAction: args.loginAction);
         break;
-      case signUpRoute:
+      case SignUp.routeName:
         screen = SignUp();
         break;
-      case redefinePasswordRoute:
+      case RedefinePassword.routeName:
         screen = RedefinePassword();
         break;
-      case confirmPasswordResetRoute:
-        screen = ConfirmPasswordReset();
+      case VerificationCode.routeName:
+        screen = VerificationCode();
+        break;
+      case ChangePassword.routeName:
+        screen = ChangePassword();
         break;
       default:
-        screen = Onboarding();
+        screen = App();
         break;
     }
 

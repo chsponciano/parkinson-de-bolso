@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/widget/customOutlineButton.dart';
+import 'package:parkinson_de_bolso/widget/customized/pbOutlineButton.dart';
 
 // ignore: must_be_immutable
 class FooterButton extends StatelessWidget {
@@ -15,7 +15,7 @@ class FooterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: CustomOutlineButton(
+      child: PbOutlineButton(
         background: this.background,
         textColor: this.background,
         label: this.label,
@@ -27,10 +27,10 @@ class FooterButton extends StatelessWidget {
 }
 
 // ignore: must_be_immutable
-class CustomFooterButton extends StatelessWidget {
+class FooterGroupButton extends StatelessWidget {
   List<FooterButton> buttons = const <FooterButton>[];
 
-  CustomFooterButton({this.buttons}) : 
+  FooterGroupButton({this.buttons}) : 
     assert(buttons != null);
 
   @override

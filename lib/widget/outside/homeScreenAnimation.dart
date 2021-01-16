@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/utilities/constants.dart';
 
-class HomeScreenAnimation extends StatefulWidget {
-  @override
-  HomeScreenAnimationState createState() => HomeScreenAnimationState();
-}
-
-class HomeScreenAnimationState extends State<HomeScreenAnimation> {
+class HomeScreenAnimation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(

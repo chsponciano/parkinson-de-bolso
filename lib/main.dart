@@ -1,21 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/utilities/constants.dart';
-import 'package:parkinson_de_bolso/widget/onboarding.dart';
-import 'package:parkinson_de_bolso/utilities/route.dart';
+import 'package:parkinson_de_bolso/widget/inside/insideApp.dart';
+import 'package:parkinson_de_bolso/widget/outside/outsideApp.dart';
 
 void main() => runApp(App());
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
+  @override
+  _AppState createState() => _AppState();  
+}
+
+class _AppState extends State<App> {
+  bool loggedIn;
+  String token;
+
+  @override
+  void initState() {
+    super.initState();
+    this.loggedIn = false;
+    this.token = null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: applicationName,
-      theme: ThemeData(
-        fontFamily: defaultFont
-      ),
-      debugShowCheckedModeBanner: false,
-      home: Onboarding(),
-      onGenerateRoute: loggedOutRoutes(),
-    );
+    return (this.loggedIn) ? InsideApp() : OutsideApp(loginAction: (token) {
+      setState(() {
+        this.token = token;
+        this.loggedIn = true;
+      });
+    });
   }
+
 }

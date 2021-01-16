@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:parkinson_de_bolso/utilities/constants.dart';
 
 // ignore: must_be_immutable
-class CustomTextField extends StatefulWidget {
+class PbTextField extends StatelessWidget {
   String title;
   double height;
   Color color;
@@ -14,7 +14,7 @@ class CustomTextField extends StatefulWidget {
   double borderRadius;
   double distanceNextLine;
 
-  CustomTextField({this.title, this.height, this.color, this.hint, this.icon, this.type, this.padding, this.borderRadius, this.distanceNextLine}) : 
+  PbTextField({this.title, this.height, this.color, this.hint, this.icon, this.type, this.padding, this.borderRadius, this.distanceNextLine}) : 
         assert(height != null),
         assert(color != null),
         assert(hint != null),
@@ -23,20 +23,15 @@ class CustomTextField extends StatefulWidget {
         assert(borderRadius != null);
 
   @override
-  _CustomTextFieldState createState() => _CustomTextFieldState();
-}
-
-class _CustomTextFieldState extends State<CustomTextField> {
-  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        if (widget.title != null)
+        if (this.title != null)
           Text(
-            widget.title,
+            this.title,
             style: TextStyle(
-              color: widget.color,
+              color: this.color,
               fontWeight: FontWeight.bold,
               fontFamily: defaultFont,
             ),
@@ -45,7 +40,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         Container(
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(widget.borderRadius),
+            borderRadius: BorderRadius.circular(this.borderRadius),
             boxShadow: [
               BoxShadow(
                 color: Colors.black12,
@@ -54,30 +49,30 @@ class _CustomTextFieldState extends State<CustomTextField> {
               ),
             ],
           ),
-          height: widget.height,
+          height: this.height,
           child: TextField(
-            obscureText: (widget.type == null),
-            keyboardType: widget.type,
+            obscureText: (this.type == null),
+            keyboardType: this.type,
             style: TextStyle(
-              color: widget.color,
+              color: this.color,
               fontFamily: defaultFont,
             ),
             decoration: InputDecoration(
               border: InputBorder.none,
-              contentPadding: widget.padding,
+              contentPadding: this.padding,
               prefixIcon: Icon(
-                widget.icon,
-                color: widget.color,
+                this.icon,
+                color: this.color,
               ),
-              hintText: widget.hint,
+              hintText: this.hint,
               hintStyle: TextStyle(
-                color: widget.color,
+                color: this.color,
                 fontFamily: defaultFont,
               ),
             ),
           ),
         ),
-        SizedBox(height: (widget.distanceNextLine == null) ? 0.0 : widget.distanceNextLine)
+        SizedBox(height: (this.distanceNextLine == null) ? 0.0 : this.distanceNextLine)
       ],
     );
   }
