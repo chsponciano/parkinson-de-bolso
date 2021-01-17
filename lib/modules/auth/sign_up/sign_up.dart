@@ -12,6 +12,7 @@ class SignUp extends StatelessWidget {
   Widget build(BuildContext context) {
     return AuthModule(
       widgetTitle: titleSignUp,
+      activateBackButton: true,
       children: [
         CustomTextField(
           borderRadius: 10.0,
@@ -45,7 +46,6 @@ class SignUp extends StatelessWidget {
           padding: EdgeInsets.only(top: 14.0),
           distanceNextLine: 10.0,
         ),
-        SizedBox(height: 15),
         CustomRaisedButton(
           label: 'Criar conta',
           width: double.infinity,

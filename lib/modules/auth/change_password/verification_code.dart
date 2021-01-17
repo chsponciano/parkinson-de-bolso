@@ -13,6 +13,7 @@ class VerificationCode extends StatelessWidget {
   Widget build(BuildContext context) {
     return AuthModule(
       widgetTitle: titleRedefinePassword,
+      activateBackButton: true,
       children: [
         Text(
           'Digite o código enviado em seu e-mail.',

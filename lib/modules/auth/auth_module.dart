@@ -7,8 +7,9 @@ import 'package:parkinson_de_bolso/widget/custom_title_page.dart';
 class AuthModule extends StatefulWidget {
   @required String widgetTitle;
   @required List<Widget> children = const <Widget>[];
+  bool activateBackButton;
 
-  AuthModule({this.widgetTitle, this.children}) : 
+  AuthModule({this.widgetTitle, this.children, this.activateBackButton = false}) : 
     assert(widgetTitle != null),
     assert(children != null);
 
@@ -42,19 +43,18 @@ class _AuthModuleState extends State<AuthModule> {
               height: double.infinity,
               child: SingleChildScrollView(
                 physics: AlwaysScrollableScrollPhysics(),
-                padding: EdgeInsets.symmetric(
-                  horizontal: 40.0,
-                  vertical: 120.0,
-                ),
+                padding: EdgeInsets.all(40.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: this.widget.children
                 )
               )
             )
           ]
         )
-      )
+      ),
+      floatingActionButton: (this.widget.activateBackButton) ? this._buildBackButton(context) : null
     );
   }
 
@@ -64,6 +64,15 @@ class _AuthModuleState extends State<AuthModule> {
       color: ternaryColor,
       distanceNextLine: 30.0,
       addIcon: true,
+    );
+  }
+
+  FloatingActionButton _buildBackButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () => Navigator.pop(context),
+      child: Icon(Icons.arrow_back, color: primaryColor),
+      backgroundColor: ternaryColor,
+      mini: true
     );
   }
 }

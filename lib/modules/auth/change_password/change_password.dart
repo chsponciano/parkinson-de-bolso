@@ -12,6 +12,7 @@ class ChangePassword extends StatelessWidget {
   Widget build(BuildContext context) {
     return AuthModule(
       widgetTitle: titleRedefinePassword,
+      activateBackButton: true,
       children: [
         Text(
           'Digite sua nova senha!',

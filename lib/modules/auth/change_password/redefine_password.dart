@@ -13,6 +13,7 @@ class RedefinePassword extends StatelessWidget {
   Widget build(BuildContext context) {
     return AuthModule(
       widgetTitle: titleRedefinePassword,
+      activateBackButton: true,
       children: [
         Text(
           'Esqueceu a senha? Preecha o campo abaixo para reiniciar a senha.',

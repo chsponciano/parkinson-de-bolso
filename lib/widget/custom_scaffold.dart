@@ -4,8 +4,9 @@ import 'package:flutter/services.dart';
 // ignore: must_be_immutable
 class CustomScaffold extends StatelessWidget {
   @required Widget child;
+  FloatingActionButton floatingActionButton;
 
-  CustomScaffold({this.child}) : 
+  CustomScaffold({this.child, this.floatingActionButton}) : 
     assert(child != null);
 
   @override
@@ -14,7 +15,8 @@ class CustomScaffold extends StatelessWidget {
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: this.child,
-      )
+      ),
+      floatingActionButton: this.floatingActionButton
     );
   }
 }

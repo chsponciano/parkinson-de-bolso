@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:parkinson_de_bolso/config/route.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
-import 'package:parkinson_de_bolso/modules/dashboard/teste.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/dashboard.dart';
+
 void main() => runApp(App());
 
 class App extends StatefulWidget {
@@ -29,7 +30,8 @@ class _AppState extends State<App> {
         fontFamily: defaultFont
       ),
       debugShowCheckedModeBanner: false,
-      onGenerateRoute: RouteHandler.instance.exchange(),
+      // onGenerateRoute: RouteHandler.instance.exchange(),
+      home: Dashboard(),
     );
   }
 }
