@@ -14,6 +14,10 @@ const defaultFont = 'OpenSans';
 const primaryColor = Color(0xFF1A237E);
 const secondaryColor = Color(0xFF26C6DA);
 const ternaryColor = Color(0xFFFFFFFF);
+const dashboardBarColor = primaryColor;
+const primaryColorDashboardBar = ternaryColor;
+const secondaryColorDashboardBar = Color(0x8AFFFFFF);
+const floatingButtonDashboard = primaryColor;
 
 // gradient
 const defaultGradient = LinearGradient(
@@ -24,3 +28,7 @@ const defaultGradient = LinearGradient(
     primaryColor
   ],
 );
+
+// navegation item
+const navegationLabelItem = ['Pacientes', 'Relatórios', 'Configurações'];
+const navegationIconItem = [Icons.people, Icons.analytics, Icons.settings];

@@ -32,20 +32,17 @@ class PatientModel implements SearchModel {
             ),
             Text(this.name, 
               style: TextStyle(
-                color: primaryColor
+                color: primaryColor,
+                fontSize: 18.0,
+                letterSpacing: 1.0
               ),
             ),
             Row(
               children: [
                 IconButton(
                   color: primaryColor,
-                  icon: Icon(Icons.add_a_photo), 
-                  onPressed: () => print('camera')
-                ),
-                IconButton(
-                  color: primaryColor,
-                  icon: Icon(Icons.delete), 
-                  onPressed: () => print('deletar')
+                  icon: Icon(Icons.more_vert), 
+                  onPressed: () => print('menu')
                 )
               ],
             )
