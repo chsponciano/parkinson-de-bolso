@@ -9,6 +9,14 @@ class ServicePatient {
       PatientModel('José Vitor'),
       PatientModel('Vitor Miguel'),
       PatientModel('Ana Maria'),
+      PatientModel('Ana Vitoria'),
+      PatientModel('José Vitor'),
+      PatientModel('Vitor Miguel'),
+      PatientModel('Ana Maria'),
+      PatientModel('Ana Vitoria'),
+      PatientModel('José Vitor'),
+      PatientModel('Vitor Miguel'),
+      PatientModel('Ana Maria'),
       PatientModel('Ana Vitoria')
     ];
   }

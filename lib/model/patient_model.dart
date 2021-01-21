@@ -9,9 +9,9 @@ class PatientModel implements SearchModel {
   PatientModel(this.name);
 
   @override
-  ListTile getListTile() {
+  ListTile getListTile(Function onTap) {
     return ListTile(
-      onTap: () => print('clik'),
+      onTap: () => Function.apply(onTap, [this]),
       title: Container(
         padding: EdgeInsets.all(10),
         margin: EdgeInsets.only(top: 10),

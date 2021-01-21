@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parkinson_de_bolso/model/navegation_model.dart';
 
 // titles
 const applicationName = 'Parkinson de Bolso';
@@ -17,6 +18,7 @@ const ternaryColor = Color(0xFFFFFFFF);
 const dashboardBarColor = primaryColor;
 const primaryColorDashboardBar = ternaryColor;
 const secondaryColorDashboardBar = Color(0x8AFFFFFF);
+const ternaryColorDashboardBar = primaryColor;
 const floatingButtonDashboard = primaryColor;
 
 // gradient
@@ -29,6 +31,9 @@ const defaultGradient = LinearGradient(
   ],
 );
 
-// navegation item
-const navegationLabelItem = ['Pacientes', 'Relatórios', 'Configurações'];
-const navegationIconItem = [Icons.people, Icons.analytics, Icons.settings];
+// bottom navigation bar item
+const allNavegation = <NavegationModel>[
+  NavegationModel('Pacientes', Icons.people, NavegationType.PATIENT),
+  NavegationModel('Relatórios', Icons.analytics, NavegationType.REPORT),
+  NavegationModel('Configurações', Icons.settings, NavegationType.SETTING)
+];

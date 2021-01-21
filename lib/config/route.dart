@@ -8,7 +8,7 @@ import 'package:parkinson_de_bolso/modules/auth/change_password/verification_cod
 import 'package:parkinson_de_bolso/modules/auth/onboarding/onboarding.dart';
 import 'package:parkinson_de_bolso/modules/auth/sign_in/sign_in.dart';
 import 'package:parkinson_de_bolso/modules/auth/sign_up/sign_up.dart';
-import 'package:parkinson_de_bolso/modules/dashboard/dashboard.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/dashboard_module.dart';
 
 class _Route {
   @required String route;
@@ -39,7 +39,7 @@ class RouteHandler {
       }
       
       if (!route.logged && (RouteHandler.token != null && RouteHandler.loggedIn)) {
-        route = this.routeMap[Dashboard.routeName];
+        route = this.routeMap[DashboardModule.routeName];
       }
       
       return MaterialPageRoute(builder: (BuildContext context) => route.handler);
@@ -54,6 +54,6 @@ class RouteHandler {
     route.define(ChangePassword.routeName, ChangePassword(), false);
     route.define(RedefinePassword.routeName, RedefinePassword(), false);
     route.define(VerificationCode.routeName, VerificationCode(), false);
-    route.define(Dashboard.routeName, Dashboard(), true);
+    route.define(DashboardModule.routeName, DashboardModule(), true);
   }
 }

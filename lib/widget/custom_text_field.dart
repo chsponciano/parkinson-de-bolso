@@ -12,14 +12,10 @@ class CustomTextField extends StatelessWidget {
   String title;
   TextInputType type;
   double distanceNextLine;
+  Object inputDecoration;
+  bool isShadow;
 
-  CustomTextField({this.title, this.height, this.color, this.hint, this.icon, this.type, this.padding, this.borderRadius, this.distanceNextLine}) : 
-        assert(height != null),
-        assert(color != null),
-        assert(hint != null),
-        assert(icon != null),
-        assert(padding != null),
-        assert(borderRadius != null);
+  CustomTextField({this.title, this.height, this.color, this.hint, this.icon, this.type, this.padding, this.borderRadius, this.distanceNextLine, this.inputDecoration, this.isShadow = true});
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +36,13 @@ class CustomTextField extends StatelessWidget {
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(this.borderRadius),
-            boxShadow: [
+            boxShadow: (this.isShadow) ? [
               BoxShadow(
                 color: Colors.black12,
                 blurRadius: 6.0,
                 offset: Offset(0, 2),
               ),
-            ],
+            ] : null,
           ),
           height: this.height,
           child: TextField(
@@ -56,7 +52,7 @@ class CustomTextField extends StatelessWidget {
               color: this.color,
               fontFamily: defaultFont,
             ),
-            decoration: InputDecoration(
+            decoration: (this.inputDecoration != null) ? this.inputDecoration : InputDecoration(
               border: InputBorder.none,
               contentPadding: this.padding,
               prefixIcon: Icon(

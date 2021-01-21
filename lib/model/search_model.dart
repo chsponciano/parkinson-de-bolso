@@ -2,5 +2,5 @@ import 'package:flutter/material.dart';
 
 abstract class SearchModel {
   String searchText();
-  ListTile getListTile();
+  ListTile getListTile(Function onTap);
 }

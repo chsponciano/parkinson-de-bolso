@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:parkinson_de_bolso/config/route.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
-import 'package:parkinson_de_bolso/modules/dashboard/dashboard.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/dashboard_module.dart';
 
 void main() => runApp(App());
 
@@ -31,7 +31,7 @@ class _AppState extends State<App> {
       ),
       debugShowCheckedModeBanner: false,
       // onGenerateRoute: RouteHandler.instance.exchange(),
-      home: Dashboard(),
+      home: DashboardModule(),
     );
   }
 }

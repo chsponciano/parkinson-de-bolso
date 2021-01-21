@@ -8,6 +8,8 @@ environment:
 
 dependencies:
   diacritic: ^0.1.1
+  intl: 0.15.2
+
   flutter:
     sdk: flutter
 
