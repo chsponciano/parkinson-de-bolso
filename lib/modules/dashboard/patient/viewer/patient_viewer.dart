@@ -2,15 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/model/patient_model.dart';
 
-// ignore: must_be_immutable
 class PatientViewer extends StatefulWidget {
-  Function callHigher;
-  PatientModel selected;
+  final Function callHigher;
+  final PatientModel selected;
 
-  PatientViewer({Key key, @required this.callHigher, @required this.selected}) : 
-    assert(callHigher != null), 
-    assert(selected != null),
-    super(key: key);
+  PatientViewer({Key key, @required this.callHigher, @required this.selected}) : super(key: key);
 
   @override
   _PatientViewerState createState() => _PatientViewerState();  

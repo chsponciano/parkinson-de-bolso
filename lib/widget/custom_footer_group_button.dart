@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'custom_footer_button.dart';
 
-// ignore: must_be_immutable
 class CustomFooterGroupButton extends StatelessWidget {
-  @required List<CustomFooterButton> buttons = const <CustomFooterButton>[];
+  final List<CustomFooterButton> buttons;
 
-  CustomFooterGroupButton({this.buttons}) : 
-    assert(buttons != null);
+  CustomFooterGroupButton({@required this.buttons});
 
   @override
   Widget build(BuildContext context) {

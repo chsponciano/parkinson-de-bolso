@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/constant/assest_path.dart';
 
-// ignore: must_be_immutable
 class CustomTitlePage extends StatelessWidget {
-  @required String title;
-  @required Color color;
-  double distanceNextLine;
-  bool addIcon;
+  final String title;
+  final Color color;
+  final double distanceNextLine;
+  final bool addIcon;
 
-  CustomTitlePage({this.title, this.color, this.distanceNextLine, this.addIcon = false}) : 
-    assert(title != null),
-    assert(color != null);
+  CustomTitlePage({@required this.title, @required this.color, this.distanceNextLine, this.addIcon = false});
 
   @override
   Widget build(BuildContext context) {

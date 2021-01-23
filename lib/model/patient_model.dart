@@ -4,9 +4,14 @@ import 'package:parkinson_de_bolso/model/search_model.dart';
 import 'package:parkinson_de_bolso/util/string_util.dart';
 
 class PatientModel implements SearchModel {
-  final String name;
+  String name;
+  DateTime birthDate;
+  DateTime diagnosis;
+  int weight;
+  int height;
+  String initials;
 
-  PatientModel(this.name);
+  PatientModel({this.initials, this.birthDate, this.diagnosis, this.weight, this.height, this.name});
 
   @override
   ListTile getListTile(Function onTap) {

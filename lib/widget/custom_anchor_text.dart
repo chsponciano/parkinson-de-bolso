@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 
-// ignore: must_be_immutable
 class CustomAnchorText extends StatelessWidget {
-  @required Alignment alignment;
-  @required String caption;
-  @required Color color;
-  @required VoidCallback onPressed;
+  final Alignment alignment;
+  final String caption;
+  final Color color;
+  final VoidCallback onPressed;
 
-  CustomAnchorText({this.alignment, this.caption, this.color, this.onPressed}) :
-    assert(alignment != null),
-    assert(caption != null),
-    assert(color != null),
-    assert(onPressed != null);
+  CustomAnchorText({@required this.alignment, @required this.caption, @required this.color, @required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

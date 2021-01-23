@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 
-// ignore: must_be_immutable
 class CustomTextField extends StatelessWidget {
-  @required double height;
-  @required Color color;
-  @required String hint;
-  @required IconData icon;
-  @required EdgeInsets padding;
-  @required double borderRadius;
-  String title;
-  TextInputType type;
-  double distanceNextLine;
-  Object inputDecoration;
-  bool isShadow;
+  final double height;
+  final Color color;
+  final String hint;
+  final IconData icon;
+  final EdgeInsets padding;
+  final double borderRadius;
+  final String title;
+  final TextInputType type;
+  final double distanceNextLine;
+  final Object inputDecoration;
+  final bool isShadow;
 
-  CustomTextField({this.title, this.height, this.color, this.hint, this.icon, this.type, this.padding, this.borderRadius, this.distanceNextLine, this.inputDecoration, this.isShadow = true});
+  CustomTextField({this.title, @required this.height, @required this.color, @required this.hint, @required this.icon, this.type, @required this.padding, @required this.borderRadius, this.distanceNextLine, this.inputDecoration, this.isShadow = true});
 
   @override
   Widget build(BuildContext context) {

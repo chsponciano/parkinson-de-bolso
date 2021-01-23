@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 
 class ReportModule extends StatefulWidget {
-  const ReportModule({ Key key }) : super(key: key);
+  ReportModule({ Key key }) : super(key: key);
 
   @override
   _ReportModuleState createState() => _ReportModuleState();  

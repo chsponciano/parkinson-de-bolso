@@ -3,25 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:parkinson_de_bolso/model/search_model.dart';
 
-// ignore: must_be_immutable
 class CustomListSearch extends StatefulWidget {
-  List<SearchModel> data;
-  List<IconButton> actions;
-  String widgetName;
-  Widget leading;
-  Color barColor;
-  Function searchStatusController;
-  Function scrollStatusController;
-  Function onTap;
+  final List<SearchModel> data;
+  final String widgetName;
+  final Color barColor;
+  final Function searchStatusController;
+  final Function scrollStatusController;
+  final Function onTap;
+  final List<IconButton> actions;
+  final Widget leading;
 
-  CustomListSearch({@required this.data, @required this.widgetName, @required this.barColor, @required this.searchStatusController, @required this.scrollStatusController, @required this.onTap, this.leading, this.actions}):
-    assert(data != null),
-    assert(widgetName != null),
-    assert(barColor != null),
-    assert(searchStatusController != null),
-    assert(scrollStatusController != null),
-    assert(onTap != null);
-
+  CustomListSearch({@required this.data, @required this.widgetName, @required this.barColor, @required this.searchStatusController, @required this.scrollStatusController, @required this.onTap, this.leading, this.actions});
+  
   @override
   _CustomListSearchState createState() => _CustomListSearchState();
 }

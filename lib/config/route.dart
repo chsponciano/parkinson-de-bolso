@@ -11,11 +11,11 @@ import 'package:parkinson_de_bolso/modules/auth/sign_up/sign_up.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/dashboard_module.dart';
 
 class _Route {
-  @required String route;
-  @required Widget handler;
-  @required bool logged;
+  final String route;
+  final Widget handler;
+  final bool logged;
 
-  _Route({this.route, this.handler, this.logged});
+  _Route({@required this.route, @required this.handler, @required this.logged});
 }
 
 class RouteHandler {

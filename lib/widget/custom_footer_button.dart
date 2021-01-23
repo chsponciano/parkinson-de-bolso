@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'custom_outline_button.dart';
 
-// ignore: must_be_immutable
 class CustomFooterButton extends StatelessWidget {
-  @required String label;
-  @required Color background;
-  @required VoidCallback onPressed;
+  final String label;
+  final Color background;
+  final VoidCallback onPressed;
 
-  CustomFooterButton({this.label, this.background, this.onPressed}) :
-    assert(label != null),
-    assert(background != null),
-    assert(onPressed != null);
+  CustomFooterButton({@required this.label, @required this.background, @required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

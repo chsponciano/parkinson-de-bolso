@@ -6,18 +6,18 @@ class ServicePatient {
 
   List<PatientModel> getAllPatient() {
     return <PatientModel>[
-      PatientModel('José Vitor'),
-      PatientModel('Vitor Miguel'),
-      PatientModel('Ana Maria'),
-      PatientModel('Ana Vitoria'),
-      PatientModel('José Vitor'),
-      PatientModel('Vitor Miguel'),
-      PatientModel('Ana Maria'),
-      PatientModel('Ana Vitoria'),
-      PatientModel('José Vitor'),
-      PatientModel('Vitor Miguel'),
-      PatientModel('Ana Maria'),
-      PatientModel('Ana Vitoria')
+      PatientModel(name: 'José Vitor'),
+      PatientModel(name: 'Vitor Miguel'),
+      PatientModel(name: 'Ana Maria'),
+      PatientModel(name: 'Ana Vitoria'),
+      PatientModel(name: 'José Vitor'),
+      PatientModel(name: 'Vitor Miguel'),
+      PatientModel(name: 'Ana Maria'),
+      PatientModel(name: 'Ana Vitoria'),
+      PatientModel(name: 'José Vitor'),
+      PatientModel(name: 'Vitor Miguel'),
+      PatientModel(name: 'Ana Maria'),
+      PatientModel(name: 'Ana Vitoria')
     ];
   }
 }

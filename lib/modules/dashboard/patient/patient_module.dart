@@ -8,7 +8,7 @@ import 'package:parkinson_de_bolso/service/service_patient.dart';
 import 'package:parkinson_de_bolso/widget/custom_list_search.dart';
 
 class PatientModule extends StatefulWidget {
-  const PatientModule({ Key key }) : super(key: key);
+  PatientModule({ Key key }) : super(key: key);
 
   @override
   _PatientModuleState createState() => _PatientModuleState();  

@@ -1,70 +1,70 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:intl/intl.dart';
+import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/widget/custom_text_form_field.dart';
 
-// ignore: must_be_immutable
 class CustomDateFormField extends StatefulWidget {
-  final TextEditingController controller;
-  String hintText;
-  String labelText;
+  final String fieldName;
+  final String hintText;
+  final Function onSaved;
+  final IconData prefixIcon;
+  final double width;
 
-  CustomDateFormField({@required this.controller, @required this.hintText, @required this.labelText}) :
-    assert(hintText != null),
-    assert(labelText != null),
-    assert(controller != null);
-
+  CustomDateFormField({@required this.hintText, @required this.onSaved, @required this.prefixIcon, @required this.width, @required this.fieldName});
+  
   @override
   _CustomDateFormFieldState createState() => _CustomDateFormFieldState();
 }
 
+class FirstDisabledFocusNode extends FocusNode {
+  @override
+  bool consumeKeyboardToken() {
+    return false;
+  }
+}
+
 class _CustomDateFormFieldState extends State<CustomDateFormField> {
-  
-  Future _chooseDate(BuildContext context, String initialDateString) async {
-    var now = new DateTime.now();
-    var initialDate = convertToDate(initialDateString) ?? now;
-    initialDate = (initialDate.year >= 1900 && initialDate.isBefore(now) ? initialDate : now);
+  final _controller = new TextEditingController();
+  final _format = new DateFormat('dd/MM/yyyy');
 
-    var result = await showDatePicker(
-        context: context,
-        initialDate: initialDate,
-        firstDate: new DateTime(1900),
-        lastDate: new DateTime.now(),
-    );
-
-    if (result == null) return;
-
-    setState(() {
-      this.widget.controller.text = new DateFormat.yMd().format(result);
+  void _selectDateOnCalendar() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2200),
+      builder: (BuildContext context, Widget child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            dialogBackgroundColor: Colors.white,
+            colorScheme: ColorScheme.light(primary: dashboardBarColor),
+          ),
+          child: child,
+        );
+      },
+    ).then((date) => {
+      if (date != null) {
+        this.setState(() {
+          this._controller.text = this._format.format(date);    
+        })
+      }
     });
-  }
-
-  DateTime convertToDate(String input) {
-    try{
-      return new DateFormat.yMd().parseStrict(input);
-    } catch (e) {
-      return null;
-    }    
-  }
-
-  bool isValidDob(String dob) {
-    if (dob.isEmpty) return true;
-    var d = this.convertToDate(dob);
-    return d != null && d.isBefore(new DateTime.now());
   }
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      onTap: () => this._chooseDate(context, this.widget.controller.text),
-      controller: this.widget.controller,
-      keyboardType: TextInputType.datetime,
-      decoration: InputDecoration(
-        icon: Icon(Icons.calendar_today),
-        hintText: this.widget.hintText,
-        labelText: this.widget.labelText,
-      ),
-      validator: (val) => this.isValidDob(val) ? null : 'Not a valid date',
+    return CustomTextFormField (
+      fieldName: this.widget.fieldName,
+      onSaved: this.widget.onSaved,
+      width: this.widget.width,
+      hintText: this.widget.hintText,
+      prefixIcon: this.widget.prefixIcon,
+      controller: this._controller,
+      onTap: () => this._selectDateOnCalendar(),
+      showCursor: false,
+      readOnly: false,
+      type: TextInputType.datetime,
+      focusNode: FirstDisabledFocusNode()
     );
   }
-
 }

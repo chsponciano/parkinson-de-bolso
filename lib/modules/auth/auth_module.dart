@@ -3,22 +3,18 @@ import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/widget/custom_scaffold.dart';
 import 'package:parkinson_de_bolso/widget/custom_title_page.dart';
 
-// ignore: must_be_immutable
 class AuthModule extends StatefulWidget {
-  @required String widgetTitle;
-  @required List<Widget> children = const <Widget>[];
-  bool activateBackButton;
+  final String widgetTitle;
+  final List<Widget> children;
+  final bool activateBackButton;
 
-  AuthModule({this.widgetTitle, this.children, this.activateBackButton = false}) : 
-    assert(widgetTitle != null),
-    assert(children != null);
+  AuthModule({@required this.widgetTitle, @required this.children, this.activateBackButton = false});
 
   @override
   _AuthModuleState createState() => _AuthModuleState();
 }
 
 class _AuthModuleState extends State<AuthModule> {
-  
   @override
   void initState() {
     super.initState();

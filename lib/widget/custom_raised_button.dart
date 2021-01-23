@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
 
-// ignore: must_be_immutable
 class CustomRaisedButton extends StatelessWidget {
-  @required EdgeInsets padding;
-  @required String label;
-  @required Color background;
-  @required Color textColor;
-  @required VoidCallback onPressed;
-  double width;
-  EdgeInsets paddingInternal;
-  TextStyle style;
-  double elevation;
+  final EdgeInsets padding;
+  final String label;
+  final Color background;
+  final Color textColor;
+  final VoidCallback onPressed;
+  final double width;
+  final EdgeInsets paddingInternal;
+  final TextStyle style;
+  final double elevation;
 
-  CustomRaisedButton({this.width, this.padding, this.paddingInternal, this.label, this.background, this.textColor, this.style, this.elevation, this.onPressed}) : 
-        assert(padding != null),
-        assert(label != null),
-        assert(background != null),
-        assert(textColor != null),
-        assert(onPressed != null);
+  CustomRaisedButton({this.width, @required this.padding, this.paddingInternal, @required this.label, @required this.background, @required this.textColor, this.style, this.elevation, @required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

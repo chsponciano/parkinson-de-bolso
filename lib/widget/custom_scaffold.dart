@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-// ignore: must_be_immutable
 class CustomScaffold extends StatelessWidget {
-  @required Widget child;
-  FloatingActionButton floatingActionButton;
+  final Widget child;
+  final FloatingActionButton floatingActionButton;
 
-  CustomScaffold({this.child, this.floatingActionButton}) : 
-    assert(child != null);
+  CustomScaffold({@required this.child, this.floatingActionButton});
 
   @override
   Widget build(BuildContext context) {
