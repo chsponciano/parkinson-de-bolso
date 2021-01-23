@@ -1,17 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/model/patien_classification_model.dart';
 import 'package:parkinson_de_bolso/model/search_model.dart';
-import 'package:parkinson_de_bolso/util/string_util.dart';
+import 'package:parkinson_de_bolso/widget/custom_circle_avatar.dart';
 
 class PatientModel implements SearchModel {
   String name;
   DateTime birthDate;
   DateTime diagnosis;
-  int weight;
-  int height;
+  double weight;
+  double height;
   String initials;
+  File photo;
+  List<PatientClassificationModel> classifications;
 
-  PatientModel({this.initials, this.birthDate, this.diagnosis, this.weight, this.height, this.name});
+  PatientModel({this.initials, this.birthDate, this.diagnosis, this.weight, this.height, this.name, this.photo, this.classifications});
 
   @override
   ListTile getListTile(Function onTap) {
@@ -29,11 +34,12 @@ class PatientModel implements SearchModel {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CircleAvatar(
-              radius: 20,
-              backgroundColor: secondaryColor,
-              foregroundColor: ternaryColor,
-              child: Text(StringUtil.getInitials(this.name))
+            CustomCircleAvatar(
+              radius: 20, 
+              background: secondaryColor, 
+              foreground: ternaryColor,
+              image: this.photo,
+              initials: this.initials,
             ),
             Text(this.name, 
               style: TextStyle(

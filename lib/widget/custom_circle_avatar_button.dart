@@ -12,10 +12,10 @@ class CustomCircleAvatarButton extends StatefulWidget {
   CustomCircleAvatarButton({@required this.background, @required this.foreground, @required this.radius, @required this.icon});
 
   @override
-  CustomCircleAvatarButtonState createState() => CustomCircleAvatarButtonState();
+  _CustomCircleAvatarButtonState createState() => _CustomCircleAvatarButtonState();
 }
 
-class CustomCircleAvatarButtonState extends State<CustomCircleAvatarButton> {
+class _CustomCircleAvatarButtonState extends State<CustomCircleAvatarButton> {
   File _image;
 
   Future getImage() async {

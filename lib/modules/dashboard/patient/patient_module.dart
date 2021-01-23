@@ -53,7 +53,7 @@ class _PatientModuleState extends State<PatientModule> {
     if (this._selectedPatient != null) {
       return PatientViewer(
         callHigher: this.resetWidgetStatus,
-        selected: this._selectedPatient,
+        patient: this._selectedPatient,
       );
     }
 
