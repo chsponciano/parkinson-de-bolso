@@ -4,6 +4,7 @@ import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/modules/auth/auth_module.dart';
 import 'package:parkinson_de_bolso/modules/auth/change_password/redefine_password.dart';
 import 'package:parkinson_de_bolso/modules/auth/sign_up/sign_up.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/dashboard_module.dart';
 import 'package:parkinson_de_bolso/widget/custom_anchor_text.dart';
 import 'package:parkinson_de_bolso/widget/custom_checkbox.dart';
 import 'package:parkinson_de_bolso/widget/custom_raised_button.dart';
@@ -67,7 +68,7 @@ class SignIn extends StatelessWidget {
           onPressed: () => {
             RouteHandler.loggedIn = true,
             RouteHandler.token = 'aaaaaaaa',
-            // Navigator.pushNamed(context, Dashboard.routeName)
+            Navigator.pushNamed(context, DashboardModule.routeName)
           },
           textColor: primaryColor,
           elevation: 5.0,

@@ -1,7 +1,9 @@
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/model/search_model.dart';
+import 'package:parkinson_de_bolso/widget/custom_background.dart';
 
 class CustomListSearch extends StatefulWidget {
   final List<SearchModel> data;
@@ -40,6 +42,8 @@ class _CustomListSearchState extends State<CustomListSearch> {
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: AppBar(
+        elevation: 0,
+        centerTitle: true,
         leading: this.widget.leading,
         title: this._malleableWidget,
         backgroundColor: this.widget.barColor,
@@ -57,23 +61,20 @@ class _CustomListSearchState extends State<CustomListSearch> {
           )          
         ]..addAll((this.widget.actions == null) ? [] : this.widget.actions),
       ),
-      body: Container(
-        child: Column(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: ListView.builder(
-                  controller: this._scrollController,
-                  shrinkWrap: true,
-                  itemCount: this._cachedData.length,
-                  itemBuilder: (context, index) => this._cachedData[index].getListTile(this.widget.onTap),
-                ),
-              )
-            ),
-          ]
-        )
-      )
+      body: CustomBackground(
+        margin: 10.0,
+        topColor: dashboardBarColor, 
+        bottomColor: ternaryColor, 
+        bottom: Container(
+        child: ListView.builder(
+            controller: this._scrollController,
+            shrinkWrap: true,
+            itemCount: this._cachedData.length,
+            itemBuilder: (context, index) => this._cachedData[index].getListTile(this.widget.onTap),
+          ),
+        ), 
+        horizontalPadding: 10.0
+      ),
     );
   }
   

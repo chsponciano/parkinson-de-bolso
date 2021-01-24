@@ -4,13 +4,14 @@ import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/widget/custom_text_form_field.dart';
 
 class CustomDateFormField extends StatefulWidget {
+  final TextEditingController controller;
   final String fieldName;
   final String hintText;
   final Function onSaved;
   final IconData prefixIcon;
   final double width;
 
-  CustomDateFormField({@required this.hintText, @required this.onSaved, @required this.prefixIcon, @required this.width, @required this.fieldName});
+  CustomDateFormField({@required this.hintText, @required this.onSaved, @required this.prefixIcon, @required this.width, @required this.fieldName, this.controller});
   
   @override
   _CustomDateFormFieldState createState() => _CustomDateFormFieldState();
@@ -24,8 +25,14 @@ class FirstDisabledFocusNode extends FocusNode {
 }
 
 class _CustomDateFormFieldState extends State<CustomDateFormField> {
-  final _controller = new TextEditingController();
-  final _format = new DateFormat('dd/MM/yyyy');
+  TextEditingController _controller;
+  final _format = DateFormat('dd/MM/yyyy');
+  
+  @override
+  void initState() {
+    this._controller = (this.widget.controller != null) ? this.widget.controller : TextEditingController();
+    super.initState();
+  }
 
   void _selectDateOnCalendar() {
     showDatePicker(
@@ -64,7 +71,7 @@ class _CustomDateFormFieldState extends State<CustomDateFormField> {
       showCursor: false,
       readOnly: false,
       type: TextInputType.datetime,
-      focusNode: FirstDisabledFocusNode()
+      focusNode: FirstDisabledFocusNode(),
     );
   }
 }

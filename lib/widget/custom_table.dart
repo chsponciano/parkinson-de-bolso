@@ -25,7 +25,9 @@ class _CustomTableState extends State<CustomTable> {
         isTitle: true
       ).build()
     ];
-    this._data.addAll(this.widget.data.map((e) => e.createRow()).toList());
+    
+    if (this.widget.data != null)
+      this._data.addAll(this.widget.data.map((e) => e.createRow()).toList());
   }
 
   @override

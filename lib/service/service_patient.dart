@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:parkinson_de_bolso/model/patien_classification_model.dart';
 import 'package:parkinson_de_bolso/model/patient_model.dart';
 import 'package:parkinson_de_bolso/util/string_util.dart';
@@ -15,6 +17,7 @@ class ServicePatient {
         height: 1.70,
         weight: 70,
         initials: StringUtil.getInitials('José Vitor'),
+        photo: File('/storage/emulated/0/DCIM/Camera/IMG_20210124_164649.jpg'),
         classifications: <PatientClassificationModel>[
           PatientClassificationModel(
             date: DateTime.utc(2021, 1, 1),

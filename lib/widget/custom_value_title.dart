@@ -6,15 +6,17 @@ class CustomValueTitle extends StatelessWidget {
   final String title;
   final String value;
   final double size;
+  final Color color;
 
-  CustomValueTitle({this.width, this.title, this.value, this.size});
+  CustomValueTitle({this.width, this.title, this.value, this.size, this.color});
 
   Text _buildText(String text, bool isBold) {
     return Text(
       text,
       style: TextStyle(
         fontSize: this.size,
-        fontWeight: isBold ? FontWeight.bold : null
+        fontWeight: isBold ? FontWeight.bold : null,
+        color: this.color
       ),
     );
   }

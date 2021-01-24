@@ -26,7 +26,7 @@ class PatientModel implements SearchModel {
         padding: EdgeInsets.all(10),
         margin: EdgeInsets.only(top: 10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: secondaryColorDashboardBar,
           borderRadius: BorderRadius.all(
             Radius.circular(10.0)
           )

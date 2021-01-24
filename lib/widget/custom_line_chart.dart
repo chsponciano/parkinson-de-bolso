@@ -10,6 +10,8 @@ class CustomLineChart extends StatefulWidget {
   CustomLineChart({@required this.spots});
 
   static List<FlSpot> toListSpot(List<SerelizationDataModel> item) {
+    if (item == null)
+      return null;
     return item.map((e) => e.createSpot()).toList();  
   }
 
@@ -27,14 +29,14 @@ class _CustomLineChartState extends State<CustomLineChart> with DateTimeUtil {
         bottomTitles: SideTitles(
           showTitles: true,
           reservedSize: 22,
-          getTextStyles: (value) => const TextStyle(color: Color(0xff68737d), fontWeight: FontWeight.bold, fontSize: 8),
+          getTextStyles: (value) => const TextStyle(color: primaryColor, fontWeight: FontWeight.bold, fontSize: 8),
           getTitles: (value) => this.getMonth(value.toInt()),
           margin: 8,
         ),
         leftTitles: SideTitles(
           showTitles: true,
           getTextStyles: (value) => const TextStyle(
-            color: Color(0xff67727d),
+            color: primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: 15,
           ),
@@ -43,7 +45,6 @@ class _CustomLineChartState extends State<CustomLineChart> with DateTimeUtil {
           margin: 12,
         ),
       ),
-      borderData: FlBorderData(show: true, border: Border.all(color: const Color(0xff37434d), width: 1)),
       lineBarsData: [
         LineChartBarData(
           spots: this.widget.spots,
@@ -68,9 +69,6 @@ class _CustomLineChartState extends State<CustomLineChart> with DateTimeUtil {
     return AspectRatio(
       aspectRatio: 1.70,
       child: Container(
-        decoration: BoxDecoration(
-            color: formBackgroundColor,
-        ),
         child: Padding(
           padding: EdgeInsets.only(right: 18.0, left: 12.0, top: 24, bottom: 12),
           child: LineChart(

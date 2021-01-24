@@ -8,8 +8,9 @@ class CustomCircleAvatarButton extends StatefulWidget {
   final Color foreground;
   final double radius;
   final IconData icon;
+  final File image;
 
-  CustomCircleAvatarButton({@required this.background, @required this.foreground, @required this.radius, @required this.icon});
+  CustomCircleAvatarButton({@required this.background, @required this.foreground, @required this.radius, @required this.icon, this.image});
 
   @override
   _CustomCircleAvatarButtonState createState() => _CustomCircleAvatarButtonState();
@@ -17,6 +18,14 @@ class CustomCircleAvatarButton extends StatefulWidget {
 
 class _CustomCircleAvatarButtonState extends State<CustomCircleAvatarButton> {
   File _image;
+  
+  @override
+  void initState() {
+    if (this.widget.image != null) {
+      this._image = this.widget.image;
+    }
+    super.initState();
+  }
 
   Future getImage() async {
     // ignore: deprecated_member_use

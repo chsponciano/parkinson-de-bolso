@@ -33,4 +33,8 @@ mixin DateTimeUtil {
     String month = this.months[dateTime.month - 1].substring(0, 3).toUpperCase();
     return '$month/$year';
   }
+
+  int getCurrentAge(DateTime other) {
+    return DateTime.now().difference(other).inDays ~/ 365;
+  }
 }

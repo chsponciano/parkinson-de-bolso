@@ -16,13 +16,14 @@ class PatientModule extends StatefulWidget {
 
 class _PatientModuleState extends State<PatientModule> {
   List<PatientModel> _data = <PatientModel>[];
-  bool _inSearch, _scrollingPage, _isAdd;
+  bool _inSearch, _scrollingPage, _isAdd, _isEdit;
   PatientModel _selectedPatient;
 
   @override
   void initState() {
     this._inSearch = false;
     this._scrollingPage = false;
+    this._isEdit = false;
     this._isAdd = false;
     this._selectedPatient = null;
     this._data = ServicePatient.instance.getAllPatient();
@@ -39,8 +40,24 @@ class _PatientModuleState extends State<PatientModule> {
 
   void resetWidgetStatus() => this.setState(() {
     this._isAdd = false;
+    this._isEdit = false;
     this._selectedPatient = null;
   });
+  
+  void resetEditStatus() => this.setState(() {
+    this._isEdit = false;
+  });
+
+  void enableEditing() => this.setState(() {
+    this._isEdit = true;
+  });
+
+  void removeRecord() {
+    this.setState(() {
+      this._data.remove(this._selectedPatient);
+    });
+    this.resetWidgetStatus();
+  }
 
   Future refreshPatientList() async {
     await Future.delayed(Duration(seconds: 2));
@@ -50,9 +67,18 @@ class _PatientModuleState extends State<PatientModule> {
   }
 
   Widget getCurrentWidget() {
+    if (this._isEdit) {
+      return PatientForm(
+        callHigher: this.resetEditStatus,
+        patient: this._selectedPatient,
+      );
+    }
+
     if (this._selectedPatient != null) {
       return PatientViewer(
         callHigher: this.resetWidgetStatus,
+        callEdition: this.enableEditing,
+        callRemoval: this.removeRecord,
         patient: this._selectedPatient,
       );
     }
