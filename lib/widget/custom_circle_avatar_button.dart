@@ -1,7 +1,11 @@
 import 'dart:io';
 
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:parkinson_de_bolso/constant/http_constant.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 class CustomCircleAvatarButton extends StatefulWidget {
   final Color background;
@@ -9,8 +13,10 @@ class CustomCircleAvatarButton extends StatefulWidget {
   final double radius;
   final IconData icon;
   final File image;
+  final String imageUrl;
+  final Function setImage;
 
-  CustomCircleAvatarButton({@required this.background, @required this.foreground, @required this.radius, @required this.icon, this.image});
+  CustomCircleAvatarButton({@required this.background, @required this.foreground, @required this.radius, @required this.icon, this.image, this.imageUrl, @required this.setImage});
 
   @override
   _CustomCircleAvatarButtonState createState() => _CustomCircleAvatarButtonState();
@@ -33,9 +39,18 @@ class _CustomCircleAvatarButtonState extends State<CustomCircleAvatarButton> {
     setState(() {
       this._image = image;
     });
+    
+    Function.apply(this.widget.setImage, [image]);
   }
 
   Widget _buildIcon() {
+    if (this.widget.imageUrl != null) {
+      return CircleAvatar (
+        radius: this.widget.radius,
+        backgroundImage: NetworkImage(image_host + this.widget.imageUrl),
+      );
+    }
+
     return Icon(
       this.widget.icon,
       size: this.widget.radius,

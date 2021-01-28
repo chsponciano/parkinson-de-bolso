@@ -15,6 +15,7 @@ class _ReportModuleState extends State<ReportModule> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
+        automaticallyImplyLeading: false,
         centerTitle: true,
         backgroundColor: dashboardBarColor,
         title: Text('Relatórios'),
@@ -23,7 +24,6 @@ class _ReportModuleState extends State<ReportModule> {
         margin: 10.0,
         topColor: dashboardBarColor, 
         bottomColor: ternaryColor, 
-        top: null, 
         bottom: Center(
           child: Text('Relatórios'),
         ), 

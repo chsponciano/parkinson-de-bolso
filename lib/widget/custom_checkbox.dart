@@ -5,8 +5,9 @@ class CustomCheckbox extends StatefulWidget {
   final Color activeColor;
   final String caption;
   final double height;
+  final Function remember;
 
-  CustomCheckbox({@required this.checkColor, @required this.activeColor, @required this.caption, @required this.height});
+  CustomCheckbox({@required this.checkColor, @required this.activeColor, @required this.caption, @required this.height, @required this.remember});
   
   @override
   _CustomCheckboxState createState() => _CustomCheckboxState();
@@ -31,6 +32,7 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
                 setState(() {
                   _isChecked = value;
                 });
+                Function.apply(this.widget.remember, [value]);
               },
             ),
           ),

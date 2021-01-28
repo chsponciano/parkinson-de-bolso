@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:parkinson_de_bolso/config/route.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
-import 'package:parkinson_de_bolso/modules/dashboard/dashboard_module.dart';
+import 'package:parkinson_de_bolso/modules/auth/sign_in/sign_in.dart';
+import 'package:parkinson_de_bolso/util/shared_preferences_util.dart';
 
 void main() => runApp(App());
 
@@ -12,12 +13,12 @@ class App extends StatefulWidget {
   _AppState createState() => _AppState();  
 }
 
-class _AppState extends State<App> {
+class _AppState extends State<App> with SharedPreferencesUtil{
 
   @override
   void initState() {
     super.initState();
-    RouteHandler.loggedIn = false;
+    RouteHandler.loggedInUser = null;
     RouteHandler.token = null;
     RouteHandler.configureRoutes();
     SystemChrome.setEnabledSystemUIOverlays([]);
@@ -31,8 +32,8 @@ class _AppState extends State<App> {
         fontFamily: defaultFont
       ),
       debugShowCheckedModeBanner: false,
-      // onGenerateRoute: RouteHandler.instance.exchange(),
-      home: DashboardModule(),
+      onGenerateRoute: RouteHandler.instance.exchange(),
+      home: SignIn(),
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate

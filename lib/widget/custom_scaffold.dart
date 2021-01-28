@@ -14,7 +14,8 @@ class CustomScaffold extends StatelessWidget {
         value: SystemUiOverlayStyle.light,
         child: this.child,
       ),
-      floatingActionButton: this.floatingActionButton
+      floatingActionButton: this.floatingActionButton,
+      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
     );
   }
 }

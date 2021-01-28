@@ -7,10 +7,14 @@ import 'package:parkinson_de_bolso/widget/custom_footer_group_button.dart';
 import 'package:parkinson_de_bolso/widget/custom_scaffold.dart';
 import 'informative_illustration.dart';
 
-// ignore: must_be_immutable
-class Onboarding extends StatelessWidget {
+class Onboarding extends StatefulWidget {
   static const String routeName = '/';
 
+  @override
+  _OnboardingState createState() => _OnboardingState();
+}
+
+class _OnboardingState extends State<Onboarding> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(

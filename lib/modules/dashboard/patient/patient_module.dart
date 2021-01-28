@@ -4,7 +4,7 @@ import 'package:parkinson_de_bolso/model/patient_model.dart';
 import 'package:parkinson_de_bolso/model/search_model.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/patient/form/patient_form.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/patient/viewer/patient_viewer.dart';
-import 'package:parkinson_de_bolso/service/service_patient.dart';
+import 'package:parkinson_de_bolso/service/patient_service.dart';
 import 'package:parkinson_de_bolso/widget/custom_list_search.dart';
 
 class PatientModule extends StatefulWidget {
@@ -26,7 +26,6 @@ class _PatientModuleState extends State<PatientModule> {
     this._isEdit = false;
     this._isAdd = false;
     this._selectedPatient = null;
-    this._data = ServicePatient.instance.getAllPatient();
     super.initState();
   }
 
@@ -59,12 +58,12 @@ class _PatientModuleState extends State<PatientModule> {
     this.resetWidgetStatus();
   }
 
-  Future refreshPatientList() async {
-    await Future.delayed(Duration(seconds: 2));
-    this.setState(() {
-      this._data = ServicePatient.instance.getAllPatient();
-    });
-  }
+  // Future refreshPatientList() async {
+  //   await Future.delayed(Duration(seconds: 2));
+  //   this.setState(() {
+  //     this._data = ServicePatient.instance.getAllPatient();
+  //   });
+  // }
 
   Widget getCurrentWidget() {
     if (this._isEdit) {
@@ -89,17 +88,19 @@ class _PatientModuleState extends State<PatientModule> {
       );
     }
 
-    return RefreshIndicator(
-      child: CustomListSearch(
-        data: this._data, 
+    return 
+    //RefreshIndicator(
+    //  child: 
+      CustomListSearch(
         widgetName: 'Pacientes',
         barColor: dashboardBarColor,
         searchStatusController: this.changeSearchStatus,
         scrollStatusController: this.changeScrollStatus,
-        onTap: this.selectPatient
-      ), 
-      onRefresh: this.refreshPatientList,
-      color: dashboardBarColor,
+        onTap: this.selectPatient,
+        future: PatientService.instance.getAll(),
+    //  ), 
+      // onRefresh: this.refreshPatientList,
+    //  color: dashboardBarColor,
     );
   }
 

@@ -1,6 +1,9 @@
 
 import 'package:intl/intl.dart';
 
+enum DateTimeFormatUtil {
+  BR_DATE  
+}
 mixin DateTimeUtil {
   final DateFormat format = DateFormat('dd/MM/yyyy');
   final List<String> months = [
@@ -17,6 +20,15 @@ mixin DateTimeUtil {
     'Novemebro',
     'Dezembro'
   ]; 
+
+  DateTime strToDate(String value, DateTimeFormatUtil format) {
+    if (format == DateTimeFormatUtil.BR_DATE) {
+      var dateStr = value.split('/');
+      return DateTime(int.parse(dateStr[2]), int.parse(dateStr[1]), int.parse(dateStr[0]));
+    }
+
+    return DateTime.now();
+  }
 
   String getMonth(int month) {
     return this.months[month].substring(0, 3).toUpperCase();

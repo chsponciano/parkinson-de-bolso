@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -13,8 +14,12 @@ class CustomTextField extends StatelessWidget {
   final double distanceNextLine;
   final Object inputDecoration;
   final bool isShadow;
+  final Function onSaved;
+  final List<TextInputFormatter> inputFormatters;
+  final Function onChange;
+  final TextEditingController controller;
 
-  CustomTextField({this.title, @required this.height, @required this.color, @required this.hint, @required this.icon, this.type, @required this.padding, @required this.borderRadius, this.distanceNextLine, this.inputDecoration, this.isShadow = true});
+  CustomTextField({this.title, @required this.height, @required this.color, @required this.hint, @required this.icon, this.type, @required this.padding, @required this.borderRadius, this.distanceNextLine, this.inputDecoration, this.isShadow = true, this.onSaved, this.inputFormatters, this.onChange, this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +49,14 @@ class CustomTextField extends StatelessWidget {
             ] : null,
           ),
           height: this.height,
-          child: TextField(
+          child: TextFormField(
+            controller: controller,
+            onSaved: this.onSaved,
+            onChanged: this.onChange,
+            inputFormatters: this.inputFormatters,
             obscureText: (this.type == null),
             keyboardType: this.type,
+            validator: (String value) => (value.isEmpty) ? 'Campo obrigatório' : null,
             style: TextStyle(
               color: this.color,
               fontFamily: defaultFont,

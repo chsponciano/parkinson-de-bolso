@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/model/patient_model.dart';
+import 'package:parkinson_de_bolso/service/patient_service.dart';
 import 'package:parkinson_de_bolso/util/datetime_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_background.dart';
 import 'package:parkinson_de_bolso/widget/custom_circle_avatar.dart';
@@ -58,9 +59,8 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                 Icons.delete, 
                 color: primaryColorDashboardBar
               ),
-            onPressed: () => {
-              print('deletar'),
-              this.widget.callRemoval.call(),
+            onPressed: () {
+              PatientService.instance.delete(this.widget.patient.id).then((value) => this.widget.callRemoval.call());
             },
           ),
         ],
@@ -84,7 +84,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                   radius: 75, 
                   background: ternaryColor, 
                   foreground: primaryColor,
-                  image: this.widget.patient.photo,
+                  imagePath: this.widget.patient.imageUrl,
                   initials: this.widget.patient.initials,
                 ),
               ),
@@ -93,7 +93,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(this.widget.patient.name,
+                    Text(this.widget.patient.name.split(' ')[0],
                       style: TextStyle(
                         fontSize: 30,
                         color: ternaryColor,
@@ -105,7 +105,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                     CustomValueTitle(
                       size: 18,
                       title: 'Idade',
-                      value: this.getCurrentAge(this.widget.patient.birthDate).toString() + ' anos',
+                      value: this.getCurrentAge(this.widget.patient.birthdate).toString() + ' anos',
                       color: ternaryColor,
                     ),
                     SizedBox(height: this.widget.spacingBetweenFields - 15),

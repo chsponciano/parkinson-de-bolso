@@ -7,19 +7,15 @@ class AuthModule extends StatefulWidget {
   final String widgetTitle;
   final List<Widget> children;
   final bool activateBackButton;
+  final bool loading;
 
-  AuthModule({@required this.widgetTitle, @required this.children, this.activateBackButton = false});
+  AuthModule({@required this.widgetTitle, @required this.children, this.activateBackButton = false, this.loading = false});
 
   @override
   _AuthModuleState createState() => _AuthModuleState();
 }
 
 class _AuthModuleState extends State<AuthModule> {
-  @override
-  void initState() {
-    super.initState();
-    this.widget.children.insert(0, this._buildTitle());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +39,28 @@ class _AuthModuleState extends State<AuthModule> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: this.widget.children
+                  children: [
+                    this._buildTitle(),
+                  ]..addAll(this.widget.children)
                 )
               )
+            ),
+            Visibility(
+              visible: this.widget.loading,
+              child:  Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(255, 255, 255, 0.19),
+                    ),
+                  ),
+                  CircularProgressIndicator(
+                    backgroundColor: ternaryColor,
+                    valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                  )
+                ],
+              ),
             )
           ]
         )
@@ -66,9 +81,10 @@ class _AuthModuleState extends State<AuthModule> {
   FloatingActionButton _buildBackButton(BuildContext context) {
     return FloatingActionButton(
       onPressed: () => Navigator.pop(context),
-      child: Icon(Icons.arrow_back, color: primaryColor),
-      backgroundColor: ternaryColor,
-      mini: true
+      child: Icon(Icons.arrow_back, color: ternaryColor),
+      backgroundColor: Colors.transparent,
+      mini: true,
+      elevation: 0,
     );
   }
 }

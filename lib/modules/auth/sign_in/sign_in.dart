@@ -1,25 +1,71 @@
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/config/route.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/model/user_model.dart';
 import 'package:parkinson_de_bolso/modules/auth/auth_module.dart';
 import 'package:parkinson_de_bolso/modules/auth/change_password/redefine_password.dart';
 import 'package:parkinson_de_bolso/modules/auth/sign_up/sign_up.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/dashboard_module.dart';
+import 'package:parkinson_de_bolso/service/user_service.dart';
+import 'package:parkinson_de_bolso/util/shared_preferences_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_anchor_text.dart';
 import 'package:parkinson_de_bolso/widget/custom_checkbox.dart';
 import 'package:parkinson_de_bolso/widget/custom_raised_button.dart';
 import 'package:parkinson_de_bolso/widget/custom_text_field.dart';
 
-// ignore: must_be_immutable
-class SignIn extends StatelessWidget {
+class SignIn extends StatefulWidget {
   static const String routeName = '/signInRoute';
+
+  @override
+  _SignInState createState() => _SignInState();
+}
+
+class _SignInState extends State<SignIn> with SharedPreferencesUtil{
+  TextEditingController _email;
+  TextEditingController _password;
+  var _remember;
+  var _loading;
+
+  @override
+  void initState() {
+    this._email = TextEditingController();
+    this._password = TextEditingController();
+    this._remember = false;
+    this._loading = false;
+    super.initState();
+    this.validateCachedUser();
+  }
+
+  void validateCachedUser() async {
+    String email = await this.getPrefs('user_email');
+    String password = await this.getPrefs('user_password');
+    if (email != null && email.isNotEmpty && password != null && password.isNotEmpty) {
+      this.authenticate(email, password);
+    }
+  }
+
+  void authenticate(String email, String password) {
+    this.setState(() => this._loading = true);
+    UserService.instance.authenticate(email, password).then((Map value) {
+      RouteHandler.loggedInUser = UserModel.fromJson(value['user']);
+      RouteHandler.token = value['token'];
+      if (this._remember) {
+        this.addPrefs('user_email', email);
+        this.addPrefs('user_password', password);
+      }
+      this.setState(() => this._loading = false);
+      Navigator.pushNamed(context, DashboardModule.routeName);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return AuthModule(
       widgetTitle: titleSignIn,
+      loading: this._loading,
       children: [
         CustomTextField(
+          controller: this._email,
           borderRadius: 10.0,
           color: ternaryColor,
           height: 60.0,
@@ -31,6 +77,7 @@ class SignIn extends StatelessWidget {
           distanceNextLine: 30.0,
         ),
         CustomTextField(
+          controller: this._password,
           borderRadius: 10.0,
           color: ternaryColor,
           height: 60.0,
@@ -48,6 +95,7 @@ class SignIn extends StatelessWidget {
               activeColor: ternaryColor,
               checkColor: primaryColor,
               caption: 'Lembrar',
+              remember: (value) => setState(() => this._remember = value),
               height: 20.0,
             ),
             CustomAnchorText(
@@ -65,11 +113,7 @@ class SignIn extends StatelessWidget {
           background: ternaryColor,
           padding: EdgeInsets.symmetric(vertical: 25.0),
           paddingInternal: EdgeInsets.all(15.0),
-          onPressed: () => {
-            RouteHandler.loggedIn = true,
-            RouteHandler.token = 'aaaaaaaa',
-            Navigator.pushNamed(context, DashboardModule.routeName)
-          },
+          onPressed: () => this.authenticate(this._email.text, this._password.text),
           textColor: primaryColor,
           elevation: 5.0,
           style: TextStyle(

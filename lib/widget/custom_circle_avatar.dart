@@ -1,15 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:parkinson_de_bolso/constant/http_constant.dart';
 
 class CustomCircleAvatar extends StatelessWidget {
   final double radius;
   final Color background;
   final Color foreground;
-  final File image;
+  final String imagePath;
   final String initials;
 
-  CustomCircleAvatar({@required this.radius, @required this.background, @required this.foreground, this.image, this.initials});
+  CustomCircleAvatar({@required this.radius, @required this.background, @required this.foreground, this.imagePath, this.initials});
 
   Widget _buildInitials() {
     return Text(
@@ -23,7 +24,7 @@ class CustomCircleAvatar extends StatelessWidget {
   Widget _buildImage() {
     return CircleAvatar(
       radius: this.radius,
-      backgroundImage: FileImage(this.image),
+      backgroundImage: NetworkImage(image_host + this.imagePath),
     );
   }
 
@@ -33,7 +34,7 @@ class CustomCircleAvatar extends StatelessWidget {
       radius: this.radius,
       backgroundColor: this.background,
       foregroundColor: this.foreground,
-      child: (this.image != null) ? this._buildImage() : this._buildInitials(),
+      child: (this.imagePath != null) ? this._buildImage() : this._buildInitials(),
     );
   }
 

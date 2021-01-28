@@ -15,6 +15,7 @@ class _SettingModuleState extends State<SettingModule> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
+        automaticallyImplyLeading: false,
         centerTitle: true,
         backgroundColor: dashboardBarColor,
         title: Text('Configurações'),
@@ -23,7 +24,6 @@ class _SettingModuleState extends State<SettingModule> {
         margin: 10.0,
         topColor: dashboardBarColor, 
         bottomColor: ternaryColor, 
-        top: null, 
         bottom: Center(
           child: Text('Configurações'),
         ), 

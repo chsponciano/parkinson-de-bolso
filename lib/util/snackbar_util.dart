@@ -16,7 +16,7 @@ mixin SnackbarUtil {
         color = Colors.amber;
         break;
       case SnackbarType.SUCESS:
-        color = Colors.red[900];
+        color = Colors.green[900];
         break;
       default:
         color = Colors.red[900];
