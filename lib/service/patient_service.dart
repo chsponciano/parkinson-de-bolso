@@ -21,7 +21,7 @@ class PatientService {
       List<dynamic> data = jsonDecode(response.body)['response'];
       return data.map((item) => PatientModel.fromJson(item)).toList();
     } else {
-      throw Exception('Failed to load user');
+      throw Exception('Failed to load patients');
     }
   }
 
@@ -29,7 +29,7 @@ class PatientService {
     final http.Response response = await http.post(PatientService.apiPatientHost, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       'x-access-token' : RouteHandler.token
-    }, body: jsonEncode(patient.toJson(true, false)));
+    }, body: jsonEncode(patient.toJson(true)));
 
     if (response.statusCode == 200) {
       return PatientModel.fromJson(jsonDecode(response.body)['response']);
@@ -38,16 +38,16 @@ class PatientService {
     }
   }
 
-  Future<bool> update(PatientModel patient) async {
+  Future<PatientModel> update(PatientModel patient) async {
     final http.Response response = await http.put(PatientService.apiPatientHost, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       'x-access-token' : RouteHandler.token
-    }, body: jsonEncode(patient.toJson(true, false)));
+    }, body: jsonEncode(patient.toJson(false)));
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body)['response'];
+      return PatientModel.fromJson(jsonDecode(response.body)['response']);
     } else {
-      throw Exception('Failed to delete patient');
+      throw Exception('Failed to update patient');
     }
   }
 

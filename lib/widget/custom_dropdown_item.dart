@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/model/patien_classification_model.dart';
+import 'package:parkinson_de_bolso/model/patient_classification_model.dart';
 
 class ListItem {
   int value;

@@ -15,9 +15,9 @@ class UserModel{
     );
   }
   
-  Map toJson(bool create, bool update) {
+  Map toJson(bool create) {
     return {
-      if(!create && !update)
+      if(!create)
         '_id': this.id,
       'name': this.name,
       'email': this.email,

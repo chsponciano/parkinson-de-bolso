@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/model/patient_model.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/patient/viewer/patient_evolution.dart';
+import 'package:parkinson_de_bolso/service/patient_classification_service.dart';
 import 'package:parkinson_de_bolso/service/patient_service.dart';
 import 'package:parkinson_de_bolso/util/datetime_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_background.dart';
 import 'package:parkinson_de_bolso/widget/custom_circle_avatar.dart';
-import 'package:parkinson_de_bolso/widget/custom_dropdown_item.dart';
-import 'package:parkinson_de_bolso/widget/custom_line_chart.dart';
-import 'package:parkinson_de_bolso/widget/custom_table.dart';
+import 'package:parkinson_de_bolso/widget/custom_circular_progress.dart';
 import 'package:parkinson_de_bolso/widget/custom_value_title.dart';
 
 class PatientViewer extends StatefulWidget {
@@ -25,7 +25,15 @@ class PatientViewer extends StatefulWidget {
 }
 
 class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
-  bool _isViewData = false;
+  bool _isViewData;
+  bool _displayActionBar;
+
+  @override
+  void initState() {
+    this._isViewData = false;
+    this._displayActionBar = true;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +75,6 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
         backgroundColor: dashboardBarColor,
       ),
       body: CustomBackground(
-        dataValidation: this.widget.patient.classifications != null,
         topColor: dashboardBarColor, 
         bottomColor: ternaryColor,
         horizontalPadding: this.widget.horizontalPadding,
@@ -135,50 +142,27 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
             ],
           ),
         ), 
-        bottom: Container(
-          padding: EdgeInsets.all(10),
-          child: Column(
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Evolução do Parkinson',
-                    style: TextStyle(
-                      color: primaryColor,
-                      fontSize: 18,
-                      letterSpacing: 1.0
-                    ),
-                  ),
-                  CustomDropdownItem(
-                    items: this.widget.patient.classifications,
-                    onChange: (v) => print(v),
-                    color: primaryColor,
-                  )
-                ],
-              ),
-              SizedBox(height: this.widget.spacingBetweenFields),
-              Container(
-                child: AnimatedCrossFade(
-                  firstChild: CustomTable(
-                    borderColor: primaryColor, 
-                    data: this.widget.patient.classifications, 
-                    titles: ['Data', 'Porcentagem'],
-                  ), 
-                  secondChild: CustomLineChart(
-                    spots: CustomLineChart.toListSpot(this.widget.patient.classifications)
-                  ), 
-                  crossFadeState: this._isViewData ? CrossFadeState.showFirst : CrossFadeState.showSecond, 
-                  duration: Duration(milliseconds: 300)
-                ),
-              ),
-            ],
-          ),
+        bottom: FutureBuilder(
+          future: PatientClassificationService.instance.getAll(this.widget.patient.id),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              this._displayActionBar = snapshot.data.length > 0;
+              return PatientEvolution(
+                data: snapshot.data,
+                isViewData: this._isViewData,
+                spacingBetweenFields: this.widget.spacingBetweenFields,
+              );
+            } else {
+              return CustomCircularProgress(
+                valueColor: primaryColor,
+              );
+            }
+          },
         ),
         footer: Row(
           mainAxisAlignment: MainAxisAlignment.end,
-          children: [
+          children: this._displayActionBar ? 
+          [
             Switch(
               value: this._isViewData,
               onChanged: (status) {
@@ -196,7 +180,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                 fontSize: 15,
               ),
             )
-          ],
+          ] : [],
         ),
       ),
     );

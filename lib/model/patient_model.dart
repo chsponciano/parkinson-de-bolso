@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:parkinson_de_bolso/config/route.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
-import 'package:parkinson_de_bolso/model/patien_classification_model.dart';
+import 'package:parkinson_de_bolso/model/patient_classification_model.dart';
 import 'package:parkinson_de_bolso/model/search_model.dart';
 import 'package:parkinson_de_bolso/util/string_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_circle_avatar.dart';
@@ -39,9 +39,9 @@ class PatientModel implements SearchModel {
     );
   }
   
-  Map toJson(bool create, bool update) {
+  Map toJson(bool create) {
     return {
-      if(!create && !update)
+      if(!create)
         '_id': this.id,
       'name': this.name,
       'birthdate': DateFormat('yyyy-MM-dd').format(this.birthdate),

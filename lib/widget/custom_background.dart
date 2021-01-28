@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
-import 'package:parkinson_de_bolso/constant/assest_path.dart';
+import 'package:parkinson_de_bolso/widget/custom_circular_progress.dart';
 
 class CustomBackground extends StatefulWidget {
   final Color topColor;
@@ -11,10 +11,9 @@ class CustomBackground extends StatefulWidget {
   final double horizontalPadding;
   final Widget footer;
   final double margin;
-  final bool dataValidation;
   final bool loading;
 
-  CustomBackground({@required this.topColor, @required this.bottomColor, this.top, @required this.bottom, @required this.horizontalPadding, this.footer, @required this.margin, this.dataValidation = true, this.loading = false});
+  CustomBackground({@required this.topColor, @required this.bottomColor, this.top, @required this.bottom, @required this.horizontalPadding, this.footer, @required this.margin, this.loading = false});
 
   @override
   _CustomBackgroundState createState() => _CustomBackgroundState();
@@ -51,33 +50,14 @@ class _CustomBackgroundState extends State<CustomBackground> {
                         physics: AlwaysScrollableScrollPhysics(),
                         padding: EdgeInsets.symmetric(horizontal: this.widget.horizontalPadding, vertical: 10),
                         child: Center(
-                          child: this.widget.loading ? CircularProgressIndicator() : this.widget.dataValidation ? 
-                            this.widget.bottom : 
-                            Container(
-                              padding: EdgeInsets.symmetric(vertical: 50),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    'Sem dados para a exibição',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      letterSpacing: 1.0,
-                                      fontWeight: FontWeight.w800,
-                                      color: primaryColor
-                                    ),
-                                  ),
-                                  Image(
-                                    image: AssetImage(noData),
-                                    height: 300,
-                                  )
-                                ],
-                              ),
-                            )
+                          child: this.widget.loading ? CustomCircularProgress(
+                              valueColor: primaryColor,
+                            ) : this.widget.bottom 
                         )
                       ),
                     ),
                   ),
-                  if (this.widget.footer != null && this.widget.dataValidation)
+                  if (this.widget.footer != null)
                     SafeArea(
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/constant/http_constant.dart';
 

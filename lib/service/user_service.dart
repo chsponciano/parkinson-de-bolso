@@ -26,7 +26,7 @@ class UserService {
   Future<UserModel> create(UserModel user) async {
     final http.Response response = await http.post(UserService.apiUserHost, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
-    }, body: jsonEncode(user.toJson(true, false)));
+    }, body: jsonEncode(user.toJson(true)));
 
     if (response.statusCode == 200) {
       return UserModel.fromJson(jsonDecode(response.body));

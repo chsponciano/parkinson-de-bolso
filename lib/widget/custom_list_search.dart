@@ -1,10 +1,12 @@
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/constant/assest_path.dart';
 import 'package:parkinson_de_bolso/model/search_model.dart';
 import 'package:parkinson_de_bolso/widget/custom_background.dart';
+import 'package:parkinson_de_bolso/widget/custom_circular_progress.dart';
+import 'package:parkinson_de_bolso/widget/custom_no_data.dart';
 
 class CustomListSearch extends StatefulWidget {
   final String widgetName;
@@ -76,8 +78,15 @@ class _CustomListSearchState extends State<CustomListSearch> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 this._data = snapshot.data;
+                
+                if (this._data.length == 0) 
+                  return CustomNoData(
+                    image: AssetImage(noDataPatient),
+                  );
+
                 if (!this._loaded)
                   WidgetsBinding.instance.addPostFrameCallback((_) => setState(() => this._cachedData = this._data));
+                
                 return ListView.builder(
                   controller: this._scrollController,
                   shrinkWrap: true,
@@ -87,7 +96,9 @@ class _CustomListSearchState extends State<CustomListSearch> {
                   }
                 );
               } else {
-                return CircularProgressIndicator();
+                return CustomCircularProgress(
+                  valueColor: primaryColor,
+                );
               }
             },
           ),
