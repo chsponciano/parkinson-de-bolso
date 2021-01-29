@@ -29,6 +29,7 @@ class _CustomListSearchState extends State<CustomListSearch> {
   List<SearchModel> _cachedData;
   Widget _malleableWidget;
   Icon _malleableIcon;
+  String _malleableTooltip;
   bool _loaded;
 
   @override
@@ -56,6 +57,7 @@ class _CustomListSearchState extends State<CustomListSearch> {
         backgroundColor: this.widget.barColor,
         actions: [
           IconButton(
+            tooltip: this._malleableTooltip,
             icon: this._malleableIcon, 
             onPressed: () {
               if (this._malleableIcon.icon == Icons.search) {
@@ -125,6 +127,7 @@ class _CustomListSearchState extends State<CustomListSearch> {
 
   void _buildTextTitle() {
     setState(() {
+      this._malleableTooltip = 'Pesquisar';
       this._malleableIcon = Icon(Icons.search);
       this._malleableWidget = Text(this.widget.widgetName);
       this._cachedData = this._data;
@@ -134,6 +137,7 @@ class _CustomListSearchState extends State<CustomListSearch> {
   void _buildSearchField() {
     setState(() {
       this._loaded = true;
+      this._malleableTooltip = 'Cancelar';
       this._malleableIcon = Icon(Icons.cancel);
       this._malleableWidget = TextField(
         autofocus: true,

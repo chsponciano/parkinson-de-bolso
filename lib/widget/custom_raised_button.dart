@@ -21,7 +21,7 @@ class CustomRaisedButton extends StatelessWidget {
       child: RaisedButton(
         child: Text(
           this.label, 
-          style: this.style
+          style: this.style,
         ),
         elevation: this.elevation,
         onPressed: this.onPressed,

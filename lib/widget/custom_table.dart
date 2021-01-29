@@ -16,8 +16,7 @@ class CustomTable extends StatefulWidget {
 class _CustomTableState extends State<CustomTable> {
   List<TableRow> _data;
 
-  void initState() {
-    super.initState();
+  void initializeData() {
     this._data = <TableRow>[
       CustomTableRow(
         padding: EdgeInsets.all(5),
@@ -32,6 +31,8 @@ class _CustomTableState extends State<CustomTable> {
 
   @override
   Widget build(BuildContext context) {
+    this.initializeData();
+    
     return Table(
       border: TableBorder(
         horizontalInside: BorderSide(

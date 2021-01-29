@@ -25,22 +25,13 @@ class PatientViewer extends StatefulWidget {
 }
 
 class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
-  bool _isViewData;
-  bool _displayActionBar;
-
-  @override
-  void initState() {
-    this._isViewData = false;
-    this._displayActionBar = true;
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
+          tooltip: 'Voltar',
           icon: Icon(
             Icons.arrow_back_sharp, 
             color: primaryColorDashboardBar
@@ -49,6 +40,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
         ),
         actions: [
           IconButton(
+            tooltip: 'Classificador de parkinson',
             icon: Icon(
                 Icons.video_call, 
                 color: primaryColorDashboardBar
@@ -56,6 +48,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
             onPressed: () => print('camera'),
           ),
           IconButton(
+            tooltip: 'Editar',
             icon: Icon(
                 Icons.edit, 
                 color: primaryColorDashboardBar
@@ -63,6 +56,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
             onPressed: () => this.widget.callEdition.call(),
           ),
           IconButton(
+            tooltip: 'Excluir',
             icon: Icon(
                 Icons.delete, 
                 color: primaryColorDashboardBar
@@ -146,10 +140,8 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
           future: PatientClassificationService.instance.getAll(this.widget.patient.id),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              this._displayActionBar = snapshot.data.length > 0;
               return PatientEvolution(
                 data: snapshot.data,
-                isViewData: this._isViewData,
                 spacingBetweenFields: this.widget.spacingBetweenFields,
               );
             } else {
@@ -158,29 +150,6 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
               );
             }
           },
-        ),
-        footer: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: this._displayActionBar ? 
-          [
-            Switch(
-              value: this._isViewData,
-              onChanged: (status) {
-                this.setState(() {
-                  this._isViewData = status;
-                });
-              },
-              activeTrackColor: Colors.indigo[800],
-              activeColor: primaryColor,
-            ),
-            Text(
-              'Visualizar dados',
-              style: TextStyle(
-                color: primaryColor,
-                fontSize: 15,
-              ),
-            )
-          ] : [],
         ),
       ),
     );

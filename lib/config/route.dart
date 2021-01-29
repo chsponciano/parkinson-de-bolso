@@ -10,6 +10,7 @@ import 'package:parkinson_de_bolso/modules/auth/onboarding/onboarding.dart';
 import 'package:parkinson_de_bolso/modules/auth/sign_in/sign_in.dart';
 import 'package:parkinson_de_bolso/modules/auth/sign_up/sign_up.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/dashboard_module.dart';
+import 'package:parkinson_de_bolso/util/shared_preferences_util.dart';
 
 class _Route {
   final String route;
@@ -19,7 +20,7 @@ class _Route {
   _Route({@required this.route, @required this.handler, @required this.logged});
 }
 
-class RouteHandler {
+class RouteHandler with SharedPreferencesUtil{
   RouteHandler._privateConstructor();
   static final RouteHandler instance = RouteHandler._privateConstructor();
 
@@ -29,6 +30,14 @@ class RouteHandler {
 
   void define(String route, Widget handler, bool logged) {
     routeMap.putIfAbsent(route, () => _Route(route: route, handler: handler, logged: logged));
+  }
+
+  void exit(context) {
+    this.removePrefs('user_email');
+    this.removePrefs('user_password');
+    RouteHandler.loggedInUser = null;
+    RouteHandler.token = null;
+    Navigator.pushNamed(context, SignIn.routeName);
   }
 
   RouteFactory exchange() {

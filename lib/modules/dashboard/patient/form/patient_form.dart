@@ -103,6 +103,7 @@ class _PatientFormState extends State<PatientForm> with SnackbarUtil, DateTimeUt
         elevation: 0,
         title: (this.widget.patient == null) ? Text('Adicionar Paciente') : Text('Editar Paciente'),
         leading: IconButton(
+          tooltip: 'Voltar',
           icon: Icon(
             Icons.arrow_back_sharp, 
             color: primaryColorDashboardBar
@@ -111,6 +112,7 @@ class _PatientFormState extends State<PatientForm> with SnackbarUtil, DateTimeUt
         ),
         actions: [
           IconButton(
+            tooltip: 'Salvar',
             icon: Icon(
               Icons.save, color: 
               primaryColorDashboardBar

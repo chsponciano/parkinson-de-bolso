@@ -109,6 +109,7 @@ class _PatientModuleState extends State<PatientModule> {
     return Scaffold(
       body: this.getCurrentWidget(),
       floatingActionButton: this.isNotDisplayAddButton() ? null : FloatingActionButton(
+        tooltip: 'Adicionar',
         onPressed: () => this.setState(() => this._isAdd = true),
         child: Icon(
           Icons.add, 
