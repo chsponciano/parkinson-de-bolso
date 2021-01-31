@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:parkinson_de_bolso/config/route.dart';
 import 'package:parkinson_de_bolso/constant/http_constant.dart';
 import 'package:parkinson_de_bolso/model/user_model.dart';
 
@@ -45,5 +46,18 @@ class UserService {
       }
     }
     return false;
+  }
+  
+  Future<bool> delete(String id) async {
+    final http.Response response = await http.delete(UserService.apiUserHost + '/$id', headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'x-access-token' : RouteHandler.token
+    });
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body)['response'];
+    } else {
+      throw Exception('Failed to delete user');
+    }
   }
 }

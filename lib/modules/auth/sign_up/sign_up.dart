@@ -79,7 +79,7 @@ class _SignUpState extends State<SignUp> with ValidationFieldUtil, SharedPrefere
                 fieldName: 'Nome',
                 hintText: 'Digite seu nome',
                 prefixIcon: Icons.person,
-                inputFormatters: [new WhitelistingTextInputFormatter(RegExp("[a-zA-ZÄäÖöÜü]"))],
+                inputFormatters: [new LengthLimitingTextInputFormatter(50)],
                 onSaved: (name) => this._user.name = name,
                 type: TextInputType.name,
                 transparent: true,

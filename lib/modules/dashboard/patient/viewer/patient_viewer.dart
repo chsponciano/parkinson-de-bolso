@@ -137,7 +137,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
           ),
         ), 
         bottom: FutureBuilder(
-          future: PatientClassificationService.instance.getAll(this.widget.patient.id),
+          future: PatientClassificationService.instance.getAll(this.widget.patient.publicid),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return PatientEvolution(

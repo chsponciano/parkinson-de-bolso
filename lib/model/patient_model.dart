@@ -22,8 +22,9 @@ class PatientModel implements SearchModel {
   String imageUrl;
   List<PatientClassificationModel> classifications;
   String userid;
+  String publicid;
 
-  PatientModel({this.id, this.initials, this.birthdate, this.diagnosis, this.weight, this.height, this.name, this.image, this.classifications, this.userid, this.imageUrl});
+  PatientModel({this.id, this.initials, this.birthdate, this.diagnosis, this.weight, this.height, this.name, this.image, this.classifications, this.userid, this.imageUrl, this.publicid});
 
   factory PatientModel.fromJson(Map<String, dynamic> json) {
     return PatientModel(
@@ -35,7 +36,8 @@ class PatientModel implements SearchModel {
       height: json['height'],
       initials: json['initials'],
       imageUrl: json['image'],
-      userid: json['userid']
+      userid: json['userid'],
+      publicid: json['publicid'],
     );
   }
   
@@ -43,13 +45,14 @@ class PatientModel implements SearchModel {
     return {
       if(!create)
         '_id': this.id,
+        'publicid': this.publicid,
       'name': this.name,
       'birthdate': DateFormat('yyyy-MM-dd').format(this.birthdate),
       'diagnosis': DateFormat('yyyy-MM-dd').format(this.diagnosis),
       'weight': this.weight,
       'height': this.height,
       'initials': StringUtil.getInitials(this.name),
-      'userid': RouteHandler.loggedInUser.id,
+      'userid': RouteHandler.loggedInUser.publicid,
       if (this.image != null)
         'image': {
           'data': base64Encode(this.image.readAsBytesSync()),

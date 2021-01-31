@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/config/route.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/service/setting_service.dart';
 import 'package:parkinson_de_bolso/util/string_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_background.dart';
 import 'package:parkinson_de_bolso/widget/custom_circle_avatar.dart';
@@ -20,15 +21,11 @@ class SettingModuleAction {
 }
 
 class _SettingModuleState extends State<SettingModule> {
-  List<SettingModuleAction> _actions;
+  bool _loading;
 
   @override
   void initState() {
-    this._actions = [
-      SettingModuleAction('Alterar Senha', () => print('alterar senha')),
-      SettingModuleAction('Limpar dados', () => print('alterar senha')),
-      SettingModuleAction('Excluir conta', () => print('alterar senha')),
-    ];
+    this._loading = false;
     super.initState();
   }
 
@@ -75,6 +72,7 @@ class _SettingModuleState extends State<SettingModule> {
         margin: 10.0,
         topColor: dashboardBarColor, 
         bottomColor: ternaryColor, 
+        loading: this._loading,
         top: Container(
           padding: EdgeInsets.all(15),
           child: Row(
@@ -118,7 +116,19 @@ class _SettingModuleState extends State<SettingModule> {
         bottom: Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: this._actions.map((item) => this._createButton(item)).toList(),
+            children: [
+              this._createButton(SettingModuleAction('Limpar dados', () {
+                this.setState(() => this._loading = true);
+                SettingService.instance.clearData()
+                .whenComplete(() => this._loading = false);
+              })),
+              this._createButton(SettingModuleAction('Excluir conta', () async {
+                this.setState(() => this._loading = true);
+                SettingService.instance.deleteAccount()
+                .then((_) => RouteHandler.instance.exit(context))
+                .whenComplete(() => this._loading = false);
+              }))
+            ],
           ),
         ),
         horizontalPadding: 10.0

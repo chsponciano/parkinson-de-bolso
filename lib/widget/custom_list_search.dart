@@ -56,18 +56,19 @@ class _CustomListSearchState extends State<CustomListSearch> {
         title: this._malleableWidget,
         backgroundColor: this.widget.barColor,
         actions: [
-          IconButton(
-            tooltip: this._malleableTooltip,
-            icon: this._malleableIcon, 
-            onPressed: () {
-              if (this._malleableIcon.icon == Icons.search) {
-                this._buildSearchField();
-              } else {
-                this._buildTextTitle();
-              }
-              this.widget.searchStatusController.call();
-            },
-          )          
+          if (this._cachedData.isNotEmpty)
+            IconButton(
+              tooltip: this._malleableTooltip,
+              icon: this._malleableIcon, 
+              onPressed: () {
+                if (this._malleableIcon.icon == Icons.search) {
+                  this._buildSearchField();
+                } else {
+                  this._buildTextTitle();
+                }
+                this.widget.searchStatusController.call();
+              },
+            )          
         ]..addAll((this.widget.actions == null) ? [] : this.widget.actions),
       ),
       body: CustomBackground(
@@ -80,6 +81,7 @@ class _CustomListSearchState extends State<CustomListSearch> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 this._data = snapshot.data;
+                this._data.sort((a, b) => a.searchText().toLowerCase().compareTo(b.searchText().toLowerCase()));
                 
                 if (this._data.length == 0) 
                   return CustomNoData(

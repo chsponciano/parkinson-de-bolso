@@ -82,6 +82,7 @@ class _PatientFormState extends State<PatientForm> with SnackbarUtil, DateTimeUt
           this._reset();
           message = 'Paciente ' + value.name.split(' ')[0] + ' adicionado com sucesso!';
         } else {
+          this._patient = value;
           message = 'Paciente ' + this._patient.name.split(' ')[0] + ' alterado com sucesso!';
         }
 

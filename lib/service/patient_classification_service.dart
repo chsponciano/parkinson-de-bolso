@@ -24,4 +24,18 @@ class PatientClassificationService {
       throw Exception('Failed to load patient classification');
     }
   }
+
+  
+  Future<bool> delete(String id) async {
+    final http.Response response = await http.delete(PatientClassificationService.apiPatienClassificationtHost + '/$id', headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'x-access-token' : RouteHandler.token
+    });
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body)['response'];
+    } else {
+      throw Exception('Failed to delete patient classification');
+    }
+  }
 }

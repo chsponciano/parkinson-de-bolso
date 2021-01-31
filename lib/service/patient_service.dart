@@ -10,7 +10,7 @@ class PatientService {
   static final String apiPatientHost = '$api_host/patient';
 
   Future<List<PatientModel>> getAll() async {
-    final http.Response response = await http.get(PatientService.apiPatientHost + '/userid/' + RouteHandler.loggedInUser.id, 
+    final http.Response response = await http.get(PatientService.apiPatientHost + '/userid/' + RouteHandler.loggedInUser.publicid, 
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'x-access-token' : RouteHandler.token
