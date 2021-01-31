@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:parkinson_de_bolso/config/route.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/model/user_model.dart';
@@ -8,10 +9,12 @@ import 'package:parkinson_de_bolso/modules/auth/sign_up/sign_up.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/dashboard_module.dart';
 import 'package:parkinson_de_bolso/service/user_service.dart';
 import 'package:parkinson_de_bolso/util/shared_preferences_util.dart';
+import 'package:parkinson_de_bolso/util/validation_field_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_anchor_text.dart';
 import 'package:parkinson_de_bolso/widget/custom_checkbox.dart';
+import 'package:parkinson_de_bolso/widget/custom_error_box.dart';
 import 'package:parkinson_de_bolso/widget/custom_raised_button.dart';
-import 'package:parkinson_de_bolso/widget/custom_text_field.dart';
+import 'package:parkinson_de_bolso/widget/custom_text_form_field.dart';
 
 class SignIn extends StatefulWidget {
   static const String routeName = '/signInRoute';
@@ -20,16 +23,24 @@ class SignIn extends StatefulWidget {
   _SignInState createState() => _SignInState();
 }
 
-class _SignInState extends State<SignIn> with SharedPreferencesUtil{
+class _SignInState extends State<SignIn> with SharedPreferencesUtil, ValidationFieldUtil {
+  GlobalKey<FormState> _formKey;
   TextEditingController _email;
   TextEditingController _password;
+  EdgeInsets _padding;
+  EdgeInsets _internalPadding;
+  var _invalidPassword;
   var _remember;
   var _loading;
 
   @override
-  void initState() {
+  void initState() { 
+    this._formKey = GlobalKey<FormState>();
     this._email = TextEditingController();
     this._password = TextEditingController();
+    this._padding = EdgeInsets.symmetric(vertical: 20, horizontal: 0);
+    this._internalPadding = EdgeInsets.all(20);
+    this._invalidPassword = false;
     this._remember = false;
     this._loading = false;
     super.initState();
@@ -40,22 +51,46 @@ class _SignInState extends State<SignIn> with SharedPreferencesUtil{
     String email = await this.getPrefs('user_email');
     String password = await this.getPrefs('user_password');
     if (email != null && email.isNotEmpty && password != null && password.isNotEmpty) {
-      this.authenticate(email, password);
+      this.authenticate(email, password, true);
     }
   }
 
-  void authenticate(String email, String password) {
-    this.setState(() => this._loading = true);
-    UserService.instance.authenticate(email, password).then((Map value) {
-      RouteHandler.loggedInUser = UserModel.fromJson(value['user']);
-      RouteHandler.token = value['token'];
-      if (this._remember) {
-        this.addPrefs('user_email', email);
-        this.addPrefs('user_password', password);
+  String validateEmailField(String email) {
+    String response;
+    if (email.isNotEmpty) {
+      if (!this.validateEmailValue(email)) {
+        response = 'E-mail inválido';
       }
-      this.setState(() => this._loading = false);
-      Navigator.pushNamed(context, DashboardModule.routeName);
-    });
+    } else {
+        response = 'Campo obrigatório';
+    }
+    return response;
+  }
+
+
+  void authenticate(String email, String password, bool inCache) {
+    if (inCache || this._formKey.currentState.validate()) {
+      this.setState(() {
+        this._loading = true;
+        this._invalidPassword = false;
+      });
+
+      UserService.instance.authenticate(email, password).then((Map value) {
+        RouteHandler.loggedInUser = UserModel.fromJson(value['user']);
+        RouteHandler.token = value['token'];
+        if (this._remember) {
+          this.addPrefs('user_email', email);
+          this.addPrefs('user_password', password);
+        }
+        Navigator.pushNamed(context, DashboardModule.routeName);
+      }).catchError((_) {
+        this.setState(() {
+          this._invalidPassword = true;
+        });
+      }).whenComplete(() => this.setState(() {
+        this._loading = false;
+      }));
+    }
   }
 
   @override
@@ -64,28 +99,38 @@ class _SignInState extends State<SignIn> with SharedPreferencesUtil{
       widgetTitle: titleSignIn,
       loading: this._loading,
       children: [
-        CustomTextField(
-          controller: this._email,
-          borderRadius: 10.0,
-          color: ternaryColor,
-          height: 60.0,
-          title: 'E-mail',
-          hint: 'Digite seu e-mail',
-          icon: Icons.email,
-          padding: EdgeInsets.only(top: 14.0),
-          type: TextInputType.emailAddress,
-          distanceNextLine: 30.0,
-        ),
-        CustomTextField(
-          controller: this._password,
-          borderRadius: 10.0,
-          color: ternaryColor,
-          height: 60.0,
-          title: 'Senha',
-          hint: 'Digite sua senha',
-          icon: Icons.lock,
-          padding: EdgeInsets.only(top: 14.0),
-          distanceNextLine: 10.0,
+        Form(
+          key: this._formKey,
+          child: Column(
+            children: [
+              if (this._invalidPassword)
+                CustomErrorBox(message: 'E-mail e/ou senha incorreta'),
+              CustomTextFormField(
+                controller: this._email,
+                fieldName: 'Email',
+                hintText: 'Digite seu e-mail',
+                prefixIcon: Icons.email,
+                inputFormatters: [new LengthLimitingTextInputFormatter(30)],
+                type: TextInputType.emailAddress,
+                transparent: true,
+                padding: this._padding,
+                internalPadding: this._internalPadding,
+                validation: validateEmailField,
+              ),
+              CustomTextFormField(
+                controller: this._password,
+                fieldName: 'Senha',
+                hintText: 'Digite sua senha',
+                prefixIcon: Icons.lock,
+                inputFormatters: [new LengthLimitingTextInputFormatter(30)],
+                type: TextInputType.visiblePassword,
+                transparent: true,
+                isPassword: true,
+                padding: this._padding,
+                internalPadding: this._internalPadding,
+              ),
+            ],
+          )
         ),
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -106,14 +151,14 @@ class _SignInState extends State<SignIn> with SharedPreferencesUtil{
             )
           ],
         ),
-        SizedBox(height: 15),
+        SizedBox(height: 5),
         CustomRaisedButton(
           label: 'Acessar',
           width: double.infinity,
           background: ternaryColor,
           padding: EdgeInsets.symmetric(vertical: 25.0),
           paddingInternal: EdgeInsets.all(15.0),
-          onPressed: () => this.authenticate(this._email.text, this._password.text),
+          onPressed: () => this.authenticate(this._email.text, this._password.text, false),
           textColor: primaryColor,
           elevation: 5.0,
           style: TextStyle(

@@ -50,6 +50,9 @@ class _SettingModuleState extends State<SettingModule> {
 
   @override
   Widget build(BuildContext context) {
+    if (RouteHandler.loggedInUser == null)
+      return Text('User not logged in');
+      
     return Scaffold(
       appBar: AppBar(
         elevation: 0,

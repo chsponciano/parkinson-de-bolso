@@ -22,6 +22,8 @@ const ternaryColorDashboardBar = primaryColor;
 const floatingButtonDashboard = primaryColor;
 const formBackgroundColor = Color(0xFFEEEEEE);
 const formForegroundColor = Color(0xFF757575);
+const alternativeColorTransparency = Color(0xFFFFFFFF);
+const errorBoxColor = Color(0xFFB71C1C);
 
 // gradient
 const defaultGradient = LinearGradient(

@@ -85,6 +85,7 @@ class _AuthModuleState extends State<AuthModule> {
       backgroundColor: Colors.transparent,
       mini: true,
       elevation: 0,
+      tooltip: 'Voltar',
     );
   }
 }

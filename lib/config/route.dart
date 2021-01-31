@@ -26,6 +26,7 @@ class RouteHandler with SharedPreferencesUtil{
 
   static UserModel loggedInUser;
   static String token;
+  static List arguments = <String>[];
   final Map routeMap = HashMap<String, _Route>();
 
   void define(String route, Widget handler, bool logged) {
