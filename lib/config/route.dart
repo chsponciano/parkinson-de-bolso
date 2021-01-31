@@ -11,6 +11,7 @@ import 'package:parkinson_de_bolso/modules/auth/sign_in/sign_in.dart';
 import 'package:parkinson_de_bolso/modules/auth/sign_up/sign_up.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/dashboard_module.dart';
 import 'package:parkinson_de_bolso/util/shared_preferences_util.dart';
+import 'package:parkinson_de_bolso/widget/custom_camera.dart';
 
 class _Route {
   final String route;
@@ -66,5 +67,6 @@ class RouteHandler with SharedPreferencesUtil{
     route.define(RedefinePassword.routeName, RedefinePassword(), false);
     route.define(VerificationCode.routeName, VerificationCode(), false);
     route.define(DashboardModule.routeName, DashboardModule(), true);
+    route.define(CustomCamera.routeName, CustomCamera(), true);
   }
 }

@@ -7,8 +7,10 @@ import 'package:parkinson_de_bolso/modules/auth/onboarding/onboarding.dart';
 import 'package:parkinson_de_bolso/modules/auth/sign_in/sign_in.dart';
 import 'package:parkinson_de_bolso/util/shared_preferences_util.dart';
 
-void main() => runApp(App());
-
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(App());
+}
 class App extends StatefulWidget {
   @override
   _AppState createState() => _AppState();  

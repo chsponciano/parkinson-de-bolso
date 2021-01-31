@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parkinson_de_bolso/config/camera_handler.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/model/patient_model.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/patient/viewer/patient_evolution.dart';
@@ -6,6 +7,7 @@ import 'package:parkinson_de_bolso/service/patient_classification_service.dart';
 import 'package:parkinson_de_bolso/service/patient_service.dart';
 import 'package:parkinson_de_bolso/util/datetime_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_background.dart';
+import 'package:parkinson_de_bolso/widget/custom_camera.dart';
 import 'package:parkinson_de_bolso/widget/custom_circle_avatar.dart';
 import 'package:parkinson_de_bolso/widget/custom_circular_progress.dart';
 import 'package:parkinson_de_bolso/widget/custom_value_title.dart';
@@ -25,6 +27,14 @@ class PatientViewer extends StatefulWidget {
 }
 
 class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
+  CameraHandler _cameraHandler;
+
+  @override
+  void initState() {
+    super.initState();
+    this._cameraHandler = CameraHandler.instance;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +55,10 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                 Icons.video_call, 
                 color: primaryColorDashboardBar
               ),
-            onPressed: () => print('camera'),
+            onPressed: () async {
+              await this._cameraHandler.load();
+              Navigator.pushNamed(context, CustomCamera.routeName);
+            },
           ),
           IconButton(
             tooltip: 'Editar',

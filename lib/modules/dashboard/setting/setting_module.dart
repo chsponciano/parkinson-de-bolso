@@ -122,7 +122,7 @@ class _SettingModuleState extends State<SettingModule> {
                 SettingService.instance.clearData()
                 .whenComplete(() => this._loading = false);
               })),
-              this._createButton(SettingModuleAction('Excluir conta', () async {
+              this._createButton(SettingModuleAction('Excluir conta', () {
                 this.setState(() => this._loading = true);
                 SettingService.instance.deleteAccount()
                 .then((_) => RouteHandler.instance.exit(context))
