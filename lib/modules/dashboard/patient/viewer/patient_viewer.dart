@@ -27,13 +27,6 @@ class PatientViewer extends StatefulWidget {
 }
 
 class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
-  CameraHandler _cameraHandler;
-
-  @override
-  void initState() {
-    super.initState();
-    this._cameraHandler = CameraHandler.instance;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +49,6 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                 color: primaryColorDashboardBar
               ),
             onPressed: () async {
-              await this._cameraHandler.load();
               Navigator.pushNamed(context, CustomCamera.routeName);
             },
           ),

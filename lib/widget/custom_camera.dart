@@ -3,11 +3,13 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:parkinson_de_bolso/config/camera_handler.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/widget/custom_round_buttom.dart';
 
 class CustomCamera extends StatefulWidget {
   static const String routeName = '/camera';
-  CustomCamera({ Key key }) : super(key: key);
+  final Color barColor;
+
+  CustomCamera({ Key key, this.barColor = Colors.black }) : super(key: key);
 
   @override
   _CustomCameraState createState() => _CustomCameraState();
@@ -17,17 +19,19 @@ class CustomCamera extends StatefulWidget {
 class _CustomCameraState extends State<CustomCamera> {
   CameraController _controller;
   Future<void> _initializeControllerFuture;  
+  File _image;
   
   @override
   void initState() {
     super.initState();
-    this._controller = CameraController(CameraHandler.instance.getCamera(), ResolutionPreset.medium);
+    this._controller = CameraController(CameraHandler.instance.camera, ResolutionPreset.max);
     this._initializeControllerFuture = this._controller.initialize();
   }
 
   @override
   void dispose() {
     this._controller.dispose();
+    this._image = null;
     super.dispose();
   }
 
@@ -35,8 +39,14 @@ class _CustomCameraState extends State<CustomCamera> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: primaryColor,
+        backgroundColor: this.widget.barColor,
         elevation: 0,
+        automaticallyImplyLeading: false,
+        toolbarHeight: 40,
+        leading: IconButton(
+          icon: Icon(Icons.close), 
+          onPressed: () => Navigator.pop(context)
+        ),
       ),
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
@@ -45,62 +55,8 @@ class _CustomCameraState extends State<CustomCamera> {
           child: Stack(
             alignment: Alignment.bottomCenter,
             children: <Widget>[
-              Container(
-                height: double.infinity,
-                width: double.infinity,
-                child: FutureBuilder(
-                  future: this._initializeControllerFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      return CameraPreview(this._controller);
-                    } else {
-                      return Center(child: CircularProgressIndicator());
-                    }
-                  },
-                )
-              ),
-              Container(
-                width: double.infinity,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Container(
-                          width: 60,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle
-                          ),
-                        ),
-                        Container(
-                          width: 50,
-                          height: 50,
-                          child: RaisedButton(
-                            highlightColor: Colors.red,
-                            color: Colors.white,
-                            hoverColor: Colors.red,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100),
-                                side: BorderSide(
-                                  color: Colors.black.withOpacity(0.5),
-                                  width: 4
-                                )
-                            ),
-                            onPressed: () {},
-                          )
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              )
+              this._buildMainScene(),
+              this._buildBar()
             ],
           ),
         ),
@@ -108,46 +64,78 @@ class _CustomCameraState extends State<CustomCamera> {
     );
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(title: Text('Take a picture')),
-  //     body: FutureBuilder(
-  //       future: this._initializeControllerFuture,
-  //       builder: (context, snapshot) {
-  //         if (snapshot.connectionState == ConnectionState.done) {
-  //           return CameraPreview(this._controller);
-  //         } else {
-  //           return Center(child: CircularProgressIndicator());
-  //         }
-  //       },
-  //     ),
-  //     floatingActionButton: FloatingActionButton(
-  //       child: Icon(Icons.camera_alt),
-  //       onPressed: () async {
-  //         try {
-  //           await this._initializeControllerFuture;
-  //           XFile file = await this._controller.takePicture();
-  //           Navigator.push(context, MaterialPageRoute(builder: (context) => DisplayPicture(imagePath: file.path)));
-  //         } catch(e) {
-  //           print(e);
-  //         }
-  //       },
-  //     ),
-  //   );
-  // }
-}
-
-class DisplayPicture  extends StatelessWidget {
-  final String imagePath;
-  
-  DisplayPicture({Key key, this.imagePath}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Display the picture')),
-      body: Image.file(File(this.imagePath)),
+  Widget _buildMainScene() {
+    return Container(
+      height: double.infinity,
+      width: double.infinity,
+      decoration: (this._image != null) ? BoxDecoration(
+        image: DecorationImage(
+          image: FileImage(this._image),
+          fit: BoxFit.cover
+        )
+      ) : null,
+      child: (this._image != null) ? null : FutureBuilder(
+        future: this._initializeControllerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return CameraPreview(this._controller);
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      )
     );
+  }
+
+  Widget _buildBar() {
+    return Container(
+      width: double.infinity,
+      height: 80,
+      decoration: BoxDecoration(
+        color: this.widget.barColor.withOpacity(0.5),
+      ),
+      child: AnimatedCrossFade(
+        firstChild: Center(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: Icon(Icons.replay),
+                color: Colors.white,
+                iconSize: 50,
+                onPressed: () => this.setState(() => this._image = null),
+              ),
+              IconButton(
+                icon: Icon(Icons.done),
+                color: Colors.white,
+                iconSize: 50,
+                onPressed: () => Navigator.pop(context, this._image),
+              ),
+            ],
+          ),
+        ), 
+        secondChild: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CustomRoundButton(
+              width: 60, 
+              color: Colors.white, 
+              highlightColor: Colors.red, 
+              onPressed: () => this.takePicture()
+            ),
+          ],
+        ), 
+        crossFadeState: this._image != null ? CrossFadeState.showFirst : CrossFadeState.showSecond, 
+        duration: Duration(milliseconds: 300)
+      ),
+    );
+  }
+
+  void takePicture() async {
+    await this._initializeControllerFuture;
+    XFile file = await this._controller.takePicture();
+    this.setState(() => this._image = File(file.path));
   }
 }

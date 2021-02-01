@@ -1,4 +1,3 @@
-
 import 'package:camera/camera.dart';
 
 class CameraHandler {
@@ -13,7 +12,5 @@ class CameraHandler {
     }
   }
 
-  CameraDescription getCamera() {
-    return this._camera;
-  }
+  CameraDescription get camera => this._camera;
 }
