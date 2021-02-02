@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/config/camera_handler.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/model/patient_model.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/camera/dynamic_camera_module.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/patient/viewer/patient_evolution.dart';
 import 'package:parkinson_de_bolso/service/patient_classification_service.dart';
 import 'package:parkinson_de_bolso/service/patient_service.dart';
 import 'package:parkinson_de_bolso/util/datetime_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_background.dart';
-import 'package:parkinson_de_bolso/widget/custom_camera.dart';
 import 'package:parkinson_de_bolso/widget/custom_circle_avatar.dart';
 import 'package:parkinson_de_bolso/widget/custom_circular_progress.dart';
 import 'package:parkinson_de_bolso/widget/custom_value_title.dart';
@@ -49,7 +48,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                 color: primaryColorDashboardBar
               ),
             onPressed: () async {
-              Navigator.pushNamed(context, CustomCamera.routeName);
+              await DynamicCameraModule.processImageSequence(context);
             },
           ),
           IconButton(

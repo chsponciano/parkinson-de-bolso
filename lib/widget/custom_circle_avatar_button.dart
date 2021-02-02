@@ -1,8 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/config/camera_handler.dart';
 import 'package:parkinson_de_bolso/constant/http_constant.dart';
-import 'package:parkinson_de_bolso/widget/custom_camera.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/camera/dynamic_camera_module.dart';
 
 class CustomCircleAvatarButton extends StatefulWidget {
   final Color background;
@@ -31,7 +30,7 @@ class _CustomCircleAvatarButtonState extends State<CustomCircleAvatarButton> {
   }
 
   Future getImage() async {
-    final image = await Navigator.pushNamed(context, CustomCamera.routeName);
+    final image = await DynamicCameraModule.takePicture(context);
     if (image != null) 
       this.setState(() => this._image = image);
       Function.apply(this.widget.setImage, [image]);
