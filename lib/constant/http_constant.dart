@@ -1,2 +1,2 @@
-const api_host = 'http://035eb119d710.ngrok.io/api';
+const api_host = 'http://f7041ef9c235.ngrok.io/api';
 const image_host = '$api_host/image/';
