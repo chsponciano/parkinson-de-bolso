@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/model/patient_model.dart';
-import 'package:parkinson_de_bolso/model/search_model.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/patient/form/patient_form.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/patient/viewer/patient_viewer.dart';
 import 'package:parkinson_de_bolso/service/patient_service.dart';
@@ -35,7 +34,7 @@ class _PatientModuleState extends State<PatientModule> {
 
   void changeScrollStatus(bool status) => this.setState(() => this._scrollingPage = status);
 
-  void selectPatient(SearchModel searchModel) => this.setState(() => this._selectedPatient = searchModel);
+  void selectPatient(SearchData searchModel) => this.setState(() => this._selectedPatient = searchModel);
 
   void resetWidgetStatus() => this.setState(() {
     this._isAdd = false;

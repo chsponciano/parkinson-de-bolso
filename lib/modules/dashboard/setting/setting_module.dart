@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/config/route.dart';
+import 'package:parkinson_de_bolso/config/route_config.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/service/setting_service.dart';
 import 'package:parkinson_de_bolso/util/string_util.dart';
@@ -20,7 +20,7 @@ class SettingModuleAction {
   SettingModuleAction(this.label, this.action);
 }
 
-class _SettingModuleState extends State<SettingModule> {
+class _SettingModuleState extends State<SettingModule> with StringUtil {
   bool _loading;
 
   @override
@@ -85,7 +85,7 @@ class _SettingModuleState extends State<SettingModule> {
                   radius: 20, 
                   background: ternaryColor, 
                   foreground: primaryColor,
-                  initials: StringUtil.getInitials(RouteHandler.loggedInUser.name),
+                  initials: this.getInitials(RouteHandler.loggedInUser.name),
                 ),
               ),
               Column(

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/model/serelization_data_model.dart';
+import 'package:parkinson_de_bolso/util/serelization_data_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_table_row.dart';
 
 class CustomTable extends StatefulWidget {
   final Color borderColor;
-  final List<SerelizationDataModel> data;
+  final List<SerelizationDataUtil> data;
   final List<String> titles;
   
   CustomTable({@required this.borderColor, @required this.data, @required this.titles});

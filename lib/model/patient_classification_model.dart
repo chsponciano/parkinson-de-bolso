@@ -1,11 +1,11 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-import 'package:parkinson_de_bolso/model/serelization_data_model.dart';
 import 'package:parkinson_de_bolso/util/datetime_util.dart';
+import 'package:parkinson_de_bolso/util/serelization_data_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_table_row.dart';
 
-class PatientClassificationModel extends SerelizationDataModel with DateTimeUtil{
+class PatientClassificationModel extends SerelizationDataUtil with DateTimeUtil {
   String id;
   DateTime date;
   double percentage;

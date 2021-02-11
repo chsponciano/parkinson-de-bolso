@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:parkinson_de_bolso/config/route.dart';
+import 'package:parkinson_de_bolso/config/route_config.dart';
 import 'package:parkinson_de_bolso/constant/http_constant.dart';
 import 'package:parkinson_de_bolso/model/user_model.dart';
 

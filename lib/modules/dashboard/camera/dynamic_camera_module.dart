@@ -3,11 +3,16 @@ import 'package:camera/camera.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:parkinson_de_bolso/config/camera_handler.dart';
+import 'package:parkinson_de_bolso/config/camera_config.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/model/active_classification_model.dart';
+import 'package:parkinson_de_bolso/model/execution_classification_model.dart';
+import 'package:parkinson_de_bolso/model/patient_classification_model.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/camera/dynamic_camera_linear_bar.dart';
 import 'package:parkinson_de_bolso/service/predict_service.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/camera/dynamic_camera_button.dart';
+import 'package:parkinson_de_bolso/widget/custom_alert_box.dart';
+import 'package:parkinson_de_bolso/widget/custom_back_button.dart';
 import 'package:parkinson_de_bolso/widget/custom_circular_progress.dart';
 
 enum DynamicCameraType {
@@ -40,27 +45,24 @@ class DynamicCameraModule extends StatefulWidget {
 }
 
 class _DynamicCameraModuleState extends State<DynamicCameraModule> {
+  // control status of the dynamic camera
   CountDownController _countDownController;
+  bool _stop, _loading, _runnig, _alert;
   Future _initializeControllerFuture;  
   PredictService _predictService;
   CameraController _controller;
-  DynamicCameraType _type;
-  
-  // Camera Button
-  String _tooltip;
-  Color _backgroundColor;
-  IconData _icon;
-  VoidCallback _onPressed;
-  VoidCallback _onStart;
-  VoidCallback _onComplete;
-  String _companionLabel;
-
-  // Liner bar
-  double _porcentage = 0.0;
-
+  DynamicCameraType _type;  
   File _image;
-  bool _stop, _loading, _runnig;
-  int _count = 0;
+
+  // dynamic camera button states
+  VoidCallback _cameraButtonOnPressed, _cameraButtonOnStart, _cameraButtonOnComplete;
+  String _cameraButtonTooltip, _cameraButtonLabel;
+  Color _cameraButtonBackground;
+  IconData _cameraButtonIcon;
+
+  // dynamic linear progression state
+  double _linearBarValue;
+
 
   @override
   void initState() {
@@ -69,9 +71,11 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> {
     this._countDownController = CountDownController();
     this._predictService = PredictService.instance;
     this._type = this.widget.type;
-    this._stop = false;
+    this._stop = true;
     this._loading = false;
     this._runnig = false;
+    this._alert = false;
+    this._linearBarValue = 0.0;
 
     super.initState();
     this._loadButtonConfiguration();
@@ -119,23 +123,52 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> {
             },
           ),
         ),
-        this._buildBackButton(),
+
+        CustomBackButton(
+          backgroundColor: primaryColor,
+          iconColor: ternaryColor,
+          paddingValue: 20,
+          onPressed: () => (this._type != null) ? Navigator.pop(context) : this._reset(),
+          visible: !this._alert,
+        ),
 
         DynamicCameraButton(
           countDownController: this._countDownController, 
-          tooltip: this._tooltip,
-          backgroundColor: this._backgroundColor,
-          icon: this._icon,
-          onPressed: this._onPressed,
-          companionLabel: this._companionLabel,
-          onStart: this._onStart,
-          onComplete: this._onComplete,
+          tooltip: this._cameraButtonTooltip,
+          backgroundColor: this._cameraButtonBackground,
+          icon: this._cameraButtonIcon,
+          onPressed: this._cameraButtonOnPressed,
+          companionLabel: this._cameraButtonLabel,
+          onStart: this._cameraButtonOnStart,
+          onComplete: this._cameraButtonOnComplete,
           isLoading: this._loading,
+          visible: !this._alert,
         ),
 
         if (this._type == DynamicCameraType.VIDEO)
           DynamicCameraLinearBar(
-            porcentage: this._porcentage,
+            porcentage: this._linearBarValue,
+            visible: !this._stop,
+          ),
+          CustomAlertBox(
+            title: 'Resultado',
+            content: 'Taxa de Parkinson',
+            valueContent: this._linearBarValue.toString(),
+            visible: this._alert,
+            buttons: [
+              CustomButtonAlertBox(
+                Icons.thumb_up, 
+                'Marcar como acerto', 
+                () => this.setState(() => this._alert = false), 
+                primaryColor
+              ),
+              CustomButtonAlertBox(
+                Icons.thumb_down, 
+                'Marcar como erro', 
+                () => this.setState(() => this._alert = false),
+                Colors.red[900]
+              )
+            ],
           ),
       ],
     );
@@ -157,47 +190,32 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> {
   void _loadButtonConfiguration() {  
     switch (this._type) {
       case DynamicCameraType.IMAGE:
-        this._icon = Icons.camera_alt;
-        this._onPressed = () => this.takePicture();
-        this._tooltip = 'Capturar';
+        this._cameraButtonIcon = Icons.camera_alt;
+        this._cameraButtonOnPressed = () => this.takePicture();
+        this._cameraButtonTooltip = 'Capturar';
         break;
       case DynamicCameraType.VIDEO:
-        this._icon = Icons.videocam;
-        this._onPressed = () => this.startShooting();
-        this._tooltip = 'Filmar';
-        this._onStart = () {
-          this.setState(() => this._stop = false);
+        this._cameraButtonIcon = Icons.videocam;
+        this._cameraButtonOnPressed = () => this.startShooting();
+        this._cameraButtonTooltip = 'Filmar';
+        this._cameraButtonOnStart = () {
+          this.setState(() {
+            this._stop = false;
+            this._linearBarValue = 50.0;
+          });
           this._activateStopButton();
         };
-        this._onComplete = () {
+        this._cameraButtonOnComplete = () {
           this.setState(() => this._stop = true);
           this._reset();
         };
         break;
       default:
-        this._icon = Icons.done;
-        this._onPressed = () => Navigator.pop(context, this._image);
-        this._tooltip = 'Confirmar';
+        this._cameraButtonIcon = Icons.done;
+        this._cameraButtonOnPressed = () => Navigator.pop(context, this._image);
+        this._cameraButtonTooltip = 'Confirmar';
         break;
     }
-  }
-
-  Widget _buildBackButton() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: CircleAvatar(
-        radius: 20,
-        backgroundColor: primaryColor,
-        child: IconButton(
-          tooltip: 'Voltar',
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
-          onPressed: () => (this._type != null) ? Navigator.pop(context) : this._reset(),
-        ),
-      ),
-    );
   }
 
   void _reset() {
@@ -205,9 +223,8 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> {
       this._runnig = false;
       this._type = this.widget.type;
       this._image = null;
-      this._count = 0;
-      this._backgroundColor = null;
-      this._companionLabel = null;
+      this._cameraButtonBackground = null;
+      this._cameraButtonLabel = null;
     });
     this._countDownController.pause();
     this._loadButtonConfiguration();
@@ -231,33 +248,50 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> {
           this._loading = true;
         });
 
-        Map init = await this._predictService.initialize();
-        print(init);
+        final ActiveClassificationModel _activePatient = await this._predictService.initialize();
 
-        this.setState(() => this._loading = false);
+        if (_activePatient != null) {
+          this.setState(() => this._loading = false);
+          await this._countdown(3);
+          await this._initializeControllerFuture;
+          this._countDownController.start();   
+          
+          int _imageCounter = 0;
+          XFile _capture;
+          
+          while(!this._stop) {
+            _capture = await this._controller.takePicture();
+            this._predictService.evaluator(_imageCounter++, _capture).then((ExecutionClassificationModel execution) {
+              if (execution != null)
+                this.setState(() => this._linearBarValue = execution.percentage);
+            });
+            await Future.delayed(Duration(seconds: 1));
+          }
 
-        await this._countdown(3);
-        await this._initializeControllerFuture;
-        this._countDownController.start();      
-        
-        while(!this._stop) {
-          XFile file = await this._controller.takePicture();
-          this._predictService.evaluator(this._count, file).then((value) => _porcentage = double.parse(value['porcentage'].toString()));
-          this.setState(() => this._count++);
-          await Future.delayed(Duration(seconds: 1));
+          // final PatientClassificationModel _patientClassification = await this._predictService.conclude();
+
+          // if (_patientClassification != null) {
+          //   this.setState(() {
+          //     this._linearBarValue = _patientClassification.percentage;
+          //     this._alert = true;
+          //   });
+          // }
+
+          if (true) {
+            this.setState(() {
+              this._alert = true;
+            });
+          }
         }
-
-        Map data = await this._predictService.conclude();
-        print(data);
       }
     } catch (error)  {
-      print(error);
+      this._reset();
     }
   }
 
   Future _countdown(int timer) async {
     while(timer > 0) {
-      this.setState(() => this._companionLabel = timer.toString());
+      this.setState(() => this._cameraButtonLabel = timer.toString());
       timer--;
       await Future.delayed(Duration(seconds: 1));
     }
@@ -266,11 +300,11 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> {
   void _activateStopButton() {
     this.setState(() {
       this._stop = false;
-      this._companionLabel = null;
-      this._icon = Icons.pause;
-      this._backgroundColor = Colors.red;
-      this._onPressed = () => this._reset();
-      this._tooltip = 'Cancelar';
+      this._cameraButtonLabel = null;
+      this._cameraButtonIcon = Icons.pause;
+      this._cameraButtonBackground = Colors.red;
+      this._cameraButtonOnPressed = () => this._reset();
+      this._cameraButtonTooltip = 'Cancelar';
     });
   }  
 }

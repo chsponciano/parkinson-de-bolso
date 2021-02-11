@@ -3,14 +3,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:parkinson_de_bolso/config/route.dart';
+import 'package:parkinson_de_bolso/config/route_config.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/model/patient_classification_model.dart';
-import 'package:parkinson_de_bolso/model/search_model.dart';
 import 'package:parkinson_de_bolso/util/string_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_circle_avatar.dart';
+import 'package:parkinson_de_bolso/widget/custom_list_search.dart';
 
-class PatientModel implements SearchModel {
+class PatientModel with StringUtil implements SearchData {
   String id;
   String name;
   DateTime birthdate;
@@ -51,7 +51,7 @@ class PatientModel implements SearchModel {
       'diagnosis': DateFormat('yyyy-MM-dd').format(this.diagnosis),
       'weight': this.weight,
       'height': this.height,
-      'initials': StringUtil.getInitials(this.name),
+      'initials': this.getInitials(this.name),
       'userid': RouteHandler.loggedInUser.publicid,
       if (this.image != null)
         'image': {

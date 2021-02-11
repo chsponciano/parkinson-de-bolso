@@ -1,4 +1,4 @@
-import 'package:parkinson_de_bolso/config/route.dart';
+import 'package:parkinson_de_bolso/config/route_config.dart';
 import 'package:parkinson_de_bolso/model/patient_classification_model.dart';
 import 'package:parkinson_de_bolso/model/patient_model.dart';
 import 'package:parkinson_de_bolso/service/patient_classification_service.dart';

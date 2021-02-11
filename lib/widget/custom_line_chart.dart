@@ -1,15 +1,15 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
-import 'package:parkinson_de_bolso/model/serelization_data_model.dart';
 import 'package:parkinson_de_bolso/util/datetime_util.dart';
+import 'package:parkinson_de_bolso/util/serelization_data_util.dart';
 
 class CustomLineChart extends StatefulWidget {
   final List<FlSpot> spots;
 
   CustomLineChart({@required this.spots});
 
-  static List<FlSpot> toListSpot(List<SerelizationDataModel> item) {
+  static List<FlSpot> toListSpot(List<SerelizationDataUtil> item) {
     if (item == null)
       return null;
     return item.map((e) => e.createSpot()).toList();  

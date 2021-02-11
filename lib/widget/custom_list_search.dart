@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/constant/assest_path.dart';
-import 'package:parkinson_de_bolso/model/search_model.dart';
 import 'package:parkinson_de_bolso/widget/custom_background.dart';
 import 'package:parkinson_de_bolso/widget/custom_circular_progress.dart';
 import 'package:parkinson_de_bolso/widget/custom_no_data.dart';
 
+abstract class SearchData {
+  String searchText();
+  ListTile getListTile(Function onTap);
+}
 class CustomListSearch extends StatefulWidget {
   final String widgetName;
   final Color barColor;
@@ -24,9 +27,9 @@ class CustomListSearch extends StatefulWidget {
 }
 
 class _CustomListSearchState extends State<CustomListSearch> {
-  List<SearchModel> _data;
+  List<SearchData> _data;
   ScrollController _scrollController;
-  List<SearchModel> _cachedData;
+  List<SearchData> _cachedData;
   Widget _malleableWidget;
   Icon _malleableIcon;
   String _malleableTooltip;
@@ -34,8 +37,8 @@ class _CustomListSearchState extends State<CustomListSearch> {
 
   @override
   void initState() {
-    this._data = <SearchModel>[];
-    this._cachedData = <SearchModel>[];
+    this._data = <SearchData>[];
+    this._cachedData = <SearchData>[];
     this._buildTextTitle();
     this._scrollController = ScrollController();
     this._loaded = false;
