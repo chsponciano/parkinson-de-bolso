@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/constant/http_constant.dart';
 
 class CustomCircleAvatar extends StatelessWidget {
   final double radius;
@@ -22,7 +21,7 @@ class CustomCircleAvatar extends StatelessWidget {
   Widget _buildImage() {
     return CircleAvatar(
       radius: this.radius,
-      backgroundImage: NetworkImage(image_host + this.imagePath),
+      backgroundImage: NetworkImage(this.imagePath),
     );
   }
 

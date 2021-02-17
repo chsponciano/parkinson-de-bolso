@@ -7,7 +7,7 @@ import 'package:parkinson_de_bolso/config/camera_config.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/model/active_classification_model.dart';
 import 'package:parkinson_de_bolso/model/execution_classification_model.dart';
-import 'package:parkinson_de_bolso/model/patient_classification_model.dart';
+import 'package:parkinson_de_bolso/model/patient_model.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/camera/dynamic_camera_linear_bar.dart';
 import 'package:parkinson_de_bolso/service/predict_service.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/camera/dynamic_camera_button.dart';
@@ -23,8 +23,9 @@ enum DynamicCameraType {
 class DynamicCameraModule extends StatefulWidget {
   final Color barColor;
   final DynamicCameraType type;
+  final PatientModel patient;
 
-  DynamicCameraModule({ Key key, this.barColor = Colors.black, @required this.type }) : super(key: key);
+  DynamicCameraModule({ Key key, this.barColor = Colors.black, @required this.type, this.patient }) : super(key: key);
 
   @override
   _DynamicCameraModuleState createState() => _DynamicCameraModuleState();
@@ -33,13 +34,13 @@ class DynamicCameraModule extends StatefulWidget {
     return await DynamicCameraModule._call(context, DynamicCameraType.IMAGE);
   }
 
-  static Future<void> processImageSequence(BuildContext context) async {
-    await DynamicCameraModule._call(context, DynamicCameraType.VIDEO);
+  static Future<void> processImageSequence(BuildContext context, PatientModel patientModel) async {
+    await DynamicCameraModule._call(context, DynamicCameraType.VIDEO, patientModel: patientModel);
   }
 
-  static Future<dynamic> _call(BuildContext context, DynamicCameraType cameraType) async {
+  static Future<dynamic> _call(BuildContext context, DynamicCameraType cameraType, {PatientModel patientModel}) async {
     return await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return DynamicCameraModule(type: cameraType);
+      return DynamicCameraModule(type: cameraType, patient: patientModel);
     }));
   }
 }
@@ -62,7 +63,6 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> {
 
   // dynamic linear progression state
   double _linearBarValue;
-
 
   @override
   void initState() {
@@ -248,7 +248,7 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> {
           this._loading = true;
         });
 
-        final ActiveClassificationModel _activePatient = await this._predictService.initialize();
+        final ActiveClassificationModel _activePatient = await this._predictService.initialize(this.widget.patient.id);
 
         if (_activePatient != null) {
           this.setState(() => this._loading = false);
@@ -261,21 +261,22 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> {
           
           while(!this._stop) {
             _capture = await this._controller.takePicture();
-            this._predictService.evaluator(_imageCounter++, _capture).then((ExecutionClassificationModel execution) {
+            this._predictService.evaluator(this.widget.patient.id, _imageCounter++, _capture)
+            .then((ExecutionClassificationModel execution) {
               if (execution != null)
                 this.setState(() => this._linearBarValue = execution.percentage);
             });
             await Future.delayed(Duration(seconds: 1));
           }
 
-          // final PatientClassificationModel _patientClassification = await this._predictService.conclude();
+          final ExecutionClassificationModel _conclude = await this._predictService.conclude(this.widget.patient.id);
 
-          // if (_patientClassification != null) {
-          //   this.setState(() {
-          //     this._linearBarValue = _patientClassification.percentage;
-          //     this._alert = true;
-          //   });
-          // }
+          if (_conclude != null) {
+            this.setState(() {
+              this._linearBarValue = _conclude.percentage;
+              this._alert = true;
+            });
+          }
 
           if (true) {
             this.setState(() {

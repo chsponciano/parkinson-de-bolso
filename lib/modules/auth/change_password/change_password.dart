@@ -4,7 +4,7 @@ import 'package:parkinson_de_bolso/config/route_config.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/modules/auth/auth_module.dart';
 import 'package:parkinson_de_bolso/modules/auth/sign_in/sign_in.dart';
-import 'package:parkinson_de_bolso/service/password_reset_service.dart';
+import 'package:parkinson_de_bolso/service/aws_cognito_service.dart';
 import 'package:parkinson_de_bolso/widget/custom_error_box.dart';
 import 'package:parkinson_de_bolso/widget/custom_raised_button.dart';
 import 'package:parkinson_de_bolso/widget/custom_text_form_field.dart';
@@ -45,7 +45,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       loading: this._loading,
       children: [
         if (this._errorInserting)
-          CustomErrorBox(message: 'Ocorreu algum erro, favor tentar novamente!'),
+          CustomErrorBox(message: 'Código Inválido!'),
           SizedBox(height: 10),
         Text(
           'Digite sua nova senha!',
@@ -110,8 +110,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                 this._loading = true;
                 this._errorInserting = false;
               });
-              PasswordResetService.instance.effectuate(RouteHandler.arguments[0], this._password.text).then((value) {
-                if (value != null && value.id != null) {
+              AwsCognitoService.instance.changePassword(RouteHandler.arguments[0], RouteHandler.arguments[1], this._password.text).then((value) {
+                if (value) {
                   Navigator.pushNamed(context, SignIn.routeName);
                 } else {
                   this.setState(() => this._errorInserting = true);

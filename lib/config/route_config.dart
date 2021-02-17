@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:parkinson_de_bolso/model/user_model.dart';
@@ -25,7 +26,7 @@ class RouteHandler with SharedPreferencesUtil{
   static final RouteHandler instance = RouteHandler._privateConstructor();
 
   static UserModel loggedInUser;
-  static String token;
+  static CognitoUserSession session;
   static List arguments = <String>[];
   final Map routeMap = HashMap<String, _Route>();
 
@@ -37,7 +38,7 @@ class RouteHandler with SharedPreferencesUtil{
     this.removePrefs('user_email');
     this.removePrefs('user_password');
     RouteHandler.loggedInUser = null;
-    RouteHandler.token = null;
+    RouteHandler.session = null;
     Navigator.pushNamed(context, SignIn.routeName);
   }
 
@@ -45,11 +46,11 @@ class RouteHandler with SharedPreferencesUtil{
     return (settings) {
       _Route route = this.routeMap[settings.name];
       
-      if (route.logged && (RouteHandler.token == null || RouteHandler.loggedInUser == null)) {
+      if (route.logged && (RouteHandler.session == null || RouteHandler.loggedInUser == null)) {
         route = this.routeMap[SignIn.routeName];
       }
       
-      if (!route.logged && (RouteHandler.token != null && RouteHandler.loggedInUser != null)) {
+      if (!route.logged && (RouteHandler.session != null && RouteHandler.loggedInUser != null)) {
         route = this.routeMap[DashboardModule.routeName];
       }
       

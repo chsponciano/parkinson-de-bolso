@@ -4,4 +4,10 @@ mixin ValidationFieldUtil {
     RegExp regex = new RegExp(pattern);
     return regex.hasMatch(email);
   }
+
+  bool validatePasswordValue(String password) {
+    String  pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+    RegExp regExp = new RegExp(pattern);
+    return regExp.hasMatch(password);
+  }
 }

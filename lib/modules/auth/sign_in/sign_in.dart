@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:parkinson_de_bolso/config/route_config.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
-import 'package:parkinson_de_bolso/model/user_model.dart';
 import 'package:parkinson_de_bolso/modules/auth/auth_module.dart';
 import 'package:parkinson_de_bolso/modules/auth/change_password/redefine_password.dart';
 import 'package:parkinson_de_bolso/modules/auth/sign_up/sign_up.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/dashboard_module.dart';
-import 'package:parkinson_de_bolso/service/user_service.dart';
+import 'package:parkinson_de_bolso/service/aws_cognito_service.dart';
 import 'package:parkinson_de_bolso/util/shared_preferences_util.dart';
 import 'package:parkinson_de_bolso/util/validation_field_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_anchor_text.dart';
@@ -29,7 +27,8 @@ class _SignInState extends State<SignIn> with SharedPreferencesUtil, ValidationF
   TextEditingController _password;
   EdgeInsets _padding;
   EdgeInsets _internalPadding;
-  var _invalidPassword;
+  String _errorMessage;
+  var _errorAuthenticate;
   var _remember;
   var _loading;
 
@@ -40,7 +39,7 @@ class _SignInState extends State<SignIn> with SharedPreferencesUtil, ValidationF
     this._password = TextEditingController();
     this._padding = EdgeInsets.symmetric(vertical: 20, horizontal: 0);
     this._internalPadding = EdgeInsets.all(20);
-    this._invalidPassword = false;
+    this._errorAuthenticate = false;
     this._remember = false;
     this._loading = false;
     super.initState();
@@ -72,20 +71,20 @@ class _SignInState extends State<SignIn> with SharedPreferencesUtil, ValidationF
     if (inCache || this._formKey.currentState.validate()) {
       this.setState(() {
         this._loading = true;
-        this._invalidPassword = false;
+        this._errorAuthenticate = false;
       });
 
-      UserService.instance.authenticate(email, password).then((Map value) {
-        RouteHandler.loggedInUser = UserModel.fromJson(value['user']);
-        RouteHandler.token = value['token'];
+      AwsCognitoService.instance.signIn(email, password).then((_) {
         if (this._remember) {
           this.addPrefs('user_email', email);
           this.addPrefs('user_password', password);
         }
         Navigator.pushNamed(context, DashboardModule.routeName);
-      }).catchError((_) {
+      }).catchError((error) {
         this.setState(() {
-          this._invalidPassword = true;
+          this._errorAuthenticate = true;
+          if (error is String)
+            this._errorMessage = error;
         });
       }).whenComplete(() => this.setState(() {
         this._loading = false;
@@ -103,8 +102,8 @@ class _SignInState extends State<SignIn> with SharedPreferencesUtil, ValidationF
           key: this._formKey,
           child: Column(
             children: [
-              if (this._invalidPassword)
-                CustomErrorBox(message: 'E-mail e/ou senha incorreta'),
+              if (this._errorAuthenticate)
+                CustomErrorBox(message: (this._errorMessage != null) ? this._errorMessage : 'Ocorreu algum erro, favor tentar novamente!'),
               CustomTextFormField(
                 controller: this._email,
                 fieldName: 'Email',
@@ -115,7 +114,7 @@ class _SignInState extends State<SignIn> with SharedPreferencesUtil, ValidationF
                 transparent: true,
                 padding: this._padding,
                 internalPadding: this._internalPadding,
-                validation: validateEmailField,
+                // validation: validateEmailField,
               ),
               CustomTextFormField(
                 controller: this._password,

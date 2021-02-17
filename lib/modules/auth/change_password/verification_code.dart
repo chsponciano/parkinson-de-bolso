@@ -4,7 +4,6 @@ import 'package:parkinson_de_bolso/config/route_config.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/modules/auth/auth_module.dart';
 import 'package:parkinson_de_bolso/modules/auth/change_password/change_password.dart';
-import 'package:parkinson_de_bolso/service/password_reset_service.dart';
 import 'package:parkinson_de_bolso/widget/custom_error_box.dart';
 import 'package:parkinson_de_bolso/widget/custom_raised_button.dart';
 import 'package:parkinson_de_bolso/widget/custom_text_form_field.dart';
@@ -21,7 +20,6 @@ class _VerificationCodeState extends State<VerificationCode> {
   TextEditingController _code;
   EdgeInsets _padding;
   EdgeInsets _internalPadding;
-  bool _invalidCode;
   bool _errorInserting;
   bool _loading;
 
@@ -31,7 +29,6 @@ class _VerificationCodeState extends State<VerificationCode> {
     this._code = TextEditingController();
     this._padding = EdgeInsets.symmetric(vertical: 20, horizontal: 0);
     this._internalPadding = EdgeInsets.all(20);
-    this._invalidCode = false;
     this._errorInserting = false;
     this._loading = false;
     super.initState();
@@ -41,11 +38,6 @@ class _VerificationCodeState extends State<VerificationCode> {
     if (code.isEmpty) {
       return 'Campo obrigatório';
     }
-
-    if (this._invalidCode) {
-      return 'Código invalido';
-    }
-
     return null;
   }
 
@@ -83,10 +75,6 @@ class _VerificationCodeState extends State<VerificationCode> {
                 padding: this._padding,
                 internalPadding: this._internalPadding,
                 validation: validateCode,
-                onChanged: (code) async {
-                  bool right = true;
-                  this.setState(() => this._invalidCode = !right);
-                },
               ),
             ],
           ),
@@ -98,18 +86,9 @@ class _VerificationCodeState extends State<VerificationCode> {
           padding: EdgeInsets.symmetric(vertical: 25.0),
           paddingInternal: EdgeInsets.all(15.0),
           onPressed: () {
-            this.setState(() {
-              this._loading = true;
-              this._errorInserting = false;
-            });
             if (this._formKey.currentState.validate()) {
-              PasswordResetService.instance.validateCode(RouteHandler.arguments[0], this._code.text).then((value) {
-                if (value) {
-                  Navigator.pushNamed(context, ChangePassword.routeName);
-                } else {
-                  this.setState(() => this._errorInserting = true);
-                }
-              }).whenComplete(() => this.setState(() => this._loading = false));
+              RouteHandler.arguments.add(this._code.text);
+              Navigator.pushNamed(context, ChangePassword.routeName);
             }
           },
           textColor: primaryColor,
@@ -123,5 +102,4 @@ class _VerificationCodeState extends State<VerificationCode> {
       ],
     );
   }
-
 }

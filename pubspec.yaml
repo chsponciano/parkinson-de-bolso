@@ -22,6 +22,9 @@ dependencies:
   shared_preferences: ^0.5.12+4
   circular_countdown_timer: ^0.0.9
   flutter_animation_progress_bar: ^1.0.6
+  amazon_cognito_identity_dart_2: ^0.1.25+1
+  flutter_aws_s3_client: ^0.5.2
+  flutter_dotenv: ^3.1.0
   flutter_localizations:
     sdk: flutter
 
@@ -32,4 +35,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-   - assets/images/
+    - .env
+    - assets/images/

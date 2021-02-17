@@ -7,9 +7,11 @@ import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/modules/auth/onboarding/onboarding.dart';
 import 'package:parkinson_de_bolso/modules/auth/sign_in/sign_in.dart';
 import 'package:parkinson_de_bolso/util/shared_preferences_util.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await DotEnv.load(fileName: '.env');
   await CameraHandler.instance.load();
   runApp(App());
 }
@@ -32,7 +34,7 @@ class _AppState extends State<App> with SharedPreferencesUtil {
   void initState() {
     super.initState();
     RouteHandler.loggedInUser = null;
-    RouteHandler.token = null;
+    RouteHandler.session = null;
     RouteHandler.configureRoutes();
     SystemChrome.setEnabledSystemUIOverlays([]);
   }

@@ -1,24 +1,22 @@
 import 'dart:convert';
+import 'package:amazon_cognito_identity_dart_2/sig_v4.dart';
 import 'package:http/http.dart' as http;
 import 'package:parkinson_de_bolso/config/route_config.dart';
-import 'package:parkinson_de_bolso/constant/http_constant.dart';
 import 'package:parkinson_de_bolso/model/patient_model.dart';
+import 'package:parkinson_de_bolso/service/aws_cognito_service.dart';
 
 class PatientService {
   PatientService._privateConstructor();
   static final PatientService instance = PatientService._privateConstructor();
-  static final String apiPatientHost = '$api_host/patient';
+  final AwsCognitoService awsCognitoService = AwsCognitoService.instance;
+  static final String path = '/api/patient';
 
   Future<List<PatientModel>> getAll() async {
-    final http.Response response = await http.get(PatientService.apiPatientHost + '/userid/' + RouteHandler.loggedInUser.publicid, 
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-        'x-access-token' : RouteHandler.token
-      }
-    );
+    final SigV4Request signedRequest = this.awsCognitoService.getSigV4Request('GET', path);
+    final http.Response response = await http.get('${signedRequest.url}/userid/${RouteHandler.loggedInUser.id}', headers: signedRequest.headers);
 
     if (response.statusCode == 200) {
-      List<dynamic> data = jsonDecode(response.body)['response'];
+      List<dynamic> data = jsonDecode(response.body);
       return data.map((item) => PatientModel.fromJson(item)).toList();
     } else {
       throw Exception('Failed to load patients');
@@ -26,40 +24,32 @@ class PatientService {
   }
 
   Future<PatientModel> create(PatientModel patient) async {
-    final http.Response response = await http.post(PatientService.apiPatientHost, headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'x-access-token' : RouteHandler.token
-    }, body: jsonEncode(patient.toJson(true)));
+    final SigV4Request signedRequest = this.awsCognitoService.getSigV4Request('POST', path, body: patient.toJson(true));
+    final http.Response response = await http.post(signedRequest.url, headers: signedRequest.headers, body: signedRequest.body);
 
     if (response.statusCode == 200) {
-      return PatientModel.fromJson(jsonDecode(response.body)['response']);
+      return PatientModel.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to load patient');
     }
   }
 
   Future<PatientModel> update(PatientModel patient) async {
-    final http.Response response = await http.put(PatientService.apiPatientHost, headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'x-access-token' : RouteHandler.token
-    }, body: jsonEncode(patient.toJson(false)));
+    final SigV4Request signedRequest = this.awsCognitoService.getSigV4Request('PUT', path, body: patient.toJson(false));
+    final http.Response response = await http.put('${signedRequest.url}/${patient.id}', headers: signedRequest.headers, body: signedRequest.body);
 
     if (response.statusCode == 200) {
-      return PatientModel.fromJson(jsonDecode(response.body)['response']);
+      return PatientModel.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to update patient');
     }
   }
 
-  Future<bool> delete(String id) async {
-    final http.Response response = await http.delete(PatientService.apiPatientHost + '/$id', headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'x-access-token' : RouteHandler.token
-    });
+  Future<void> delete(String id) async {
+    final SigV4Request signedRequest = this.awsCognitoService.getSigV4Request('DELETE', path);
+    final http.Response response = await http.delete('${signedRequest.url}/$id', headers: signedRequest.headers);
 
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body)['response'];
-    } else {
+    if (response.statusCode != 200) {
       throw Exception('Failed to delete patient');
     }
   }

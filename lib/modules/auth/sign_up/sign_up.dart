@@ -4,7 +4,7 @@ import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/model/user_model.dart';
 import 'package:parkinson_de_bolso/modules/auth/auth_module.dart';
 import 'package:parkinson_de_bolso/modules/auth/sign_in/sign_in.dart';
-import 'package:parkinson_de_bolso/service/user_service.dart';
+import 'package:parkinson_de_bolso/service/aws_cognito_service.dart';
 import 'package:parkinson_de_bolso/util/shared_preferences_util.dart';
 import 'package:parkinson_de_bolso/util/validation_field_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_error_box.dart';
@@ -26,9 +26,9 @@ class _SignUpState extends State<SignUp> with ValidationFieldUtil, SharedPrefere
   UserModel _user;
   EdgeInsets _padding;
   EdgeInsets _internalPadding;
+  String _errorMessage;
   bool _errorInserting;
   bool _loading;
-  bool _isExistsEmail;
 
   @override
   void initState() { 
@@ -41,18 +41,25 @@ class _SignUpState extends State<SignUp> with ValidationFieldUtil, SharedPrefere
     this._internalPadding = EdgeInsets.all(20);
     this._errorInserting = false;
     this._loading = false;
-    this._isExistsEmail = false;
     super.initState();
+  }
+
+  String validatePasswordField(String password) {
+    String response;
+    if (password.isNotEmpty) {
+      if (!this.validatePasswordValue(password)) {
+        response = 'Senha muito fraca';
+      }
+    } else {
+        response = 'Campo obrigatório';
+    }
+    return response;
   }
 
   String validateEmailField(String email) {
     String response;
     if (email.isNotEmpty) {
-      if (this.validateEmailValue(email)) {
-        if (this._isExistsEmail) {
-          response = 'E-mail já cadastrado';
-        }
-      } else {
+      if (!this.validateEmailValue(email)) {
         response = 'E-mail inválido';
       }
     } else {
@@ -73,7 +80,7 @@ class _SignUpState extends State<SignUp> with ValidationFieldUtil, SharedPrefere
           child: Column(
             children: [
               if (this._errorInserting)
-                CustomErrorBox(message: 'Ocorreu algum erro, favor tentar novamente!'),
+                CustomErrorBox(message: (this._errorMessage != null) ? this._errorMessage : 'Ocorreu algum erro, favor tentar novamente!'),
               CustomTextFormField(
                 controller: this._name,
                 fieldName: 'Nome',
@@ -93,10 +100,6 @@ class _SignUpState extends State<SignUp> with ValidationFieldUtil, SharedPrefere
                 prefixIcon: Icons.email,
                 inputFormatters: [new LengthLimitingTextInputFormatter(30)],
                 onSaved: (email) => this._user.email = email,
-                onChanged: (email) async {
-                  bool exists = await UserService.instance.emailExists(email);
-                  this.setState(() => this._isExistsEmail = exists);
-                },
                 type: TextInputType.emailAddress,
                 transparent: true,
                 padding: this._padding,
@@ -115,6 +118,7 @@ class _SignUpState extends State<SignUp> with ValidationFieldUtil, SharedPrefere
                 padding: this._padding,
                 internalPadding: this._internalPadding,
                 isPassword: true,
+                validation: validatePasswordField,
               ),
               CustomRaisedButton(
                 label: 'Criar conta',
@@ -128,13 +132,20 @@ class _SignUpState extends State<SignUp> with ValidationFieldUtil, SharedPrefere
                     setState(() {
                       this._loading = true;
                       this._errorInserting = false;
+                      this._errorMessage = null;
                     });
-                    UserService.instance.create(this._user).then((value) {
+
+                    AwsCognitoService.instance.signUp(this._user).then((_) {
                       this.addPrefs('user_email', this._user.email);
                       this.addPrefs('user_password', this._user.password);
                       Navigator.pushNamed(context, SignIn.routeName);
-                    }).catchError((_) => setState(() => this._errorInserting = true))
-                    .whenComplete(() => setState(() => this._loading = false));
+                    }).catchError((error) {
+                      this.setState(() {
+                        this._errorInserting = true;
+                        if (error is String)
+                          this._errorMessage = error;
+                      });
+                    }).whenComplete(() => this.setState(() => this._loading = false));
                   }
                 },
                 textColor: primaryColor,

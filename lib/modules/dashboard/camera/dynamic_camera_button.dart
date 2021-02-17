@@ -1,5 +1,6 @@
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 
 class DynamicCameraButton extends StatefulWidget {
@@ -44,7 +45,7 @@ class _DynamicCameraButtonState extends State<DynamicCameraButton> {
             alignment: FractionalOffset.bottomCenter,
             children: [
               CircularCountDownTimer(
-                duration: maxPhotoSequence,
+                duration: int.parse(env['MAX_PHOTO_SEQUENCE']),
                 controller: this.widget.countDownController,
                 width: _size,
                 height: _size,

@@ -4,8 +4,7 @@ import 'package:parkinson_de_bolso/config/route_config.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/modules/auth/auth_module.dart';
 import 'package:parkinson_de_bolso/modules/auth/change_password/verification_code.dart';
-import 'package:parkinson_de_bolso/service/password_reset_service.dart';
-import 'package:parkinson_de_bolso/service/user_service.dart';
+import 'package:parkinson_de_bolso/service/aws_cognito_service.dart';
 import 'package:parkinson_de_bolso/util/validation_field_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_error_box.dart';
 import 'package:parkinson_de_bolso/widget/custom_raised_button.dart';
@@ -23,7 +22,6 @@ class _RedefinePasswordState extends State<RedefinePassword> with ValidationFiel
   TextEditingController _email;
   EdgeInsets _padding;
   EdgeInsets _internalPadding;
-  bool _isExistsEmail;
   bool _errorInserting;
   bool _loading;
 
@@ -33,7 +31,6 @@ class _RedefinePasswordState extends State<RedefinePassword> with ValidationFiel
     this._email = TextEditingController();
     this._padding = EdgeInsets.symmetric(vertical: 20, horizontal: 0);
     this._internalPadding = EdgeInsets.all(20);
-    this._isExistsEmail = false;
     this._loading = false;
     this._errorInserting = false;
     super.initState();
@@ -42,11 +39,7 @@ class _RedefinePasswordState extends State<RedefinePassword> with ValidationFiel
   String validateEmailField(String email) {
     String response;
     if (email.isNotEmpty) {
-      if (this.validateEmailValue(email)) {
-        if (!this._isExistsEmail) {
-          response = 'E-mail não cadastrado';
-        }
-      } else {
+      if (!this.validateEmailValue(email)) {
         response = 'E-mail inválido';
       }
     } else {
@@ -89,10 +82,6 @@ class _RedefinePasswordState extends State<RedefinePassword> with ValidationFiel
                 padding: this._padding,
                 internalPadding: this._internalPadding,
                 validation: validateEmailField,
-                onChanged: (email) async {
-                  bool exists = await UserService.instance.emailExists(email);
-                  this.setState(() => this._isExistsEmail = exists);
-                },
               ),
             ],
           ),
@@ -109,15 +98,13 @@ class _RedefinePasswordState extends State<RedefinePassword> with ValidationFiel
                 this._loading = true;
                 this._errorInserting = false;
               });
-              PasswordResetService.instance.requestReset(this._email.text).then((value) {
-                if (value) {
-                  RouteHandler.arguments.clear();
-                  RouteHandler.arguments.add(this._email.text);
-                  Navigator.pushNamed(context, VerificationCode.routeName);
-                } else {
-                  this.setState(() => this._errorInserting = true);
-                }
-              }).whenComplete(() => this.setState(() => this._loading = false));
+              AwsCognitoService.instance.forgotPassword(this._email.text).then((_) {
+                RouteHandler.arguments.clear();
+                RouteHandler.arguments.add(this._email.text);
+                Navigator.pushNamed(context, VerificationCode.routeName);
+              })
+              .catchError((_) => this._errorInserting = true)
+              .whenComplete(() => this.setState(() => this._loading = false));
             }
           },
           textColor: primaryColor,

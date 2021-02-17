@@ -29,19 +29,17 @@ class PatientClassificationModel extends SerelizationDataUtil with DateTimeUtil 
 
   factory PatientClassificationModel.fromJson(Map<String, dynamic> json) {
     return PatientClassificationModel(
-      id: json['_id'],
+      id: json['id'],
       date: DateTime.parse(json['date']),
       percentage: double.parse(json['percentage']),
       patientid: json['patientid'],
-      publicid: json['publicid']
     );
   }
   
   Map toJson(bool create) {
     return {
       if(!create)
-        '_id': this.id,
-        'publicid': this.publicid,
+        'id': this.id,
       'date': DateFormat('yyyy-MM-dd').format(this.date),
       'patientid': this.patientid,
       'percentage': this.percentage      

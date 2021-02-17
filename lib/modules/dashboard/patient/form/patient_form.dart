@@ -39,7 +39,7 @@ class _PatientFormState extends State<PatientForm> with SnackbarUtil, DateTimeUt
   void initState() {
     if (this.widget.patient != null) {
       this._patient = this.widget.patient;
-      this._nameFieldControl.text = this._patient.name;
+      this._nameFieldControl.text = this._patient.fullname;
       this._birthdayFieldControl.text = this._format.format(this._patient.birthdate);
       this._diagnosticFieldControl.text = this._format.format(this._patient.diagnosis);
       this._weightFieldControl.text = this._patient.weight.toString();
@@ -80,10 +80,10 @@ class _PatientFormState extends State<PatientForm> with SnackbarUtil, DateTimeUt
         
         if (this.widget.patient == null) {
           this._reset();
-          message = 'Paciente ' + value.name.split(' ')[0] + ' adicionado com sucesso!';
+          message = 'Paciente ' + value.fullname.split(' ')[0] + ' adicionado com sucesso!';
         } else {
-          this._patient = value;
-          message = 'Paciente ' + this._patient.name.split(' ')[0] + ' alterado com sucesso!';
+          this.setState(() => this._patient = value);
+          message = 'Paciente ' + this._patient.fullname.split(' ')[0] + ' alterado com sucesso!';
         }
 
         this.callAlert(message, SnackbarType.SUCESS);
@@ -154,7 +154,7 @@ class _PatientFormState extends State<PatientForm> with SnackbarUtil, DateTimeUt
                   hintText: 'Nome Completo',
                   prefixIcon: Icons.person,
                   inputFormatters: [new LengthLimitingTextInputFormatter(30)],
-                  onSaved: (name) => this._patient.name = name,
+                  onSaved: (name) => this._patient.fullname = name,
                 ),
                 SizedBox(height: this.widget.spacingBetweenFields),
                 Container(
@@ -195,7 +195,7 @@ class _PatientFormState extends State<PatientForm> with SnackbarUtil, DateTimeUt
                         prefixIcon: Icons.line_weight,
                         type: TextInputType.number,
                         inputFormatters: [new LengthLimitingTextInputFormatter(10)],
-                        onSaved: (weight) => this._patient.weight = double.parse(weight),
+                        onSaved: (weight) => this._patient.weight = weight,
                       ),
                       CustomTextFormField(
                         controller: this._heightFieldControl,
@@ -205,7 +205,7 @@ class _PatientFormState extends State<PatientForm> with SnackbarUtil, DateTimeUt
                         prefixIcon: Icons.height,
                         type: TextInputType.number,
                         inputFormatters: [new LengthLimitingTextInputFormatter(10)],
-                        onSaved: (height) => this._patient.height = double.parse(height),
+                        onSaved: (height) => this._patient.height = height,
                       ),
                     ],
                   ),

@@ -26,6 +26,13 @@ class PatientViewer extends StatefulWidget {
 }
 
 class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
+  String _patientImageUrl;
+
+  @override
+  void initState() {
+    this._patientImageUrl = this.widget.patient.imageUrl;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +55,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                 color: primaryColorDashboardBar
               ),
             onPressed: () async {
-              await DynamicCameraModule.processImageSequence(context);
+              await DynamicCameraModule.processImageSequence(context, this.widget.patient);
             },
           ),
           IconButton(
@@ -66,7 +73,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                 color: primaryColorDashboardBar
               ),
             onPressed: () {
-              PatientService.instance.delete(this.widget.patient.id).then((value) => this.widget.callRemoval.call());
+              PatientService.instance.delete(this.widget.patient.id).then((_) => this.widget.callRemoval.call());
             },
           ),
         ],
@@ -89,7 +96,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                   radius: 75, 
                   background: ternaryColor, 
                   foreground: primaryColor,
-                  imagePath: this.widget.patient.imageUrl,
+                  imagePath: this._patientImageUrl,
                   initials: this.widget.patient.initials,
                 ),
               ),
@@ -98,7 +105,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(this.widget.patient.name.split(' ')[0],
+                    Text(this.widget.patient.fullname.split(' ')[0],
                       style: TextStyle(
                         fontSize: 30,
                         color: ternaryColor,
@@ -124,14 +131,14 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                     CustomValueTitle(
                       size: 18,
                       title: 'Peso',
-                      value: this.widget.patient.weight.toInt().toString() + ' kg',
+                      value: this.widget.patient.weight + ' kg',
                       color: ternaryColor,
                     ),
                     SizedBox(height: this.widget.spacingBetweenFields - 15),
                     CustomValueTitle(
                       size: 18,
                       title: 'Altura',
-                      value: this.widget.patient.height.toString() + ' m',
+                      value: this.widget.patient.height + ' m',
                       color: ternaryColor,
                     )
                   ],
@@ -141,7 +148,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
           ),
         ), 
         bottom: FutureBuilder(
-          future: PatientClassificationService.instance.getAll(this.widget.patient.publicid),
+          future: PatientClassificationService.instance.getAll(this.widget.patient.id),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return PatientEvolution(

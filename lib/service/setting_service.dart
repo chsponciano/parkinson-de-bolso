@@ -1,30 +1,21 @@
+import 'package:amazon_cognito_identity_dart_2/sig_v4.dart';
 import 'package:parkinson_de_bolso/config/route_config.dart';
-import 'package:parkinson_de_bolso/model/patient_classification_model.dart';
-import 'package:parkinson_de_bolso/model/patient_model.dart';
-import 'package:parkinson_de_bolso/service/patient_classification_service.dart';
-import 'package:parkinson_de_bolso/service/patient_service.dart';
-import 'package:parkinson_de_bolso/service/user_service.dart';
+import 'package:parkinson_de_bolso/service/aws_cognito_service.dart';
+import 'package:http/http.dart' as http;
 
 class SettingService {
   SettingService._privateConstructor();
   static final SettingService instance = SettingService._privateConstructor();
-  final PatientService _patientService = PatientService.instance;
-  final PatientClassificationService _patientClassificationService = PatientClassificationService.instance;
-  final UserService _userService = UserService.instance;
+  final AwsCognitoService awsCognitoService = AwsCognitoService.instance;
+  static final String path = '/api/privacy';
 
-  Future<void> clearData() async {
-    List<PatientModel> patients = await this._patientService.getAll();
-    patients.forEach((patient) async {
-      List<PatientClassificationModel> classifications = await this._patientClassificationService.getAll(patient.publicid);
-      classifications.forEach((classification) async {
-        await this._patientClassificationService.delete(classification.id);
-      });
-      await this._patientService.delete(patient.id);
-    });
+  Future<void> cleanData() async {
+    final SigV4Request signedRequest = this.awsCognitoService.getSigV4Request('DELETE', path);
+    await http.delete('${signedRequest.url}/${RouteHandler.loggedInUser.id}', headers: signedRequest.headers);
   }
 
   Future<void> deleteAccount() async {
-    await this.clearData();
-    await this._userService.delete(RouteHandler.loggedInUser.id);
+    await this.cleanData();
+    this.awsCognitoService.deleteUser();
   }
 }

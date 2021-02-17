@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/constant/http_constant.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/camera/dynamic_camera_module.dart';
 
 class CustomCircleAvatarButton extends StatefulWidget {
@@ -40,7 +39,7 @@ class _CustomCircleAvatarButtonState extends State<CustomCircleAvatarButton> {
     if (this.widget.imageUrl != null) {
       return CircleAvatar (
         radius: this.widget.radius,
-        backgroundImage: NetworkImage(image_host + this.widget.imageUrl),
+        backgroundImage: NetworkImage(this.widget.imageUrl),
       );
     }
 

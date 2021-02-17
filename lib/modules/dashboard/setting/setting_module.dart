@@ -119,14 +119,14 @@ class _SettingModuleState extends State<SettingModule> with StringUtil {
             children: [
               this._createButton(SettingModuleAction('Limpar dados', () {
                 this.setState(() => this._loading = true);
-                SettingService.instance.clearData()
-                .whenComplete(() => this._loading = false);
+                SettingService.instance.cleanData()
+                .whenComplete(() => this.setState(() => this._loading = false));
               })),
               this._createButton(SettingModuleAction('Excluir conta', () {
                 this.setState(() => this._loading = true);
                 SettingService.instance.deleteAccount()
                 .then((_) => RouteHandler.instance.exit(context))
-                .whenComplete(() => this._loading = false);
+                .whenComplete(() => this.setState(() => this._loading = false));
               }))
             ],
           ),

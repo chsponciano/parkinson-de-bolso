@@ -41,5 +41,3 @@ const allNavegation = <NavegationModel>[
   NavegationModel('Relatórios', Icons.analytics, NavegationType.REPORT),
   NavegationModel('Configurações', Icons.settings, NavegationType.SETTING)
 ];
-
-const maxPhotoSequence = 20;

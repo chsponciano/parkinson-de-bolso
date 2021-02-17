@@ -12,53 +12,49 @@ import 'package:parkinson_de_bolso/widget/custom_list_search.dart';
 
 class PatientModel with StringUtil implements SearchData {
   String id;
-  String name;
+  String fullname;
   DateTime birthdate;
   DateTime diagnosis;
-  double weight;
-  double height;
+  String weight;
+  String height;
   String initials;
   File image;
   String imageUrl;
   List<PatientClassificationModel> classifications;
   String userid;
-  String publicid;
 
-  PatientModel({this.id, this.initials, this.birthdate, this.diagnosis, this.weight, this.height, this.name, this.image, this.classifications, this.userid, this.imageUrl, this.publicid});
+  PatientModel({this.id, this.initials, this.birthdate, this.diagnosis, this.weight, this.height, this.fullname, this.image, this.classifications, this.userid, this.imageUrl});
 
   factory PatientModel.fromJson(Map<String, dynamic> json) {
     return PatientModel(
-      id: json['_id'],
-      name: json['name'],
+      id: json['id'],
+      fullname: json['fullname'],
       birthdate: DateTime.parse(json['birthdate']),
       diagnosis: DateTime.parse(json['diagnosis']),
       weight: json['weight'],
       height: json['height'],
       initials: json['initials'],
       imageUrl: json['image'],
-      userid: json['userid'],
-      publicid: json['publicid'],
+      userid: json['userid']
     );
   }
   
   Map toJson(bool create) {
     return {
       if(!create)
-        '_id': this.id,
-        'publicid': this.publicid,
-      'name': this.name,
+        'id': this.id,
+      'fullname': this.fullname,
       'birthdate': DateFormat('yyyy-MM-dd').format(this.birthdate),
       'diagnosis': DateFormat('yyyy-MM-dd').format(this.diagnosis),
-      'weight': this.weight,
-      'height': this.height,
-      'initials': this.getInitials(this.name),
-      'userid': RouteHandler.loggedInUser.publicid,
+      'weight': this.weight.toString(),
+      'height': this.height.toString(),
+      'initials': this.getInitials(this.fullname),
+      'userid': RouteHandler.loggedInUser.id,
       if (this.image != null)
         'image': {
           'data': base64Encode(this.image.readAsBytesSync()),
           'filename': this.image.path.split('/').last
-        }
-      
+        }     
     };
   }
 
@@ -85,7 +81,7 @@ class PatientModel with StringUtil implements SearchData {
               imagePath: this.imageUrl,
               initials: this.initials,
             ),
-            Text(this.name, 
+            Text(this.fullname, 
               style: TextStyle(
                 color: primaryColor,
                 fontSize: 18.0,
@@ -109,6 +105,6 @@ class PatientModel with StringUtil implements SearchData {
 
   @override
   String searchText() {
-    return this.name;
+    return this.fullname;
   }
 }
