@@ -5,13 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:parkinson_de_bolso/config/camera_config.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
-import 'package:parkinson_de_bolso/model/active_classification_model.dart';
 import 'package:parkinson_de_bolso/model/execution_classification_model.dart';
+import 'package:parkinson_de_bolso/model/patient_classification_model.dart';
 import 'package:parkinson_de_bolso/model/patient_model.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/camera/dynamic_camera_linear_bar.dart';
+import 'package:parkinson_de_bolso/service/patient_classification_service.dart';
 import 'package:parkinson_de_bolso/service/predict_service.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/camera/dynamic_camera_button.dart';
 import 'package:parkinson_de_bolso/widget/custom_alert_box.dart';
+import 'package:parkinson_de_bolso/widget/custom_alert_fade.dart';
 import 'package:parkinson_de_bolso/widget/custom_back_button.dart';
 import 'package:parkinson_de_bolso/widget/custom_circular_progress.dart';
 
@@ -45,14 +47,16 @@ class DynamicCameraModule extends StatefulWidget {
   }
 }
 
-class _DynamicCameraModuleState extends State<DynamicCameraModule> {
+class _DynamicCameraModuleState extends State<DynamicCameraModule> with TickerProviderStateMixin {
   // control status of the dynamic camera
   CountDownController _countDownController;
+  AnimationController _alertErrorController;
   bool _stop, _loading, _runnig, _alert;
   Future _initializeControllerFuture;  
   PredictService _predictService;
   CameraController _controller;
   DynamicCameraType _type;  
+  String _messageError;
   File _image;
 
   // dynamic camera button states
@@ -66,6 +70,7 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> {
 
   @override
   void initState() {
+    this._alertErrorController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     this._controller = CameraController(CameraHandler.instance.camera, ResolutionPreset.max);
     this._initializeControllerFuture = this._controller.initialize();
     this._countDownController = CountDownController();
@@ -76,7 +81,6 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> {
     this._runnig = false;
     this._alert = false;
     this._linearBarValue = 0.0;
-
     super.initState();
     this._loadButtonConfiguration();
   }
@@ -159,7 +163,21 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> {
               CustomButtonAlertBox(
                 Icons.thumb_up, 
                 'Marcar como acerto', 
-                () => this.setState(() => this._alert = false), 
+                () {
+                  this.setState(() {
+                    this._alert = false;
+                    this._loading = true;
+                  });
+                  PatientClassificationService.instance.create(PatientClassificationModel(
+                    patientid: this.widget.patient.id,
+                    percentage: this._linearBarValue
+                  ))
+                  .then((_) => this.setState(() {
+                    Navigator.pop(context);
+                  }))
+                  .catchError((error) => this.printError('Erro ao salvar dados, tentar novamente!'))
+                  .whenComplete(() => this.setState(() => this._loading = false));
+                }, 
                 primaryColor
               ),
               CustomButtonAlertBox(
@@ -170,6 +188,10 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> {
               )
             ],
           ),
+        CustomAlertFade(
+            controller: this._alertErrorController,
+            message: this._messageError
+        )
       ],
     );
   }
@@ -220,6 +242,7 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> {
 
   void _reset() {
     this.setState(() {
+      this._loading = false;
       this._runnig = false;
       this._type = this.widget.type;
       this._image = null;
@@ -245,47 +268,37 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> {
       if (!this._runnig) { 
         this.setState(() {
           this._runnig = true;
-          this._loading = true;
         });
 
-        final ActiveClassificationModel _activePatient = await this._predictService.initialize(this.widget.patient.id);
+        await this._countdown(3);
+        await this._initializeControllerFuture;
+        this._countDownController.start();   
+        
+        int _imageCounter = 0;
+        XFile _capture;
+        
+        while(!this._stop) {
+          _capture = await this._controller.takePicture();
+          this._predictService.evaluator(this.widget.patient.id, _imageCounter++, _capture)
+          .then((ExecutionClassificationModel execution) {
+            if (execution != null)
+              this.setState(() => this._linearBarValue = execution.percentage);
+            print(execution.index.toString() + ' - ' + execution.percentage.toString());
+          });
+          await Future.delayed(Duration(seconds: 1));
+        }
 
-        if (_activePatient != null) {
-          this.setState(() => this._loading = false);
-          await this._countdown(3);
-          await this._initializeControllerFuture;
-          this._countDownController.start();   
-          
-          int _imageCounter = 0;
-          XFile _capture;
-          
-          while(!this._stop) {
-            _capture = await this._controller.takePicture();
-            this._predictService.evaluator(this.widget.patient.id, _imageCounter++, _capture)
-            .then((ExecutionClassificationModel execution) {
-              if (execution != null)
-                this.setState(() => this._linearBarValue = execution.percentage);
-            });
-            await Future.delayed(Duration(seconds: 1));
-          }
+        final Map _conclude = await this._predictService.conclude(this.widget.patient.id);
 
-          final ExecutionClassificationModel _conclude = await this._predictService.conclude(this.widget.patient.id);
-
-          if (_conclude != null) {
-            this.setState(() {
-              this._linearBarValue = _conclude.percentage;
-              this._alert = true;
-            });
-          }
-
-          if (true) {
-            this.setState(() {
-              this._alert = true;
-            });
-          }
+        if (_conclude != null) {
+          this.setState(() {
+            this._linearBarValue = double.tryParse(_conclude['percentage']);
+            this._alert = true;
+          });
         }
       }
     } catch (error)  {
+      this.printError('Erro na execução da filmage!');
       this._reset();
     }
   }
@@ -308,4 +321,9 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> {
       this._cameraButtonTooltip = 'Cancelar';
     });
   }  
+
+  void printError(String error) {
+    this.setState(() => this._messageError = error);
+    this._alertErrorController.forward();
+  }
 }

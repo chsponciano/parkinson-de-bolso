@@ -81,22 +81,14 @@ class PatientModel with StringUtil implements SearchData {
               imagePath: this.imageUrl,
               initials: this.initials,
             ),
-            Text(this.fullname, 
+            Text(this.fullname.length > 25 ? this.fullname.substring(0, 25) : this.fullname, 
               style: TextStyle(
                 color: primaryColor,
                 fontSize: 18.0,
                 letterSpacing: 1.0
               ),
             ),
-            Row(
-              children: [
-                IconButton(
-                  color: primaryColor,
-                  icon: Icon(Icons.more_vert), 
-                  onPressed: () => print('menu')
-                )
-              ],
-            )
+            SizedBox()
           ],
         )
       ),

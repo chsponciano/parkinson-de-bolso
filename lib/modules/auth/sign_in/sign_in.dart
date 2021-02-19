@@ -114,7 +114,7 @@ class _SignInState extends State<SignIn> with SharedPreferencesUtil, ValidationF
                 transparent: true,
                 padding: this._padding,
                 internalPadding: this._internalPadding,
-                // validation: validateEmailField,
+                validation: validateEmailField,
               ),
               CustomTextFormField(
                 controller: this._password,
@@ -176,7 +176,6 @@ class _SignInState extends State<SignIn> with SharedPreferencesUtil, ValidationF
                   text: 'Ainda não tem uma conta? ',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18.0,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -184,7 +183,6 @@ class _SignInState extends State<SignIn> with SharedPreferencesUtil, ValidationF
                   text: 'Clique aqui!',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

@@ -57,13 +57,6 @@ class _PatientModuleState extends State<PatientModule> {
     this.resetWidgetStatus();
   }
 
-  // Future refreshPatientList() async {
-  //   await Future.delayed(Duration(seconds: 2));
-  //   this.setState(() {
-  //     this._data = ServicePatient.instance.getAllPatient();
-  //   });
-  // }
-
   Widget getCurrentWidget() {
     if (this._isEdit) {
       return PatientForm(
@@ -87,19 +80,13 @@ class _PatientModuleState extends State<PatientModule> {
       );
     }
 
-    return 
-    //RefreshIndicator(
-    //  child: 
-      CustomListSearch(
+    return CustomListSearch(
         widgetName: 'Pacientes',
         barColor: dashboardBarColor,
         searchStatusController: this.changeSearchStatus,
         scrollStatusController: this.changeScrollStatus,
         onTap: this.selectPatient,
         future: PatientService.instance.getAll(),
-    //  ), 
-      // onRefresh: this.refreshPatientList,
-    //  color: dashboardBarColor,
     );
   }
 

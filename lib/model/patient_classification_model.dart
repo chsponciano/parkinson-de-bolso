@@ -10,9 +10,8 @@ class PatientClassificationModel extends SerelizationDataUtil with DateTimeUtil 
   DateTime date;
   double percentage;
   String patientid;
-  String publicid;
 
-  PatientClassificationModel({this.id, this.date, this.percentage, this.patientid, this.publicid});
+  PatientClassificationModel({this.id, this.date, this.percentage, this.patientid});
 
   @override
   FlSpot createSpot() {
@@ -31,7 +30,7 @@ class PatientClassificationModel extends SerelizationDataUtil with DateTimeUtil 
     return PatientClassificationModel(
       id: json['id'],
       date: DateTime.parse(json['date']),
-      percentage: double.parse(json['percentage']),
+      percentage: double.parse(json['percentage'].toString()),
       patientid: json['patientid'],
     );
   }
@@ -40,9 +39,9 @@ class PatientClassificationModel extends SerelizationDataUtil with DateTimeUtil 
     return {
       if(!create)
         'id': this.id,
-      'date': DateFormat('yyyy-MM-dd').format(this.date),
+      'date': DateFormat('yyyy-MM-dd').format(this.date != null ? this.date : DateTime.now()),
       'patientid': this.patientid,
-      'percentage': this.percentage      
+      'percentage': this.percentage.toInt()      
     };
   }
 
