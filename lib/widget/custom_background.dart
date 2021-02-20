@@ -60,7 +60,6 @@ class _CustomBackgroundState extends State<CustomBackground> {
                   if (this.widget.footer != null)
                     SafeArea(
                       child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                         decoration: BoxDecoration(
                           color: this.widget.bottomColor
                         ),

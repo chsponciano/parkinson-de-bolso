@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:parkinson_de_bolso/config/route_config.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/model/patient_model.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/dashboard_module.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/patient/form/patient_form.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/patient/viewer/patient_viewer.dart';
 import 'package:parkinson_de_bolso/service/patient_service.dart';
@@ -42,8 +44,9 @@ class _PatientModuleState extends State<PatientModule> {
     this._selectedPatient = null;
   });
   
-  void resetEditStatus() => this.setState(() {
+  void resetEditStatus(PatientModel patient) => this.setState(() {
     this._isEdit = false;
+    this._selectedPatient = patient;
   });
 
   void enableEditing() => this.setState(() {
@@ -80,13 +83,17 @@ class _PatientModuleState extends State<PatientModule> {
       );
     }
 
-    return CustomListSearch(
+    return RefreshIndicator(
+      onRefresh: reload,
+      color: primaryColor,
+      child: CustomListSearch(
         widgetName: 'Pacientes',
         barColor: dashboardBarColor,
         searchStatusController: this.changeSearchStatus,
         scrollStatusController: this.changeScrollStatus,
         onTap: this.selectPatient,
         future: PatientService.instance.getAll(),
+      ),
     );
   }
 
@@ -104,6 +111,16 @@ class _PatientModuleState extends State<PatientModule> {
         ),
         backgroundColor: floatingButtonDashboard,
       ),
+    );
+  }
+
+  Future<void> reload() async {
+    Navigator.pushReplacement(
+      context, 
+      PageRouteBuilder(
+        pageBuilder: (a, b, c) => RouteHandler.instance.getRoute(DashboardModule.routeName), 
+        transitionDuration: Duration(seconds:  0)
+      )
     );
   }
 }

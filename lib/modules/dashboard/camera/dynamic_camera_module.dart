@@ -157,7 +157,7 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> with TickerPr
           CustomAlertBox(
             title: 'Resultado',
             content: 'Taxa de Parkinson',
-            valueContent: this._linearBarValue.toString(),
+            valueContent: this._linearBarValue.toInt().toString() + '%',
             visible: this._alert,
             buttons: [
               CustomButtonAlertBox(

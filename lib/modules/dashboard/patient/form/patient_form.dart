@@ -32,13 +32,15 @@ class _PatientFormState extends State<PatientForm> with SnackbarUtil, DateTimeUt
   final TextEditingController _diagnosticFieldControl = TextEditingController();
   final TextEditingController _weightFieldControl = TextEditingController();
   final TextEditingController _heightFieldControl = TextEditingController();
-  var loading;
+  bool loading;
   PatientModel _patient;
+  String _id;
 
   @override
   void initState() {
     if (this.widget.patient != null) {
-      this._patient = this.widget.patient;
+      this._patient = this.widget.patient.clone();
+      this._id = this.widget.patient.id;
       this._nameFieldControl.text = this._patient.fullname;
       this._birthdayFieldControl.text = this._format.format(this._patient.birthdate);
       this._diagnosticFieldControl.text = this._format.format(this._patient.diagnosis);
@@ -67,29 +69,38 @@ class _PatientFormState extends State<PatientForm> with SnackbarUtil, DateTimeUt
     });
   }
 
+  void _create() {
+    this.setState(() => this.loading = true);
+    PatientService.instance.create(this._patient)
+    .then((PatientModel patient) {
+      this._reset();
+      this.callAlert('Paciente ${patient.fullname.split(' ')[0]} adicionado com sucesso!', SnackbarType.SUCESS);
+    })
+    .catchError((_) => this.callAlert('Erro ao inserir, tentar novamente', SnackbarType.ERROR))
+    .whenComplete(() =>  this.setState(() => this.loading = false));
+  }
+
+  void _update() {
+    this.setState(() => this.loading = true);
+    PatientService.instance.update(this._patient)
+    .then((PatientModel patient) {
+      this.setState(() {
+        this._patient = this.widget.patient;
+        this._patient = patient;
+        this._patient.id = this._id;
+      });
+      this.callAlert('Paciente ${patient.fullname.split(' ')[0]} alterado com sucesso!', SnackbarType.SUCESS);
+    })
+    .catchError((_) => this.callAlert('Erro ao atualizar, tentar novamente', SnackbarType.ERROR))
+    .whenComplete(() =>  this.setState(() => this.loading = false));
+  }
+
   void _submit() async {
     if (!this._formKey.currentState.validate()) {
       this.callAlert('Formulário inválido!  Por favor, preencher os campos.', SnackbarType.ERROR);
     } else {
-      this.setState(() => this.loading = true);
       this._formKey.currentState.save();
-      Future<dynamic> future = (this.widget.patient == null) ? PatientService.instance.create(this._patient) : PatientService.instance.update(this._patient);
-
-      future.then((value) {
-        var message = '';
-        
-        if (this.widget.patient == null) {
-          this._reset();
-          message = 'Paciente ' + value.fullname.split(' ')[0] + ' adicionado com sucesso!';
-        } else {
-          this.setState(() => this._patient = value);
-          message = 'Paciente ' + this._patient.fullname.split(' ')[0] + ' alterado com sucesso!';
-        }
-
-        this.callAlert(message, SnackbarType.SUCESS);
-      }).catchError((err) {
-        this.callAlert('Error: ' + err.toString().substring(0, 30) + '...', SnackbarType.ERROR);
-      });
+      (this.widget.patient != null) ? this._update() : this._create();
     }
   }
 
@@ -109,7 +120,7 @@ class _PatientFormState extends State<PatientForm> with SnackbarUtil, DateTimeUt
             Icons.arrow_back_sharp, 
             color: primaryColorDashboardBar
           ),
-          onPressed: () => this.widget.callHigher.call(),
+          onPressed: () => (this.widget.patient != null) ? Function.apply(this.widget.callHigher, [this._patient]) : this.widget.callHigher.call(),
         ),
         actions: [
           IconButton(
@@ -144,6 +155,7 @@ class _PatientFormState extends State<PatientForm> with SnackbarUtil, DateTimeUt
                   setImage: (image) {
                     this.setState(() {
                       this._patient.image = image;
+                      this._patient.imageUrl = null;
                     });
                   },
                 ),

@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/model/patient_classification_model.dart';
 
 class ListItem {
   int value;
   String name;
-
   ListItem(this.value, this.name);
 }
 
 class CustomDropdownItem extends StatefulWidget {
-  final List<PatientClassificationModel> items;
+  final List<ListItem> items;
   final Function onChange;
   final Color color;
 
@@ -27,20 +25,10 @@ class _CustomDropdownItemState extends State<CustomDropdownItem> {
   void initState() {
     super.initState();
     if (this.widget.items != null) {
-      this._listItem = this._dataToListItem();
+      this._listItem = this.widget.items;
       this._dropdownMenuItems = this._buildDropDownMenuItems();
       this._selectedItem =_dropdownMenuItems[0].value;
     }
-  }
-
-  List<ListItem> _dataToListItem() {
-    Set<int> years = Set();
-
-    this.widget.items.forEach((item) {
-      years.add(item.date.year);
-    });
-
-     return years.map((e) => ListItem(e, e.toString())).toList();
   }
 
   List<DropdownMenuItem<ListItem>> _buildDropDownMenuItems() {

@@ -35,7 +35,7 @@ class PatientService {
   }
 
   Future<PatientModel> update(PatientModel patient) async {
-    final SigV4Request signedRequest = this.awsCognitoService.getSigV4Request('PUT', path, body: patient.toJson(false));
+    final SigV4Request signedRequest = this.awsCognitoService.getSigV4Request('PUT', path, body: patient.toJson(true));
     final http.Response response = await http.put('${signedRequest.url}/${patient.id}', headers: signedRequest.headers, body: signedRequest.body);
 
     if (response.statusCode == 200) {

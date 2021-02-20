@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/model/patient_classification_model.dart';
 import 'package:parkinson_de_bolso/model/patient_model.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/camera/dynamic_camera_module.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/patient/viewer/patient_evolution.dart';
@@ -26,14 +27,8 @@ class PatientViewer extends StatefulWidget {
 }
 
 class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
-  String _patientImageUrl;
-
-  @override
-  void initState() {
-    this._patientImageUrl = this.widget.patient.imageUrl;
-    super.initState();
-  }
-
+  List<PatientClassificationModel> _data;
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,6 +51,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
               ),
             onPressed: () async {
               await DynamicCameraModule.processImageSequence(context, this.widget.patient);
+              await this._reload();
             },
           ),
           IconButton(
@@ -96,8 +92,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                   radius: 75, 
                   background: ternaryColor, 
                   foreground: primaryColor,
-                  imagePath: this._patientImageUrl,
-                  initials: this.widget.patient.initials,
+                  imagePath: this.widget.patient.imageUrl,
                 ),
               ),
               Container(
@@ -147,7 +142,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
             ],
           ),
         ), 
-        bottom: FutureBuilder(
+        bottom: (this._data == null) ? FutureBuilder(
           future: PatientClassificationService.instance.getAll(this.widget.patient.id),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -161,8 +156,19 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
               );
             }
           },
+        ) : PatientEvolution(
+          data: this._data,
+          spacingBetweenFields: this.widget.spacingBetweenFields,
         ),
       ),
     );
+  }
+
+  Future<void> _reload() async {
+    var data = await PatientClassificationService.instance.getAll(this.widget.patient.id);
+    print(data);
+    this.setState(() {
+      this._data = data;
+    });
   }
 }

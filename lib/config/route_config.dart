@@ -34,6 +34,10 @@ class RouteHandler with SharedPreferencesUtil{
     routeMap.putIfAbsent(route, () => _Route(route: route, handler: handler, logged: logged));
   }
 
+  Widget getRoute(String routeName) {
+    return routeMap[routeName].handler;
+  }
+
   void exit(context) {
     this.removePrefs('user_email');
     this.removePrefs('user_password');

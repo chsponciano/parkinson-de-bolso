@@ -5,16 +5,13 @@ class CustomCircleAvatar extends StatelessWidget {
   final Color background;
   final Color foreground;
   final String imagePath;
-  final String initials;
 
-  CustomCircleAvatar({@required this.radius, @required this.background, @required this.foreground, this.imagePath, this.initials});
+  CustomCircleAvatar({@required this.radius, @required this.background, @required this.foreground, this.imagePath});
 
-  Widget _buildInitials() {
-    return Text(
-      this.initials,
-      style: TextStyle(
-        fontSize: this.radius
-      ),
+  Widget _buildIcon() {
+    return Icon(
+      Icons.person,
+      size: radius,
     );
   }
 
@@ -31,7 +28,7 @@ class CustomCircleAvatar extends StatelessWidget {
       radius: this.radius,
       backgroundColor: this.background,
       foregroundColor: this.foreground,
-      child: (this.imagePath != null) ? this._buildImage() : this._buildInitials(),
+      child: (this.imagePath != null) ? this._buildImage() : this._buildIcon(),
     );
   }
 

@@ -31,6 +31,9 @@ mixin DateTimeUtil {
   }
 
   String getMonth(int month) {
+    if (month < 0) {
+      month = months.length + month;
+    }
     return this.months[month].substring(0, 3).toUpperCase();
   }
 
@@ -39,11 +42,19 @@ mixin DateTimeUtil {
     return dateTime.month - 1;
   }
 
-  String getMonthYear(int millisecondsSinceEpoch) {
+  String getMonthYear(int millisecondsSinceEpoch, bool isFullYear) {
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
-    String year = dateTime.year.toString().substring(2);
+    String year = (isFullYear) ? dateTime.year.toString() : dateTime.year.toString().substring(2);
     String month = this.months[dateTime.month - 1].substring(0, 3).toUpperCase();
     return '$month/$year';
+  }
+
+  String getDayMonthYear(int millisecondsSinceEpoch, bool isFullYear) {
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
+    String day = dateTime.day.toString();
+    String year = (isFullYear) ? dateTime.year.toString() : dateTime.year.toString().substring(2);
+    String month = this.months[dateTime.month - 1].substring(0, 3).toUpperCase();
+    return '$day/$month/$year';
   }
 
   int getCurrentAge(DateTime other) {

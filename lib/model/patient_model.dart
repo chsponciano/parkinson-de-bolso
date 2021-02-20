@@ -17,13 +17,12 @@ class PatientModel with StringUtil implements SearchData {
   DateTime diagnosis;
   String weight;
   String height;
-  String initials;
   File image;
   String imageUrl;
   List<PatientClassificationModel> classifications;
   String userid;
 
-  PatientModel({this.id, this.initials, this.birthdate, this.diagnosis, this.weight, this.height, this.fullname, this.image, this.classifications, this.userid, this.imageUrl});
+  PatientModel({this.id, this.birthdate, this.diagnosis, this.weight, this.height, this.fullname, this.image, this.classifications, this.userid, this.imageUrl});
 
   factory PatientModel.fromJson(Map<String, dynamic> json) {
     return PatientModel(
@@ -33,7 +32,6 @@ class PatientModel with StringUtil implements SearchData {
       diagnosis: DateTime.parse(json['diagnosis']),
       weight: json['weight'],
       height: json['height'],
-      initials: json['initials'],
       imageUrl: json['image'],
       userid: json['userid']
     );
@@ -43,19 +41,29 @@ class PatientModel with StringUtil implements SearchData {
     return {
       if(!create)
         'id': this.id,
-      'fullname': this.fullname,
+      'fullname': this.capitalize(this.fullname),
       'birthdate': DateFormat('yyyy-MM-dd').format(this.birthdate),
       'diagnosis': DateFormat('yyyy-MM-dd').format(this.diagnosis),
       'weight': this.weight.toString(),
       'height': this.height.toString(),
-      'initials': this.getInitials(this.fullname),
       'userid': RouteHandler.loggedInUser.id,
-      if (this.image != null)
-        'image': {
-          'data': base64Encode(this.image.readAsBytesSync()),
-          'filename': this.image.path.split('/').last
-        }     
+      'image': this.getImage()
     };
+  }
+
+  dynamic getImage() {
+    if (this.image != null) {
+      return {
+        'data': base64Encode(this.image.readAsBytesSync()),
+        'filename': this.image.path.split('/').last
+      };
+    } 
+    
+    if (this.imageUrl != null) {
+      return this.imageUrl;
+    }
+
+    return null;
   }
 
   @override
@@ -79,9 +87,8 @@ class PatientModel with StringUtil implements SearchData {
               background: secondaryColor, 
               foreground: ternaryColor,
               imagePath: this.imageUrl,
-              initials: this.initials,
             ),
-            Text(this.fullname.length > 25 ? this.fullname.substring(0, 25) : this.fullname, 
+            Text(this.fullname.length > 25 ? this.abbreviate(this.fullname) : this.fullname, 
               style: TextStyle(
                 color: primaryColor,
                 fontSize: 18.0,
@@ -99,4 +106,18 @@ class PatientModel with StringUtil implements SearchData {
   String searchText() {
     return this.fullname;
   }
+
+  
+  PatientModel clone() => PatientModel(
+    id: this.id, 
+    fullname: this.fullname,
+    birthdate: this.birthdate, 
+    diagnosis: this.diagnosis, 
+    weight: this.weight, 
+    height: this.height, 
+    image: this.image, 
+    classifications: this.classifications, 
+    userid: this.userid, 
+    imageUrl: this.imageUrl
+  );
 }

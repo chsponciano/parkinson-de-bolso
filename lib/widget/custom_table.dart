@@ -33,20 +33,23 @@ class _CustomTableState extends State<CustomTable> {
   Widget build(BuildContext context) {
     this.initializeData();
     
-    return Table(
-      border: TableBorder(
-        horizontalInside: BorderSide(
-          color: this.widget.borderColor,
-          style: BorderStyle.solid,
-          width: 1.0
+    return Padding(
+      padding: const EdgeInsets.only(top: 20),
+      child: Table(
+        border: TableBorder(
+          horizontalInside: BorderSide(
+            color: this.widget.borderColor,
+            style: BorderStyle.solid,
+            width: 1.0
+          ),
+          verticalInside: BorderSide(
+            color: this.widget.borderColor,
+            style: BorderStyle.solid,
+            width: 1.0
+          ),
         ),
-        verticalInside: BorderSide(
-          color: this.widget.borderColor,
-          style: BorderStyle.solid,
-          width: 1.0
-        ),
+        children: this._data,
       ),
-      children: this._data,
     );
   }
 

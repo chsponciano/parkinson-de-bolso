@@ -5,24 +5,16 @@ import 'package:parkinson_de_bolso/util/datetime_util.dart';
 import 'package:parkinson_de_bolso/util/serelization_data_util.dart';
 
 class CustomLineChart extends StatefulWidget {
-  final List<FlSpot> spots;
+  final List<SerelizationDataUtil> data;
 
-  CustomLineChart({@required this.spots});
-
-  static List<FlSpot> toListSpot(List<SerelizationDataUtil> item) {
-    if (item == null)
-      return null;
-    return item.map((e) => e.createSpot()).toList();  
-  }
+  CustomLineChart({this.data});
 
   @override
   _CustomLineChartState createState() => _CustomLineChartState();
 }
 
 class _CustomLineChartState extends State<CustomLineChart> with DateTimeUtil {
-  
   LineChartData _buildLineChartData() {
-
     return LineChartData(
       titlesData: FlTitlesData(
         show: true,
@@ -47,17 +39,17 @@ class _CustomLineChartState extends State<CustomLineChart> with DateTimeUtil {
       ),
       lineBarsData: [
         LineChartBarData(
-          spots: this.widget.spots,
+          spots: this.widget.data.map((SerelizationDataUtil e) => e.createSpot()).toList(),
           isCurved: true,
           colors: defaultGradient.colors,
           barWidth: 5,
           isStrokeCapRound: true,
           dotData: FlDotData(
-            show: false,
+            show: false
           ),
           belowBarData: BarAreaData(
             show: true,
-            colors: defaultGradient.colors.map((color) => color.withOpacity(0.3)).toList(),
+            colors: defaultGradient.colors.map((color) => color.withOpacity(0.8)).toList(),
           ),
         ),
       ],

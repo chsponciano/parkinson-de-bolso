@@ -85,7 +85,6 @@ class _SettingModuleState extends State<SettingModule> with StringUtil {
                   radius: 20, 
                   background: ternaryColor, 
                   foreground: primaryColor,
-                  initials: this.getInitials(RouteHandler.loggedInUser.name),
                 ),
               ),
               Column(

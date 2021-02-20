@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:parkinson_de_bolso/constant/app_constant.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/camera/dynamic_camera_module.dart';
 
 class CustomCircleAvatarButton extends StatefulWidget {
@@ -30,9 +31,12 @@ class _CustomCircleAvatarButtonState extends State<CustomCircleAvatarButton> {
 
   Future getImage() async {
     final image = await DynamicCameraModule.takePicture(context);
-    if (image != null) 
-      this.setState(() => this._image = image);
-      Function.apply(this.widget.setImage, [image]);
+    this._reloadImage(image);
+  }
+
+  void _reloadImage(image) {
+    this.setState(() => this._image = image);
+    Function.apply(this.widget.setImage, [image]);
   }
 
   Widget _buildIcon() {
@@ -59,16 +63,39 @@ class _CustomCircleAvatarButtonState extends State<CustomCircleAvatarButton> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: GestureDetector(
-        onTap: () => this.getImage(),
-        child: CircleAvatar(
-          radius: this.widget.radius,
-          child: Center(
-            child: (this._image == null) ? this._buildIcon() : this._buildImage()
+      child: Stack(
+        alignment: Alignment.topRight,
+        children: [
+          GestureDetector(
+            onTap: () => this.getImage(),
+            child: CircleAvatar(
+              radius: this.widget.radius,
+              child: Center(
+                child: (this._image == null) ? this._buildIcon() : this._buildImage()
+              ),
+              backgroundColor: this.widget.background,
+              foregroundColor: this.widget.foreground,
+            )
           ),
-          backgroundColor: this.widget.background,
-          foregroundColor: this.widget.foreground,
-        )
+          Visibility(
+            visible: this.widget.image != null || this.widget.imageUrl != null,
+            child: GestureDetector(
+              onTap: () => this._reloadImage(null),
+              child: Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.circular(50)
+                ),
+                child: Icon(
+                  Icons.close,
+                  color: ternaryColor,
+                  size: 25,
+                ),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
