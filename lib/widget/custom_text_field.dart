@@ -19,7 +19,22 @@ class CustomTextField extends StatelessWidget {
   final Function onChange;
   final TextEditingController controller;
 
-  CustomTextField({this.title, @required this.height, @required this.color, @required this.hint, @required this.icon, this.type, @required this.padding, @required this.borderRadius, this.distanceNextLine, this.inputDecoration, this.isShadow = true, this.onSaved, this.inputFormatters, this.onChange, this.controller});
+  CustomTextField(
+      {this.title,
+      @required this.height,
+      @required this.color,
+      @required this.hint,
+      @required this.icon,
+      this.type,
+      @required this.padding,
+      @required this.borderRadius,
+      this.distanceNextLine,
+      this.inputDecoration,
+      this.isShadow = true,
+      this.onSaved,
+      this.inputFormatters,
+      this.onChange,
+      this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -40,43 +55,54 @@ class CustomTextField extends StatelessWidget {
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(this.borderRadius),
-            boxShadow: (this.isShadow) ? [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 6.0,
-                offset: Offset(0, 2),
-              ),
-            ] : null,
+            boxShadow: (this.isShadow)
+                ? [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 6.0,
+                      offset: Offset(0, 2),
+                    ),
+                  ]
+                : null,
           ),
           height: this.height,
           child: TextFormField(
+            textCapitalization:
+                (this.type == null || this.type == TextInputType.text)
+                    ? TextCapitalization.words
+                    : TextCapitalization.none,
             controller: controller,
             onSaved: this.onSaved,
             onChanged: this.onChange,
             inputFormatters: this.inputFormatters,
             obscureText: (this.type == null),
             keyboardType: this.type,
-            validator: (String value) => (value.isEmpty) ? 'Campo obrigatório' : null,
+            validator: (String value) =>
+                (value.isEmpty) ? 'Campo obrigatório' : null,
             style: TextStyle(
               color: this.color,
               fontFamily: defaultFont,
             ),
-            decoration: (this.inputDecoration != null) ? this.inputDecoration : InputDecoration(
-              border: InputBorder.none,
-              contentPadding: this.padding,
-              prefixIcon: Icon(
-                this.icon,
-                color: this.color,
-              ),
-              hintText: this.hint,
-              hintStyle: TextStyle(
-                color: this.color,
-                fontFamily: defaultFont,
-              ),
-            ),
+            decoration: (this.inputDecoration != null)
+                ? this.inputDecoration
+                : InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: this.padding,
+                    prefixIcon: Icon(
+                      this.icon,
+                      color: this.color,
+                    ),
+                    hintText: this.hint,
+                    hintStyle: TextStyle(
+                      color: this.color,
+                      fontFamily: defaultFont,
+                    ),
+                  ),
           ),
         ),
-        SizedBox(height: (this.distanceNextLine == null) ? 0.0 : this.distanceNextLine)
+        SizedBox(
+            height:
+                (this.distanceNextLine == null) ? 0.0 : this.distanceNextLine)
       ],
     );
   }

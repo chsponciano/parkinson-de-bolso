@@ -21,17 +21,36 @@ class CustomTextFormField extends StatelessWidget {
   final EdgeInsets internalPadding;
   final Function validation;
   final Function onChanged;
+  final double fontSize = 14;
+  final Widget suffix;
 
-  CustomTextFormField({@required this.fieldName, @required this.hintText, this.onSaved, this.isPassword = false, this.type = TextInputType.text, @required this.prefixIcon, this.width, this.inputFormatters, this.onTap, this.showCursor = true, this.readOnly = false, this.controller, this.focusNode, this.transparent = false, this.padding, this.internalPadding, this.validation, this.onChanged });
+  CustomTextFormField(
+      {@required this.fieldName,
+      @required this.hintText,
+      this.onSaved,
+      this.isPassword = false,
+      this.type = TextInputType.text,
+      @required this.prefixIcon,
+      this.width,
+      this.inputFormatters,
+      this.onTap,
+      this.showCursor = true,
+      this.readOnly = false,
+      this.controller,
+      this.focusNode,
+      this.transparent = false,
+      this.padding,
+      this.internalPadding,
+      this.validation,
+      this.onChanged,
+      this.suffix});
 
   InputDecoration _getTransparent(double paddingValue) {
     final OutlineInputBorder _inputBorder = OutlineInputBorder(
-      borderSide: BorderSide(
-        color: alternativeColorTransparency
-      )
-    );
+        borderSide: BorderSide(color: alternativeColorTransparency));
 
     return InputDecoration(
+      suffixIcon: this.suffix,
       enabledBorder: _inputBorder,
       focusedBorder: _inputBorder,
       errorBorder: _inputBorder,
@@ -43,11 +62,11 @@ class CustomTextFormField extends StatelessWidget {
         this.prefixIcon,
         color: alternativeColorTransparency,
       ),
-      hintStyle: TextStyle(
-        color: alternativeColorTransparency
-      ),
+      hintStyle: TextStyle(color: alternativeColorTransparency),
       hintText: this.hintText,
-      contentPadding: this.internalPadding != null ? this.internalPadding : EdgeInsets.all(paddingValue),
+      contentPadding: this.internalPadding != null
+          ? this.internalPadding
+          : EdgeInsets.all(paddingValue),
       border: OutlineInputBorder(),
       filled: true,
       fillColor: Colors.transparent,
@@ -56,13 +75,12 @@ class CustomTextFormField extends StatelessWidget {
 
   InputDecoration _getColorful(double paddingValue) {
     return InputDecoration(
+      suffixIcon: this.suffix,
       prefixIcon: Icon(
         this.prefixIcon,
-        color:  formForegroundColor,
+        color: formForegroundColor,
       ),
-      hintStyle: TextStyle(
-        color:  formForegroundColor
-      ),
+      hintStyle: TextStyle(color: formForegroundColor),
       hintText: this.hintText,
       contentPadding: EdgeInsets.all(paddingValue),
       border: InputBorder.none,
@@ -85,15 +103,24 @@ class CustomTextFormField extends StatelessWidget {
           controller: this.controller,
           focusNode: this.focusNode,
           inputFormatters: this.inputFormatters,
-          decoration: this.transparent ? this._getTransparent(15.0) : this._getColorful(15.0),
+          decoration: this.transparent
+              ? this._getTransparent(15.0)
+              : this._getColorful(15.0),
           obscureText: this.isPassword ? true : false,
-          validator: this.validation != null ? this.validation : (String value) => (value.isEmpty) ? 'Campo obrigatório' : null,
+          validator: this.validation != null
+              ? this.validation
+              : (String value) => (value.isEmpty) ? 'Campo obrigatório' : null,
           onSaved: this.onSaved,
           onChanged: this.onChanged,
           keyboardType: this.type,
-          style: this.transparent ? TextStyle(
-            color: alternativeColorTransparency
-          ) : null,
+          textCapitalization:
+              (this.type == null || this.type == TextInputType.text)
+                  ? TextCapitalization.words
+                  : TextCapitalization.none,
+          style: this.transparent
+              ? TextStyle(
+                  color: alternativeColorTransparency, fontSize: this.fontSize)
+              : TextStyle(fontSize: this.fontSize),
         ),
       ),
     );

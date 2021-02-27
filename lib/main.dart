@@ -11,13 +11,17 @@ import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp],
+  );
   await DotEnv.load(fileName: '.env');
   await CameraHandler.instance.load();
   runApp(App());
 }
+
 class App extends StatefulWidget {
   @override
-  _AppState createState() => _AppState();  
+  _AppState createState() => _AppState();
 }
 
 class _AppState extends State<App> with SharedPreferencesUtil {
@@ -26,8 +30,8 @@ class _AppState extends State<App> with SharedPreferencesUtil {
   _AppState() {
     Future<dynamic> user = this.getPrefs('user_email');
     user.then((value) => this.setState(() {
-      this._firstAccess = value == null;
-    }));
+          this._firstAccess = value == null;
+        }));
   }
 
   @override
@@ -43,9 +47,7 @@ class _AppState extends State<App> with SharedPreferencesUtil {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: applicationName,
-      theme: ThemeData(
-        fontFamily: defaultFont
-      ),
+      theme: ThemeData(fontFamily: defaultFont),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: RouteHandler.instance.exchange(),
       home: this._firstAccess ? Onboarding() : SignIn(),

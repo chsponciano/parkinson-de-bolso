@@ -20,15 +20,30 @@ class PatientViewer extends StatefulWidget {
   final double horizontalPadding;
   final double spacingBetweenFields;
 
-  PatientViewer({Key key, @required this.callHigher, @required this.patient, this.horizontalPadding = 10.0, this.spacingBetweenFields = 20.0, @required this.callEdition, @required this.callRemoval}) : super(key: key);
+  PatientViewer(
+      {Key key,
+      @required this.callHigher,
+      @required this.patient,
+      this.horizontalPadding = 10.0,
+      this.spacingBetweenFields = 20.0,
+      @required this.callEdition,
+      @required this.callRemoval})
+      : super(key: key);
 
   @override
-  _PatientViewerState createState() => _PatientViewerState();  
+  _PatientViewerState createState() => _PatientViewerState();
 }
 
 class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
   List<PatientClassificationModel> _data;
-  
+  bool _changeFilter;
+
+  @override
+  void initState() {
+    this._changeFilter = false;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,47 +51,38 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
         elevation: 0,
         leading: IconButton(
           tooltip: 'Voltar',
-          icon: Icon(
-            Icons.arrow_back_sharp, 
-            color: primaryColorDashboardBar
-          ),
+          icon: Icon(Icons.arrow_back_sharp, color: primaryColorDashboardBar),
           onPressed: () => this.widget.callHigher.call(),
         ),
         actions: [
           IconButton(
             tooltip: 'Classificador de parkinson',
-            icon: Icon(
-                Icons.video_call, 
-                color: primaryColorDashboardBar
-              ),
+            icon: Icon(Icons.video_call, color: primaryColorDashboardBar),
             onPressed: () async {
-              await DynamicCameraModule.processImageSequence(context, this.widget.patient);
+              await DynamicCameraModule.processImageSequence(
+                  context, this.widget.patient);
               await this._reload();
             },
           ),
           IconButton(
             tooltip: 'Editar',
-            icon: Icon(
-                Icons.edit, 
-                color: primaryColorDashboardBar
-              ),
+            icon: Icon(Icons.edit, color: primaryColorDashboardBar),
             onPressed: () => this.widget.callEdition.call(),
           ),
           IconButton(
             tooltip: 'Excluir',
-            icon: Icon(
-                Icons.delete, 
-                color: primaryColorDashboardBar
-              ),
+            icon: Icon(Icons.delete, color: primaryColorDashboardBar),
             onPressed: () {
-              PatientService.instance.delete(this.widget.patient.id).then((_) => this.widget.callRemoval.call());
+              PatientService.instance
+                  .delete(this.widget.patient.id)
+                  .then((_) => this.widget.callRemoval.call());
             },
           ),
         ],
         backgroundColor: dashboardBarColor,
       ),
       body: CustomBackground(
-        topColor: dashboardBarColor, 
+        topColor: dashboardBarColor,
         bottomColor: ternaryColor,
         horizontalPadding: this.widget.horizontalPadding,
         margin: 50.0,
@@ -89,8 +95,8 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: CustomCircleAvatar(
-                  radius: 75, 
-                  background: ternaryColor, 
+                  radius: 75,
+                  background: ternaryColor,
                   foreground: primaryColor,
                   imagePath: this.widget.patient.imageUrl,
                 ),
@@ -100,26 +106,32 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(this.widget.patient.fullname.split(' ')[0],
+                    Text(
+                      this.widget.patient.fullname.split(' ')[0],
                       style: TextStyle(
-                        fontSize: 30,
-                        color: ternaryColor,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 1.0
-                      ),
+                          fontSize: 30,
+                          color: ternaryColor,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 1.0),
                     ),
                     SizedBox(height: this.widget.spacingBetweenFields),
                     CustomValueTitle(
                       size: 18,
                       title: 'Idade',
-                      value: this.getCurrentAge(this.widget.patient.birthdate).toString() + ' anos',
+                      value: this
+                              .getCurrentAge(this.widget.patient.birthdate)
+                              .toString() +
+                          ' anos',
                       color: ternaryColor,
                     ),
                     SizedBox(height: this.widget.spacingBetweenFields - 15),
                     CustomValueTitle(
                       size: 18,
                       title: 'Diagnóstico',
-                      value: this.getCurrentAge(this.widget.patient.diagnosis).toString() + ' anos',
+                      value: this
+                              .getCurrentAge(this.widget.patient.diagnosis)
+                              .toString() +
+                          ' anos',
                       color: ternaryColor,
                     ),
                     SizedBox(height: this.widget.spacingBetweenFields - 15),
@@ -141,31 +153,48 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
               ),
             ],
           ),
-        ), 
-        bottom: (this._data == null) ? FutureBuilder(
-          future: PatientClassificationService.instance.getAll(this.widget.patient.id),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return PatientEvolution(
-                data: snapshot.data,
-                spacingBetweenFields: this.widget.spacingBetweenFields,
-              );
-            } else {
-              return CustomCircularProgress(
-                valueColor: primaryColor,
-              );
-            }
-          },
-        ) : PatientEvolution(
-          data: this._data,
-          spacingBetweenFields: this.widget.spacingBetweenFields,
         ),
+        bottom: (this._data == null)
+            ? FutureBuilder(
+                future: PatientClassificationService.instance
+                    .getAll(this.widget.patient.id),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return PatientEvolution(
+                      data: snapshot.data,
+                      changeFilter: this._changeFilter,
+                      spacingBetweenFields: this.widget.spacingBetweenFields,
+                    );
+                  } else {
+                    return CustomCircularProgress(
+                      valueColor: primaryColor,
+                    );
+                  }
+                },
+              )
+            : PatientEvolution(
+                data: this._data,
+                changeFilter: this._changeFilter,
+                spacingBetweenFields: this.widget.spacingBetweenFields,
+              ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () =>
+            this.setState(() => this._changeFilter = !this._changeFilter),
+        tooltip: (this._changeFilter) ? 'Visualizar dados' : 'Filtrar dados',
+        child: Icon(
+          (this._changeFilter) ? Icons.bar_chart : Icons.filter_list_alt,
+          color: primaryColorDashboardBar,
+          size: 40,
+        ),
+        backgroundColor: floatingButtonDashboard,
       ),
     );
   }
 
   Future<void> _reload() async {
-    var data = await PatientClassificationService.instance.getAll(this.widget.patient.id);
+    var data = await PatientClassificationService.instance
+        .getAll(this.widget.patient.id);
     print(data);
     this.setState(() {
       this._data = data;

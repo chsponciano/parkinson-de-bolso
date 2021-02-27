@@ -10,9 +10,17 @@ class CustomDateFormField extends StatefulWidget {
   final Function onSaved;
   final IconData prefixIcon;
   final double width;
+  final List<FocusNode> focusNode;
 
-  CustomDateFormField({@required this.hintText, @required this.onSaved, @required this.prefixIcon, @required this.width, @required this.fieldName, this.controller});
-  
+  CustomDateFormField(
+      {@required this.hintText,
+      @required this.onSaved,
+      @required this.prefixIcon,
+      @required this.width,
+      @required this.fieldName,
+      this.controller,
+      @required this.focusNode});
+
   @override
   _CustomDateFormFieldState createState() => _CustomDateFormFieldState();
 }
@@ -27,10 +35,12 @@ class FirstDisabledFocusNode extends FocusNode {
 class _CustomDateFormFieldState extends State<CustomDateFormField> {
   TextEditingController _controller;
   final _format = DateFormat('dd/MM/yyyy');
-  
+
   @override
   void initState() {
-    this._controller = (this.widget.controller != null) ? this.widget.controller : TextEditingController();
+    this._controller = (this.widget.controller != null)
+        ? this.widget.controller
+        : TextEditingController();
     super.initState();
   }
 
@@ -50,24 +60,28 @@ class _CustomDateFormFieldState extends State<CustomDateFormField> {
         );
       },
     ).then((date) => {
-      if (date != null) {
-        this.setState(() {
-          this._controller.text = this._format.format(date);    
-        })
-      }
-    });
+          if (date != null)
+            {
+              this.setState(() {
+                this._controller.text = this._format.format(date);
+              })
+            }
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-    return CustomTextFormField (
+    return CustomTextFormField(
       fieldName: this.widget.fieldName,
       onSaved: this.widget.onSaved,
       width: this.widget.width,
       hintText: this.widget.hintText,
       prefixIcon: this.widget.prefixIcon,
       controller: this._controller,
-      onTap: () => this._selectDateOnCalendar(),
+      onTap: () {
+        this.widget.focusNode.forEach((field) => field.unfocus());
+        this._selectDateOnCalendar();
+      },
       showCursor: false,
       readOnly: false,
       type: TextInputType.datetime,

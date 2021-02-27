@@ -17,17 +17,19 @@ import 'package:parkinson_de_bolso/widget/custom_alert_fade.dart';
 import 'package:parkinson_de_bolso/widget/custom_back_button.dart';
 import 'package:parkinson_de_bolso/widget/custom_circular_progress.dart';
 
-enum DynamicCameraType {
-  IMAGE,
-  VIDEO
-}
+enum DynamicCameraType { IMAGE, VIDEO }
 
 class DynamicCameraModule extends StatefulWidget {
   final Color barColor;
   final DynamicCameraType type;
   final PatientModel patient;
 
-  DynamicCameraModule({ Key key, this.barColor = Colors.black, @required this.type, this.patient }) : super(key: key);
+  DynamicCameraModule(
+      {Key key,
+      this.barColor = Colors.black,
+      @required this.type,
+      this.patient})
+      : super(key: key);
 
   @override
   _DynamicCameraModuleState createState() => _DynamicCameraModuleState();
@@ -36,31 +38,38 @@ class DynamicCameraModule extends StatefulWidget {
     return await DynamicCameraModule._call(context, DynamicCameraType.IMAGE);
   }
 
-  static Future<void> processImageSequence(BuildContext context, PatientModel patientModel) async {
-    await DynamicCameraModule._call(context, DynamicCameraType.VIDEO, patientModel: patientModel);
+  static Future<void> processImageSequence(
+      BuildContext context, PatientModel patientModel) async {
+    await DynamicCameraModule._call(context, DynamicCameraType.VIDEO,
+        patientModel: patientModel);
   }
 
-  static Future<dynamic> _call(BuildContext context, DynamicCameraType cameraType, {PatientModel patientModel}) async {
+  static Future<dynamic> _call(
+      BuildContext context, DynamicCameraType cameraType,
+      {PatientModel patientModel}) async {
     return await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return DynamicCameraModule(type: cameraType, patient: patientModel);
     }));
   }
 }
 
-class _DynamicCameraModuleState extends State<DynamicCameraModule> with TickerProviderStateMixin {
+class _DynamicCameraModuleState extends State<DynamicCameraModule>
+    with TickerProviderStateMixin {
   // control status of the dynamic camera
   CountDownController _countDownController;
   AnimationController _alertErrorController;
   bool _stop, _loading, _runnig, _alert;
-  Future _initializeControllerFuture;  
+  Future _initializeControllerFuture;
   PredictService _predictService;
   CameraController _controller;
-  DynamicCameraType _type;  
+  DynamicCameraType _type;
   String _messageError;
   File _image;
 
   // dynamic camera button states
-  VoidCallback _cameraButtonOnPressed, _cameraButtonOnStart, _cameraButtonOnComplete;
+  VoidCallback _cameraButtonOnPressed,
+      _cameraButtonOnStart,
+      _cameraButtonOnComplete;
   String _cameraButtonTooltip, _cameraButtonLabel;
   Color _cameraButtonBackground;
   IconData _cameraButtonIcon;
@@ -70,8 +79,10 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> with TickerPr
 
   @override
   void initState() {
-    this._alertErrorController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
-    this._controller = CameraController(CameraHandler.instance.camera, ResolutionPreset.max);
+    this._alertErrorController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    this._controller =
+        CameraController(CameraHandler.instance.camera, ResolutionPreset.max);
     this._initializeControllerFuture = this._controller.initialize();
     this._countDownController = CountDownController();
     this._predictService = PredictService.instance;
@@ -98,9 +109,8 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> with TickerPr
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: this._buildDynamicCamera()
-        ),
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: this._buildDynamicCamera()),
       ),
     );
   }
@@ -112,32 +122,32 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> with TickerPr
           height: double.infinity,
           width: double.infinity,
           decoration: this._getDecoration(),
-          child: (this._image != null) ? null : FutureBuilder(
-            future: this._initializeControllerFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return CameraPreview(this._controller);
-              } else {
-                return Center(
-                  child: CustomCircularProgress(
-                    valueColor: primaryColor,
-                  )
-                );
-              }
-            },
-          ),
+          child: (this._image != null)
+              ? null
+              : FutureBuilder(
+                  future: this._initializeControllerFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return CameraPreview(this._controller);
+                    } else {
+                      return Center(
+                          child: CustomCircularProgress(
+                        valueColor: primaryColor,
+                      ));
+                    }
+                  },
+                ),
         ),
-
         CustomBackButton(
           backgroundColor: primaryColor,
           iconColor: ternaryColor,
           paddingValue: 20,
-          onPressed: () => (this._type != null) ? Navigator.pop(context) : this._reset(),
+          onPressed: () =>
+              (this._type != null) ? Navigator.pop(context) : this._reset(),
           visible: !this._alert,
         ),
-
         DynamicCameraButton(
-          countDownController: this._countDownController, 
+          countDownController: this._countDownController,
           tooltip: this._cameraButtonTooltip,
           backgroundColor: this._cameraButtonBackground,
           icon: this._cameraButtonIcon,
@@ -148,50 +158,40 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> with TickerPr
           isLoading: this._loading,
           visible: !this._alert,
         ),
-
         if (this._type == DynamicCameraType.VIDEO)
           DynamicCameraLinearBar(
             porcentage: this._linearBarValue,
             visible: !this._stop,
           ),
-          CustomAlertBox(
-            title: 'Resultado',
-            content: 'Taxa de Parkinson',
-            valueContent: this._linearBarValue.toInt().toString() + '%',
-            visible: this._alert,
-            buttons: [
-              CustomButtonAlertBox(
-                Icons.thumb_up, 
-                'Marcar como acerto', 
-                () {
-                  this.setState(() {
-                    this._alert = false;
-                    this._loading = true;
-                  });
-                  PatientClassificationService.instance.create(PatientClassificationModel(
-                    patientid: this.widget.patient.id,
-                    percentage: this._linearBarValue
-                  ))
+        CustomAlertBox(
+          title: 'Resultado',
+          content: 'Taxa de Parkinson',
+          valueContent: this._linearBarValue.toInt().toString() + '%',
+          visible: this._alert,
+          buttons: [
+            CustomButtonAlertBox(Icons.thumb_up, 'Marcar como acerto', () {
+              this.setState(() {
+                this._alert = false;
+                this._loading = true;
+              });
+              PatientClassificationService.instance
+                  .create(PatientClassificationModel(
+                      patientid: this.widget.patient.id,
+                      percentage: this._linearBarValue))
                   .then((_) => this.setState(() {
-                    Navigator.pop(context);
-                  }))
-                  .catchError((error) => this.printError('Erro ao salvar dados, tentar novamente!'))
-                  .whenComplete(() => this.setState(() => this._loading = false));
-                }, 
-                primaryColor
-              ),
-              CustomButtonAlertBox(
-                Icons.thumb_down, 
-                'Marcar como erro', 
-                () => this.setState(() => this._alert = false),
-                Colors.red[900]
-              )
-            ],
-          ),
+                        Navigator.pop(context);
+                      }))
+                  .catchError((error) => this
+                      .printError('Erro ao salvar dados, tentar novamente!'))
+                  .whenComplete(
+                      () => this.setState(() => this._loading = false));
+            }, primaryColor),
+            CustomButtonAlertBox(Icons.thumb_down, 'Marcar como erro',
+                () => this.setState(() => this._alert = false), Colors.red[900])
+          ],
+        ),
         CustomAlertFade(
-            controller: this._alertErrorController,
-            message: this._messageError
-        )
+            controller: this._alertErrorController, message: this._messageError)
       ],
     );
   }
@@ -199,17 +199,14 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> with TickerPr
   BoxDecoration _getDecoration() {
     if (this._image != null) {
       return BoxDecoration(
-        image: DecorationImage(
-          image: FileImage(this._image),
-          fit: BoxFit.cover
-        )
-      );
+          image: DecorationImage(
+              image: FileImage(this._image), fit: BoxFit.cover));
     }
 
     return BoxDecoration(color: Colors.black);
   }
 
-  void _loadButtonConfiguration() {  
+  void _loadButtonConfiguration() {
     switch (this._type) {
       case DynamicCameraType.IMAGE:
         this._cameraButtonIcon = Icons.camera_alt;
@@ -265,30 +262,35 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> with TickerPr
 
   void startShooting() async {
     try {
-      if (!this._runnig) { 
+      if (!this._runnig) {
         this.setState(() {
           this._runnig = true;
         });
 
         await this._countdown(3);
         await this._initializeControllerFuture;
-        this._countDownController.start();   
-        
+        this._countDownController.start();
+
         int _imageCounter = 0;
         XFile _capture;
-        
-        while(!this._stop) {
+
+        while (!this._stop) {
           _capture = await this._controller.takePicture();
-          this._predictService.evaluator(this.widget.patient.id, _imageCounter++, _capture)
-          .then((ExecutionClassificationModel execution) {
+          this
+              ._predictService
+              .evaluator(this.widget.patient.id, _imageCounter++, _capture)
+              .then((ExecutionClassificationModel execution) {
             if (execution != null)
               this.setState(() => this._linearBarValue = execution.percentage);
-            print(execution.index.toString() + ' - ' + execution.percentage.toString());
+            print(execution.index.toString() +
+                ' - ' +
+                execution.percentage.toString());
           });
           await Future.delayed(Duration(seconds: 1));
         }
 
-        final Map _conclude = await this._predictService.conclude(this.widget.patient.id);
+        final Map _conclude =
+            await this._predictService.conclude(this.widget.patient.id);
 
         if (_conclude != null) {
           this.setState(() {
@@ -297,14 +299,14 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> with TickerPr
           });
         }
       }
-    } catch (error)  {
+    } catch (error) {
       this.printError('Erro na execução da filmage!');
       this._reset();
     }
   }
 
   Future _countdown(int timer) async {
-    while(timer > 0) {
+    while (timer > 0) {
       this.setState(() => this._cameraButtonLabel = timer.toString());
       timer--;
       await Future.delayed(Duration(seconds: 1));
@@ -313,14 +315,16 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule> with TickerPr
 
   void _activateStopButton() {
     this.setState(() {
-      this._stop = false;
       this._cameraButtonLabel = null;
       this._cameraButtonIcon = Icons.pause;
       this._cameraButtonBackground = Colors.red;
-      this._cameraButtonOnPressed = () => this._reset();
+      this._cameraButtonOnPressed = () {
+        this._stop = true;
+        this._reset();
+      };
       this._cameraButtonTooltip = 'Cancelar';
     });
-  }  
+  }
 
   void printError(String error) {
     this.setState(() => this._messageError = error);

@@ -17,13 +17,20 @@ class PatientForm extends StatefulWidget {
   final double horizontalPadding;
   final double spacingBetweenFields;
 
-  PatientForm({Key key, @required this.callHigher, this.patient, this.horizontalPadding = 10.0, this.spacingBetweenFields = 20.0}) : super(key: key);
+  PatientForm(
+      {Key key,
+      @required this.callHigher,
+      this.patient,
+      this.horizontalPadding = 10.0,
+      this.spacingBetweenFields = 20.0})
+      : super(key: key);
 
   @override
-  _PatientFormState createState() => _PatientFormState();  
+  _PatientFormState createState() => _PatientFormState();
 }
 
-class _PatientFormState extends State<PatientForm> with SnackbarUtil, DateTimeUtil {
+class _PatientFormState extends State<PatientForm>
+    with SnackbarUtil, DateTimeUtil {
   final _format = DateFormat('dd/MM/yyyy');
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -32,6 +39,9 @@ class _PatientFormState extends State<PatientForm> with SnackbarUtil, DateTimeUt
   final TextEditingController _diagnosticFieldControl = TextEditingController();
   final TextEditingController _weightFieldControl = TextEditingController();
   final TextEditingController _heightFieldControl = TextEditingController();
+  final FocusNode _nameFocus = new FocusNode();
+  final FocusNode _weightFocus = new FocusNode();
+  final FocusNode _heightFocus = new FocusNode();
   bool loading;
   PatientModel _patient;
   String _id;
@@ -42,8 +52,10 @@ class _PatientFormState extends State<PatientForm> with SnackbarUtil, DateTimeUt
       this._patient = this.widget.patient.clone();
       this._id = this.widget.patient.id;
       this._nameFieldControl.text = this._patient.fullname;
-      this._birthdayFieldControl.text = this._format.format(this._patient.birthdate);
-      this._diagnosticFieldControl.text = this._format.format(this._patient.diagnosis);
+      this._birthdayFieldControl.text =
+          this._format.format(this._patient.birthdate);
+      this._diagnosticFieldControl.text =
+          this._format.format(this._patient.diagnosis);
       this._weightFieldControl.text = this._patient.weight.toString();
       this._heightFieldControl.text = this._patient.height.toString();
     } else {
@@ -71,33 +83,42 @@ class _PatientFormState extends State<PatientForm> with SnackbarUtil, DateTimeUt
 
   void _create() {
     this.setState(() => this.loading = true);
-    PatientService.instance.create(this._patient)
-    .then((PatientModel patient) {
-      this._reset();
-      this.callAlert('Paciente ${patient.fullname.split(' ')[0]} adicionado com sucesso!', SnackbarType.SUCESS);
-    })
-    .catchError((_) => this.callAlert('Erro ao inserir, tentar novamente', SnackbarType.ERROR))
-    .whenComplete(() =>  this.setState(() => this.loading = false));
+    PatientService.instance
+        .create(this._patient)
+        .then((PatientModel patient) {
+          this._reset();
+          this.callAlert(
+              'Paciente ${patient.fullname.split(' ')[0]} adicionado com sucesso!',
+              SnackbarType.SUCESS);
+        })
+        .catchError((_) => this
+            .callAlert('Erro ao inserir, tentar novamente', SnackbarType.ERROR))
+        .whenComplete(() => this.setState(() => this.loading = false));
   }
 
   void _update() {
     this.setState(() => this.loading = true);
-    PatientService.instance.update(this._patient)
-    .then((PatientModel patient) {
-      this.setState(() {
-        this._patient = this.widget.patient;
-        this._patient = patient;
-        this._patient.id = this._id;
-      });
-      this.callAlert('Paciente ${patient.fullname.split(' ')[0]} alterado com sucesso!', SnackbarType.SUCESS);
-    })
-    .catchError((_) => this.callAlert('Erro ao atualizar, tentar novamente', SnackbarType.ERROR))
-    .whenComplete(() =>  this.setState(() => this.loading = false));
+    PatientService.instance
+        .update(this._patient)
+        .then((PatientModel patient) {
+          this.setState(() {
+            this._patient = this.widget.patient;
+            this._patient = patient;
+            this._patient.id = this._id;
+          });
+          this.callAlert(
+              'Paciente ${patient.fullname.split(' ')[0]} alterado com sucesso!',
+              SnackbarType.SUCESS);
+        })
+        .catchError((_) => this.callAlert(
+            'Erro ao atualizar, tentar novamente', SnackbarType.ERROR))
+        .whenComplete(() => this.setState(() => this.loading = false));
   }
 
   void _submit() async {
     if (!this._formKey.currentState.validate()) {
-      this.callAlert('Formulário inválido!  Por favor, preencher os campos.', SnackbarType.ERROR);
+      this.callAlert('Formulário inválido!  Por favor, preencher os campos.',
+          SnackbarType.ERROR);
     } else {
       this._formKey.currentState.save();
       (this.widget.patient != null) ? this._update() : this._create();
@@ -106,129 +127,146 @@ class _PatientFormState extends State<PatientForm> with SnackbarUtil, DateTimeUt
 
   @override
   Widget build(BuildContext context) {
-    final _halfMediaWidth = (MediaQuery.of(context).size.width  / 2.0) - this.widget.horizontalPadding;
+    final _halfMediaWidth = (MediaQuery.of(context).size.width / 2.0) -
+        this.widget.horizontalPadding;
 
     return Scaffold(
       key: this._scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
-        title: (this.widget.patient == null) ? Text('Adicionar Paciente') : Text('Editar Paciente'),
+        title: (this.widget.patient == null)
+            ? Text('Adicionar Paciente')
+            : Text('Editar Paciente'),
         leading: IconButton(
           tooltip: 'Voltar',
-          icon: Icon(
-            Icons.arrow_back_sharp, 
-            color: primaryColorDashboardBar
-          ),
-          onPressed: () => (this.widget.patient != null) ? Function.apply(this.widget.callHigher, [this._patient]) : this.widget.callHigher.call(),
+          icon: Icon(Icons.arrow_back_sharp, color: primaryColorDashboardBar),
+          onPressed: () => (this.widget.patient != null)
+              ? Function.apply(this.widget.callHigher, [this._patient])
+              : this.widget.callHigher.call(),
         ),
         actions: [
           IconButton(
             tooltip: 'Salvar',
-            icon: Icon(
-              Icons.save, color: 
-              primaryColorDashboardBar
-            ),
+            icon: Icon(Icons.save, color: primaryColorDashboardBar),
             onPressed: () => this._submit(),
           ),
         ],
         backgroundColor: dashboardBarColor,
       ),
       body: CustomBackground(
-        topColor: dashboardBarColor, 
-        bottomColor: ternaryColor, 
-        loading: this.loading,
-        bottom: Container(
-          padding: EdgeInsets.only(top: 30),
-          child: Form(
-            key: this._formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomCircleAvatarButton(
-                  background: formBackgroundColor, 
-                  foreground: formForegroundColor, 
-                  radius: 100.0, 
-                  icon: Icons.add_a_photo,
-                  image: this._patient.image,
-                  imageUrl: this._patient.imageUrl,
-                  setImage: (image) {
-                    this.setState(() {
-                      this._patient.image = image;
-                      this._patient.imageUrl = null;
-                    });
-                  },
-                ),
-                SizedBox(height: this.widget.spacingBetweenFields),
-                CustomTextFormField(
-                  controller: this._nameFieldControl,
-                  fieldName: 'Nome',
-                  hintText: 'Nome Completo',
-                  prefixIcon: Icons.person,
-                  inputFormatters: [new LengthLimitingTextInputFormatter(30)],
-                  onSaved: (name) => this._patient.fullname = name,
-                ),
-                SizedBox(height: this.widget.spacingBetweenFields),
-                Container(
-                  alignment: Alignment.topCenter,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomDateFormField(
-                        controller: this._birthdayFieldControl,
-                        fieldName: 'Nascimento',
-                        width: _halfMediaWidth,
-                        hintText: 'Nascimento',
-                        prefixIcon: Icons.calendar_today, 
-                        onSaved: (birthdate) => this._patient.birthdate = this.strToDate(birthdate, DateTimeFormatUtil.BR_DATE),
-                      ),
-                      CustomDateFormField(
-                        controller: this._diagnosticFieldControl,
-                        fieldName: 'Diagnóstico',
-                        width: _halfMediaWidth,
-                        hintText: 'Diagnóstico',
-                        prefixIcon: Icons.medical_services, 
-                        onSaved: (diagnosis) => this._patient.diagnosis = this.strToDate(diagnosis, DateTimeFormatUtil.BR_DATE),
-                      ),
-                    ],
+          topColor: dashboardBarColor,
+          bottomColor: ternaryColor,
+          loading: this.loading,
+          bottom: Container(
+            padding: EdgeInsets.only(top: 30),
+            child: Form(
+              key: this._formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomCircleAvatarButton(
+                    background: formBackgroundColor,
+                    foreground: formForegroundColor,
+                    radius: 100.0,
+                    icon: Icons.add_a_photo,
+                    image: this._patient.image,
+                    imageUrl: this._patient.imageUrl,
+                    setImage: (image) {
+                      this.setState(() {
+                        this._patient.image = image;
+                        this._patient.imageUrl = null;
+                      });
+                    },
                   ),
-                ),
-                SizedBox(height: this.widget.spacingBetweenFields),
-                Container(
-                  alignment: Alignment.topCenter,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomTextFormField(
-                        controller: this._weightFieldControl,
-                        fieldName: 'Peso',
-                        width: _halfMediaWidth,
-                        hintText: 'Peso',
-                        prefixIcon: Icons.line_weight,
-                        type: TextInputType.number,
-                        inputFormatters: [new LengthLimitingTextInputFormatter(10)],
-                        onSaved: (weight) => this._patient.weight = weight,
-                      ),
-                      CustomTextFormField(
-                        controller: this._heightFieldControl,
-                        fieldName: 'Altura',
-                        width: _halfMediaWidth,
-                        hintText: 'Altura',
-                        prefixIcon: Icons.height,
-                        type: TextInputType.number,
-                        inputFormatters: [new LengthLimitingTextInputFormatter(10)],
-                        onSaved: (height) => this._patient.height = height,
-                      ),
-                    ],
+                  SizedBox(height: this.widget.spacingBetweenFields),
+                  CustomTextFormField(
+                    focusNode: this._nameFocus,
+                    controller: this._nameFieldControl,
+                    fieldName: 'Nome',
+                    hintText: 'Nome Completo',
+                    prefixIcon: Icons.person,
+                    inputFormatters: [new LengthLimitingTextInputFormatter(30)],
+                    onSaved: (name) => this._patient.fullname = name,
                   ),
-                ),
-              ], 
+                  SizedBox(height: this.widget.spacingBetweenFields),
+                  Container(
+                    alignment: Alignment.topCenter,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomDateFormField(
+                          controller: this._birthdayFieldControl,
+                          fieldName: 'Nascimento',
+                          width: _halfMediaWidth,
+                          hintText: 'Nascimento',
+                          prefixIcon: Icons.calendar_today,
+                          onSaved: (birthdate) => this._patient.birthdate = this
+                              .strToDate(birthdate, DateTimeFormatUtil.BR_DATE),
+                          focusNode: [
+                            this._heightFocus,
+                            this._weightFocus,
+                            this._nameFocus
+                          ],
+                        ),
+                        CustomDateFormField(
+                          controller: this._diagnosticFieldControl,
+                          fieldName: 'Diagnóstico',
+                          width: _halfMediaWidth,
+                          hintText: 'Diagnóstico',
+                          prefixIcon: Icons.medical_services,
+                          onSaved: (diagnosis) => this._patient.diagnosis = this
+                              .strToDate(diagnosis, DateTimeFormatUtil.BR_DATE),
+                          focusNode: [
+                            this._heightFocus,
+                            this._weightFocus,
+                            this._nameFocus
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: this.widget.spacingBetweenFields),
+                  Container(
+                    alignment: Alignment.topCenter,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomTextFormField(
+                          focusNode: this._weightFocus,
+                          controller: this._weightFieldControl,
+                          fieldName: 'Peso',
+                          width: _halfMediaWidth,
+                          hintText: 'Peso',
+                          prefixIcon: Icons.line_weight,
+                          type: TextInputType.number,
+                          inputFormatters: [
+                            new LengthLimitingTextInputFormatter(10)
+                          ],
+                          onSaved: (weight) => this._patient.weight = weight,
+                        ),
+                        CustomTextFormField(
+                          focusNode: this._heightFocus,
+                          controller: this._heightFieldControl,
+                          fieldName: 'Altura',
+                          width: _halfMediaWidth,
+                          hintText: 'Altura',
+                          prefixIcon: Icons.height,
+                          type: TextInputType.number,
+                          inputFormatters: [
+                            new LengthLimitingTextInputFormatter(10)
+                          ],
+                          onSaved: (height) => this._patient.height = height,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        horizontalPadding: this.widget.horizontalPadding, 
-        margin: 10.0
-      ),
+          horizontalPadding: this.widget.horizontalPadding,
+          margin: 10.0),
     );
   }
 }
