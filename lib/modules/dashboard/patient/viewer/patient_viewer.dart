@@ -44,6 +44,15 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
     super.initState();
   }
 
+  Widget _getPatientEvolution(
+      List<PatientClassificationModel> data, bool changeFilter) {
+    return PatientEvolution(
+      data: data,
+      changeFilter: changeFilter,
+      spacingBetweenFields: this.widget.spacingBetweenFields,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,11 +169,8 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                     .getAll(this.widget.patient.id),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return PatientEvolution(
-                      data: snapshot.data,
-                      changeFilter: this._changeFilter,
-                      spacingBetweenFields: this.widget.spacingBetweenFields,
-                    );
+                    return this._getPatientEvolution(
+                        snapshot.data, this._changeFilter);
                   } else {
                     return CustomCircularProgress(
                       valueColor: primaryColor,
@@ -172,11 +178,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                   }
                 },
               )
-            : PatientEvolution(
-                data: this._data,
-                changeFilter: this._changeFilter,
-                spacingBetweenFields: this.widget.spacingBetweenFields,
-              ),
+            : this._getPatientEvolution(_data, this._changeFilter),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () =>

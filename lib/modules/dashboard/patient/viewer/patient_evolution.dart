@@ -29,6 +29,7 @@ class _PatientEvolutionState extends State<PatientEvolution> with DateTimeUtil {
   List<ListItem> _dataYear;
   List<ListItem> _dataMonth;
   bool _annualFilter, _dataFilter;
+  int _currentYear, _currentMonth;
 
   @override
   void initState() {
@@ -44,6 +45,8 @@ class _PatientEvolutionState extends State<PatientEvolution> with DateTimeUtil {
       this._data.sort((a, b) => a.date.compareTo(b.date));
       this._dataYear = this._getDataYears();
       this._dataMonth = this._getDataMonths(this._dataYear[0].value);
+      this._currentYear = this._dataYear[0].value;
+      this._currentMonth = this._dataMonth.last.value;
       this._cacheData = this._data;
     }
   }
@@ -55,7 +58,11 @@ class _PatientEvolutionState extends State<PatientEvolution> with DateTimeUtil {
       years.add(item.date.year);
     });
 
-    return years.map((e) => ListItem(e, e.toString())).toList();
+    return years
+        .map((e) => ListItem(e, e.toString()))
+        .toList()
+        .reversed
+        .toList();
   }
 
   List<ListItem> _getDataMonths(int year) {
@@ -70,15 +77,81 @@ class _PatientEvolutionState extends State<PatientEvolution> with DateTimeUtil {
     return months.map((e) => ListItem(e, this.getMonth(e - 1))).toList();
   }
 
-  // void _filter() {
-  //   this._cacheData = this
-  //       ._data
-  //       .where((element) => (element.date.year >= this._initialDate.year &&
-  //           element.date.year <= this._finalDate.year &&
-  //           element.date.month >= this._initialDate.month &&
-  //           element.date.month <= this._finalDate.month))
-  //       .toList();
-  // }
+  void _normalizeData() {
+    if (this._cacheData.length == 1) {
+      DateTime currentDate = this._cacheData[0].date;
+      DateTime previousDate =
+          currentDate.subtract(Duration(days: (this._annualFilter) ? 31 : 1));
+
+      this._cacheData = <PatientClassificationModel>[
+        PatientClassificationModel(
+            date: previousDate, percentage: this._cacheData[0].percentage - 5),
+        this._cacheData[0]
+      ];
+    }
+  }
+
+  void averagePercentages() {
+    Map<int, List<PatientClassificationModel>> percentages = Map();
+    this._cacheData.forEach((element) {
+      if (percentages.containsKey(element.date.month)) {
+        percentages[element.date.month].add(element);
+      } else {
+        percentages.putIfAbsent(element.date.month, () => [element]);
+      }
+    });
+
+    List<PatientClassificationModel> average = [];
+    percentages.forEach((key, value) {
+      double percentage =
+          value.fold(0, (a, b) => a + b.percentage.toInt()) / value.length;
+      average.add(PatientClassificationModel(
+          date: value[0].date,
+          percentage: double.parse(percentage.toStringAsFixed(2))));
+    });
+
+    this._cacheData = average;
+  }
+
+  void _filter() {
+    if (this._annualFilter) {
+      this._cacheData = this
+          ._data
+          .where((element) => element.date.year == this._currentYear)
+          .toList();
+      this.averagePercentages();
+    } else {
+      this._cacheData = this
+          ._data
+          .where((element) =>
+              element.date.year == this._currentYear &&
+              element.date.month == this._currentMonth)
+          .toList();
+    }
+
+    this._normalizeData();
+  }
+
+  CustomLineChartDim _getChartDimensions() {
+    PatientClassificationModel maxX = this
+        ._cacheData
+        .reduce((curr, next) => curr.date.isAfter(next.date) ? curr : next);
+    PatientClassificationModel minX = this
+        ._cacheData
+        .reduce((curr, next) => curr.date.isBefore(next.date) ? curr : next);
+    PatientClassificationModel maxY = this._cacheData.reduce(
+        (curr, next) => curr.percentage > next.percentage ? curr : next);
+    PatientClassificationModel minY = this._cacheData.reduce(
+        (curr, next) => curr.percentage < next.percentage ? curr : next);
+
+    return CustomLineChartDim(
+        maxX:
+            ((this._annualFilter) ? maxX.date.month : maxX.date.day).toDouble(),
+        minX:
+            ((this._annualFilter) ? minX.date.month : minX.date.day).toDouble(),
+        maxY: maxY.percentage,
+        minY: minY.percentage);
+  }
 
   Widget _getFilterScreen() {
     return Container(
@@ -105,7 +178,12 @@ class _PatientEvolutionState extends State<PatientEvolution> with DateTimeUtil {
               CustomDropdownItem(
                 label: 'Ano: ',
                 items: this._dataYear,
-                onChange: (ListItem item) => print(item),
+                initialValue: this._dataYear[0],
+                onChange: (ListItem item) => this.setState(() {
+                  this._currentYear = item.value;
+                  this._dataMonth = this._getDataMonths(this._currentYear);
+                  this._currentMonth = this._dataMonth.last.value;
+                }),
                 color: primaryColor,
               ),
             ],
@@ -128,7 +206,9 @@ class _PatientEvolutionState extends State<PatientEvolution> with DateTimeUtil {
                 disabled: this._annualFilter,
                 label: 'Mês: ',
                 items: this._dataMonth,
-                onChange: (ListItem item) => print(item),
+                initialValue: this._dataMonth.last,
+                onChange: (ListItem item) =>
+                    this.setState(() => this._currentMonth = item.value),
                 color: primaryColor,
               ),
             ],
@@ -139,58 +219,86 @@ class _PatientEvolutionState extends State<PatientEvolution> with DateTimeUtil {
   }
 
   Widget _getDataScreen() {
-    return Container(
-      child: AnimatedCrossFade(
-          firstChild: CustomTable(
-            borderColor: primaryColor,
-            data: this._cacheData,
-            titles: ['Data', 'Porcentagem'],
-          ),
-          secondChild: CustomLineChart(data: this._cacheData),
-          crossFadeState: this._dataFilter
-              ? CrossFadeState.showFirst
-              : CrossFadeState.showSecond,
-          duration: Duration(milliseconds: 300)),
+    CustomLineChartDim _dimensions = this._getChartDimensions();
+    return Column(
+      children: [
+        SizedBox(height: 15),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Dados ' +
+                  ((!this._annualFilter)
+                      ? 'de ${this.months[this._currentMonth - 1]} '
+                      : '') +
+                  'de ${this._currentYear}',
+              style: TextStyle(color: primaryColor, fontSize: 15),
+            )
+          ],
+        ),
+        Container(
+          child: AnimatedCrossFade(
+              firstChild: CustomTable(
+                borderColor: primaryColor,
+                data: this._cacheData,
+                titles: ['Data', 'Porcentagem'],
+              ),
+              secondChild: CustomLineChart(
+                  data: this._cacheData,
+                  type: (this._annualFilter)
+                      ? CustomLineChartType.ANNUAL
+                      : CustomLineChartType.MONTHLY,
+                  dimensions: _dimensions),
+              crossFadeState: this._dataFilter
+                  ? CrossFadeState.showFirst
+                  : CrossFadeState.showSecond,
+              duration: Duration(milliseconds: 300)),
+        ),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return (this._data.length > 0)
-        ? Column(
-            children: [
-              Container(
-                padding: EdgeInsets.all(10),
-                child: Column(
+    if (this._data.length > 0) {
+      this._filter();
+
+      return Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Evolução do Parkinson',
-                          style: TextStyle(
-                              color: primaryColor,
-                              fontSize: 18,
-                              letterSpacing: 1.0),
-                        ),
-                      ],
+                    Text(
+                      'Evolução do Parkinson',
+                      style: TextStyle(
+                          color: primaryColor,
+                          fontSize: 18,
+                          letterSpacing: 1.0),
                     ),
-                    AnimatedCrossFade(
-                      firstChild: this._getFilterScreen(),
-                      secondChild: this._getDataScreen(),
-                      crossFadeState: this.widget.changeFilter
-                          ? CrossFadeState.showFirst
-                          : CrossFadeState.showSecond,
-                      duration: Duration(milliseconds: 300),
-                    )
                   ],
                 ),
-              ),
-            ],
-          )
-        : CustomNoData(
-            image: AssetImage(noData),
-          );
+                AnimatedCrossFade(
+                  firstChild: this._getFilterScreen(),
+                  secondChild: this._getDataScreen(),
+                  crossFadeState: this.widget.changeFilter
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+                  duration: Duration(milliseconds: 300),
+                )
+              ],
+            ),
+          ),
+        ],
+      );
+    } else {
+      return CustomNoData(
+        image: AssetImage(noData),
+      );
+    }
   }
 }

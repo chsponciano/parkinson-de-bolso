@@ -5,25 +5,28 @@ import 'package:parkinson_de_bolso/util/datetime_util.dart';
 import 'package:parkinson_de_bolso/util/serelization_data_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_table_row.dart';
 
-class PatientClassificationModel extends SerelizationDataUtil with DateTimeUtil {
+class PatientClassificationModel extends SerelizationDataUtil
+    with DateTimeUtil {
   String id;
   DateTime date;
   double percentage;
   String patientid;
 
-  PatientClassificationModel({this.id, this.date, this.percentage, this.patientid});
+  PatientClassificationModel(
+      {this.id, this.date, this.percentage, this.patientid});
 
   @override
-  FlSpot createSpot() {
-    return FlSpot(this.millisecondsToMonth(date.millisecondsSinceEpoch).toDouble(), percentage / 10);
+  FlSpot createSpot(bool isAnnual) {
+    return FlSpot(
+        ((isAnnual) ? this.date.month : this.date.day).toDouble(), percentage);
   }
 
   @override
   TableRow createRow() {
-    return CustomTableRow(
-      padding: EdgeInsets.all(5),
-      values: <String>[this.format.format(this.date), this.percentage.toString()]
-    ).build();
+    return CustomTableRow(padding: EdgeInsets.all(5), values: <String>[
+      this.format.format(this.date),
+      this.percentage.toString()
+    ]).build();
   }
 
   factory PatientClassificationModel.fromJson(Map<String, dynamic> json) {
@@ -34,15 +37,14 @@ class PatientClassificationModel extends SerelizationDataUtil with DateTimeUtil 
       patientid: json['patientid'],
     );
   }
-  
+
   Map toJson(bool create) {
     return {
-      if(!create)
-        'id': this.id,
-      'date': DateFormat('yyyy-MM-dd').format(this.date != null ? this.date : DateTime.now()),
+      if (!create) 'id': this.id,
+      'date': DateFormat('yyyy-MM-dd')
+          .format(this.date != null ? this.date : DateTime.now()),
       'patientid': this.patientid,
-      'percentage': this.percentage.toInt()      
+      'percentage': this.percentage.toInt()
     };
   }
-
 }

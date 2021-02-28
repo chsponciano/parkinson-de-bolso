@@ -13,13 +13,15 @@ class CustomDropdownItem extends StatefulWidget {
   final String label;
   final Color color;
   final bool disabled;
+  final ListItem initialValue;
 
   CustomDropdownItem(
       {@required this.items,
       @required this.onChange,
       @required this.color,
       @required this.label,
-      this.disabled = false});
+      this.disabled = false,
+      this.initialValue});
 
   @override
   _CustomDropdownItemState createState() => _CustomDropdownItemState();
@@ -29,13 +31,6 @@ class _CustomDropdownItemState extends State<CustomDropdownItem> {
   List<ListItem> _listItem;
   List<DropdownMenuItem<ListItem>> _dropdownMenuItems;
   ListItem _selectedItem;
-
-  void initState() {
-    super.initState();
-    if (this.widget.items != null) {
-      this._listItem = this.widget.items;
-    }
-  }
 
   List<DropdownMenuItem<ListItem>> _buildDropDownMenuItems() {
     return this
@@ -52,8 +47,8 @@ class _CustomDropdownItemState extends State<CustomDropdownItem> {
 
   @override
   Widget build(BuildContext context) {
+    this._listItem = this.widget.items;
     this._dropdownMenuItems = this._buildDropDownMenuItems();
-    this._selectedItem = _dropdownMenuItems[0].value;
 
     return Row(
       children: [
@@ -67,7 +62,9 @@ class _CustomDropdownItemState extends State<CustomDropdownItem> {
         IgnorePointer(
           ignoring: this.widget.disabled,
           child: DropdownButton(
-              value: this._selectedItem,
+              value: this._selectedItem != null
+                  ? this._selectedItem
+                  : this.widget.initialValue,
               items: this._dropdownMenuItems,
               onChanged: (value) {
                 this.setState(() {
