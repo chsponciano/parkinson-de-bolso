@@ -1,3 +1,3 @@
-# Parkinson de bolso - Aplicativo
-<p>Trabalho de conclusão de curso do bacharel Ciência de Computação pela Universidade Regional de Blumenau - FURB.</p>
-<p>Aplicativo para auxilio no acompanhamento da evolução da doença de Parkinson.</p>
+# Pocket Parkinson - Application
+<p> Final work of the Bachelor of Science in Computer Science at the Regional University of Blumenau - FURB. </p>
+<p> Application to assist in monitoring the evolution of Parkinson's disease. </p>
