@@ -21,7 +21,7 @@ class CustomTextFormField extends StatelessWidget {
   final EdgeInsets internalPadding;
   final Function validation;
   final Function onChanged;
-  final double fontSize = 14;
+  final double fontSize = 12;
   final Widget suffix;
 
   CustomTextFormField(
