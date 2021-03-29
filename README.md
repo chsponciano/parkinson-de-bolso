@@ -3,4 +3,4 @@
 <p> Application to assist in monitoring the evolution of Parkinson's disease. </p>
 
 # Demonstrative images of the APP
-<img src="assets/example/2.png" /> <img src="assets/example/3.png" /> <img src="assets/example/4.png" />
+<img src="assets/example/1.png" /> <img src="assets/example/2.png" /> <img src="assets/example/3.png" /> <img src="assets/example/4.png" />
