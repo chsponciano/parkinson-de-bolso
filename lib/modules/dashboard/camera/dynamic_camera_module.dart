@@ -92,7 +92,7 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
     this._loading = false;
     this._runnig = false;
     this._alert = false;
-    this._usage_guidance = true;
+    this._usage_guidance = this.widget.type == DynamicCameraType.VIDEO;
     this._linearBarValue = 0.0;
     super.initState();
     this._loadButtonConfiguration();
@@ -178,8 +178,8 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
           ],
         ),
         CustomAlertBox(
-          title: 'Resultado',
-          content: 'Taxa de Parkinson - Fictício',
+          title: 'Resultado Fictício',
+          content: 'Taxa de Parkinson',
           valueContent: this._linearBarValue.toInt().toString() + '%',
           visible: this._alert,
           buttons: [

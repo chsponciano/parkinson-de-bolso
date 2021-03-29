@@ -1,4 +1,4 @@
-package com.example.parkinson_de_bolso
+package com.parkinson_de_bolso.furb.tcc
 
 import io.flutter.embedding.android.FlutterActivity
 
