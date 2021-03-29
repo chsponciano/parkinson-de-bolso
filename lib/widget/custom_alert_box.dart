@@ -7,7 +7,8 @@ class CustomButtonAlertBox {
   final String tooltip;
   final VoidCallback onPressed;
   final Color color;
-  const CustomButtonAlertBox(this.icon, this.tooltip, this.onPressed, this.color);
+  const CustomButtonAlertBox(
+      this.icon, this.tooltip, this.onPressed, this.color);
 }
 
 class CustomAlertBox extends StatelessWidget {
@@ -17,9 +18,20 @@ class CustomAlertBox extends StatelessWidget {
   final String title;
   final String content;
   final String valueContent;
+  final Widget element;
   final List<CustomButtonAlertBox> buttons;
 
-  const CustomAlertBox({Key key, this.visible = true, this.borderRadius = 10.0, this.fontSize = 20, this.title, this.content, this.valueContent, this.buttons}) : super(key: key);
+  const CustomAlertBox(
+      {Key key,
+      this.visible = true,
+      this.borderRadius = 10.0,
+      this.fontSize = 20,
+      this.title,
+      this.content,
+      this.valueContent,
+      this.buttons,
+      this.element})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,54 +45,53 @@ class CustomAlertBox extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: _size,
-              padding: EdgeInsets.all(_padding),
-              decoration: BoxDecoration(
-                color: primaryColor,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(this.borderRadius), topRight: Radius.circular(this.borderRadius))
-              ),
-              child: Center(
-                child: Text(
+                width: _size,
+                padding: EdgeInsets.all(_padding),
+                decoration: BoxDecoration(
+                    color: primaryColor,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(this.borderRadius),
+                        topRight: Radius.circular(this.borderRadius))),
+                child: Center(
+                    child: Text(
                   this.title,
-                  style: TextStyle(
-                    color: ternaryColor,
-                    fontSize: this.fontSize
-                  ),
-                )
-              )
-            ),
+                  style:
+                      TextStyle(color: ternaryColor, fontSize: this.fontSize),
+                ))),
             Container(
-              width: _size,
-              padding: EdgeInsets.all(_padding * 2),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(this.borderRadius), bottomRight: Radius.circular(this.borderRadius))
-              ),
-              child: Column(
-                children: [
-                  CustomValueTitle(
-                    title: this.content,
-                    value: this.valueContent,
-                    size: this.fontSize,
-                  ),
-                  SizedBox(height: _padding),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: this.buttons.map((button) {
-                      return IconButton(
-                        icon: Icon(
-                          button.icon,
-                          size: this.fontSize * 2,
-                        ), 
-                        color: button.color,
-                        tooltip: button.tooltip,
-                        onPressed: button.onPressed
-                      );
-                    }).toList(),
-                  )
-                ],
-              )
-            ),
+                width: _size,
+                padding: EdgeInsets.all(_padding * 2),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(this.borderRadius),
+                        bottomRight: Radius.circular(this.borderRadius))),
+                child: Column(
+                  children: [
+                    if (this.element != null) this.element,
+                    if (this.element == null)
+                      CustomValueTitle(
+                        title: this.content,
+                        value: this.valueContent,
+                        size: this.fontSize,
+                      ),
+                    SizedBox(height: _padding),
+                    if (this.buttons != null)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: this.buttons.map((button) {
+                          return IconButton(
+                              icon: Icon(
+                                button.icon,
+                                size: this.fontSize * 2,
+                              ),
+                              color: button.color,
+                              tooltip: button.tooltip,
+                              onPressed: button.onPressed);
+                        }).toList(),
+                      )
+                  ],
+                )),
           ],
         ),
       ),

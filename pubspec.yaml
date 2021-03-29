@@ -28,6 +28,7 @@ dependencies:
   flutter_launcher_icons: ^0.8.1
   flutter_launcher_name: ^0.0.1
   month_picker_dialog: ^0.3.3
+  carousel_slider: ^1.4.1
   flutter_localizations:
     sdk: flutter
 

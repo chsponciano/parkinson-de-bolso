@@ -9,6 +9,7 @@ import 'package:parkinson_de_bolso/model/execution_classification_model.dart';
 import 'package:parkinson_de_bolso/model/patient_classification_model.dart';
 import 'package:parkinson_de_bolso/model/patient_model.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/camera/dynamic_camera_linear_bar.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/camera/usageInformation/usage_information.dart';
 import 'package:parkinson_de_bolso/service/patient_classification_service.dart';
 import 'package:parkinson_de_bolso/service/predict_service.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/camera/dynamic_camera_button.dart';
@@ -58,7 +59,7 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
   // control status of the dynamic camera
   CountDownController _countDownController;
   AnimationController _alertErrorController;
-  bool _stop, _loading, _runnig, _alert;
+  bool _stop, _loading, _runnig, _alert, _usage_guidance;
   Future _initializeControllerFuture;
   PredictService _predictService;
   CameraController _controller;
@@ -91,6 +92,7 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
     this._loading = false;
     this._runnig = false;
     this._alert = false;
+    this._usage_guidance = true;
     this._linearBarValue = 0.0;
     super.initState();
     this._loadButtonConfiguration();
@@ -144,7 +146,7 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
           paddingValue: 20,
           onPressed: () =>
               (this._type != null) ? Navigator.pop(context) : this._reset(),
-          visible: !this._alert,
+          visible: !this._alert && !this._usage_guidance,
         ),
         DynamicCameraButton(
           countDownController: this._countDownController,
@@ -156,7 +158,7 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
           onStart: this._cameraButtonOnStart,
           onComplete: this._cameraButtonOnComplete,
           isLoading: this._loading,
-          visible: !this._alert,
+          visible: !this._alert && !this._usage_guidance,
         ),
         if (this._type == DynamicCameraType.VIDEO)
           DynamicCameraLinearBar(
@@ -164,8 +166,20 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
             visible: !this._stop,
           ),
         CustomAlertBox(
+          title: 'Orientações de uso',
+          element: UsageInformation(),
+          visible: this._usage_guidance,
+          buttons: [
+            CustomButtonAlertBox(Icons.close, 'Fechar', () {
+              this.setState(() {
+                this._usage_guidance = false;
+              });
+            }, primaryColor)
+          ],
+        ),
+        CustomAlertBox(
           title: 'Resultado',
-          content: 'Taxa de Parkinson',
+          content: 'Taxa de Parkinson - Fictício',
           valueContent: this._linearBarValue.toInt().toString() + '%',
           visible: this._alert,
           buttons: [
