@@ -4,6 +4,7 @@ class CameraHandler {
   CameraHandler._privateConstructor();
   static final CameraHandler instance = CameraHandler._privateConstructor();
   CameraDescription _camera;
+  bool usageGuidanceShowAgain;
 
   Future<void> load() async {
     if (this._camera == null) {

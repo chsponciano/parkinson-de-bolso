@@ -197,7 +197,6 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
   Future<void> _reload() async {
     var data = await PatientClassificationService.instance
         .getAll(this.widget.patient.id);
-    print(data);
     this.setState(() {
       this._data = data;
     });

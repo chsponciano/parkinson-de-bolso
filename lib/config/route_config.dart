@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:parkinson_de_bolso/config/camera_config.dart';
 import 'package:parkinson_de_bolso/model/user_model.dart';
 import 'package:parkinson_de_bolso/modules/auth/change_password/change_password.dart';
 import 'package:parkinson_de_bolso/modules/auth/change_password/redefine_password.dart';
@@ -21,7 +22,7 @@ class _Route {
   _Route({@required this.route, @required this.handler, @required this.logged});
 }
 
-class RouteHandler with SharedPreferencesUtil{
+class RouteHandler with SharedPreferencesUtil {
   RouteHandler._privateConstructor();
   static final RouteHandler instance = RouteHandler._privateConstructor();
 
@@ -31,7 +32,8 @@ class RouteHandler with SharedPreferencesUtil{
   final Map routeMap = HashMap<String, _Route>();
 
   void define(String route, Widget handler, bool logged) {
-    routeMap.putIfAbsent(route, () => _Route(route: route, handler: handler, logged: logged));
+    routeMap.putIfAbsent(
+        route, () => _Route(route: route, handler: handler, logged: logged));
   }
 
   Widget getRoute(String routeName) {
@@ -41,24 +43,29 @@ class RouteHandler with SharedPreferencesUtil{
   void exit(context) {
     this.removePrefs('user_email');
     this.removePrefs('user_password');
+    this.removePrefs('usage_guidance');
     RouteHandler.loggedInUser = null;
     RouteHandler.session = null;
+    CameraHandler.instance.usageGuidanceShowAgain = true;
     Navigator.pushNamed(context, SignIn.routeName);
   }
 
   RouteFactory exchange() {
     return (settings) {
       _Route route = this.routeMap[settings.name];
-      
-      if (route.logged && (RouteHandler.session == null || RouteHandler.loggedInUser == null)) {
+
+      if (route.logged &&
+          (RouteHandler.session == null || RouteHandler.loggedInUser == null)) {
         route = this.routeMap[SignIn.routeName];
       }
-      
-      if (!route.logged && (RouteHandler.session != null && RouteHandler.loggedInUser != null)) {
+
+      if (!route.logged &&
+          (RouteHandler.session != null && RouteHandler.loggedInUser != null)) {
         route = this.routeMap[DashboardModule.routeName];
       }
-      
-      return MaterialPageRoute(builder: (BuildContext context) => route.handler);
+
+      return MaterialPageRoute(
+          builder: (BuildContext context) => route.handler);
     };
   }
 

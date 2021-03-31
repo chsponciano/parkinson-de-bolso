@@ -20,6 +20,8 @@ class CustomAlertBox extends StatelessWidget {
   final String valueContent;
   final Widget element;
   final List<CustomButtonAlertBox> buttons;
+  final VoidCallback close;
+  final Widget extra;
 
   const CustomAlertBox(
       {Key key,
@@ -30,7 +32,9 @@ class CustomAlertBox extends StatelessWidget {
       this.content,
       this.valueContent,
       this.buttons,
-      this.element})
+      this.element,
+      this.close,
+      this.extra})
       : super(key: key);
 
   @override
@@ -52,12 +56,26 @@ class CustomAlertBox extends StatelessWidget {
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(this.borderRadius),
                         topRight: Radius.circular(this.borderRadius))),
-                child: Center(
-                    child: Text(
-                  this.title,
-                  style:
-                      TextStyle(color: ternaryColor, fontSize: this.fontSize),
-                ))),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: (this.buttons != null) ? 0 : 30,
+                    ),
+                    Text(
+                      this.title,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: ternaryColor, fontSize: this.fontSize),
+                    ),
+                    (this.buttons != null)
+                        ? SizedBox()
+                        : IconButton(
+                            icon: Icon(Icons.close, color: ternaryColor),
+                            onPressed: this.close,
+                          )
+                  ],
+                )),
             Container(
                 width: _size,
                 padding: EdgeInsets.all(_padding * 2),
@@ -89,7 +107,8 @@ class CustomAlertBox extends StatelessWidget {
                               tooltip: button.tooltip,
                               onPressed: button.onPressed);
                         }).toList(),
-                      )
+                      ),
+                    if (extra != null) extra
                   ],
                 )),
           ],

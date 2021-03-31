@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/config/route_config.dart';
 import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/service/notify_service.dart';
 import 'package:parkinson_de_bolso/service/setting_service.dart';
 import 'package:parkinson_de_bolso/util/string_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_background.dart';
@@ -107,6 +108,7 @@ class _SettingModuleState extends State<SettingModule> with StringUtil {
               padding: EdgeInsets.all(10),
               onPressed: () {
                 this.setState(() {
+                  NotifyService.instance.sendComment(this.comment.text);
                   this._leaveComment = false;
                 });
               },

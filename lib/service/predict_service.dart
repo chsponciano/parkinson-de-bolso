@@ -11,9 +11,11 @@ class PredictService {
   final AwsCognitoService awsCognitoService = AwsCognitoService.instance;
   static final String path = '/api/predict';
 
-  Future<ExecutionClassificationModel> evaluator(String patientId, int index, XFile image) async {
+  Future<ExecutionClassificationModel> evaluator(
+      String patientId, int index, XFile image) async {
     try {
-      final SigV4Request signedRequest = this.awsCognitoService.getSigV4Request('POST', path, body: {
+      final SigV4Request signedRequest =
+          this.awsCognitoService.getSigV4Request('POST', path, body: {
         'patientid': patientId,
         'index': index,
         'image': {
@@ -21,7 +23,8 @@ class PredictService {
           'filename': image.path.split('/').last
         }
       });
-      final http.Response response = await http.post(signedRequest.url, headers: signedRequest.headers, body: signedRequest.body);
+      final http.Response response = await http.post(signedRequest.url,
+          headers: signedRequest.headers, body: signedRequest.body);
 
       if (response.statusCode == 200) {
         return ExecutionClassificationModel.fromJson(jsonDecode(response.body));
@@ -29,14 +32,16 @@ class PredictService {
         throw Exception('Failed to evaluator predict');
       }
     } catch (error) {
-      print(error);
       return null;
     }
   }
 
   Future<Map> conclude(String patientId) async {
-    final SigV4Request signedRequest = this.awsCognitoService.getSigV4Request('DELETE', path);
-    final http.Response response = await http.delete('${signedRequest.url}/$patientId', headers: signedRequest.headers);
+    final SigV4Request signedRequest =
+        this.awsCognitoService.getSigV4Request('DELETE', path);
+    final http.Response response = await http.delete(
+        '${signedRequest.url}/$patientId',
+        headers: signedRequest.headers);
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);

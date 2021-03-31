@@ -32,6 +32,10 @@ class _AppState extends State<App> with SharedPreferencesUtil {
     user.then((value) => this.setState(() {
           this._firstAccess = value == null;
         }));
+
+    Future<dynamic> usageGuidance = this.getPrefs('usage_guidance');
+    usageGuidance.then((value) =>
+        CameraHandler.instance.usageGuidanceShowAgain = value == null);
   }
 
   @override

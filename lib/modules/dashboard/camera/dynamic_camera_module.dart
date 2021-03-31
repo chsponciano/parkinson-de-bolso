@@ -13,9 +13,11 @@ import 'package:parkinson_de_bolso/modules/dashboard/camera/usageInformation/usa
 import 'package:parkinson_de_bolso/service/patient_classification_service.dart';
 import 'package:parkinson_de_bolso/service/predict_service.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/camera/dynamic_camera_button.dart';
+import 'package:parkinson_de_bolso/util/shared_preferences_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_alert_box.dart';
 import 'package:parkinson_de_bolso/widget/custom_alert_fade.dart';
 import 'package:parkinson_de_bolso/widget/custom_back_button.dart';
+import 'package:parkinson_de_bolso/widget/custom_checkbox.dart';
 import 'package:parkinson_de_bolso/widget/custom_circular_progress.dart';
 
 enum DynamicCameraType { IMAGE, VIDEO }
@@ -55,11 +57,16 @@ class DynamicCameraModule extends StatefulWidget {
 }
 
 class _DynamicCameraModuleState extends State<DynamicCameraModule>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, SharedPreferencesUtil {
   // control status of the dynamic camera
   CountDownController _countDownController;
   AnimationController _alertErrorController;
-  bool _stop, _loading, _runnig, _alert, _usage_guidance;
+  bool _stop,
+      _loading,
+      _runnig,
+      _alert,
+      _usageGuidance,
+      _usageGuidanceShowAgain;
   Future _initializeControllerFuture;
   PredictService _predictService;
   CameraController _controller;
@@ -92,7 +99,8 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
     this._loading = false;
     this._runnig = false;
     this._alert = false;
-    this._usage_guidance = this.widget.type == DynamicCameraType.VIDEO;
+    this._usageGuidance = this.widget.type == DynamicCameraType.VIDEO &&
+        CameraHandler.instance.usageGuidanceShowAgain;
     this._linearBarValue = 0.0;
     super.initState();
     this._loadButtonConfiguration();
@@ -146,7 +154,7 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
           paddingValue: 20,
           onPressed: () =>
               (this._type != null) ? Navigator.pop(context) : this._reset(),
-          visible: !this._alert && !this._usage_guidance,
+          visible: !this._alert && !this._usageGuidance,
         ),
         DynamicCameraButton(
           countDownController: this._countDownController,
@@ -158,7 +166,7 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
           onStart: this._cameraButtonOnStart,
           onComplete: this._cameraButtonOnComplete,
           isLoading: this._loading,
-          visible: !this._alert && !this._usage_guidance,
+          visible: !this._alert && !this._usageGuidance,
         ),
         if (this._type == DynamicCameraType.VIDEO)
           DynamicCameraLinearBar(
@@ -168,14 +176,29 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
         CustomAlertBox(
           title: 'Orientações de uso',
           element: UsageInformation(),
-          visible: this._usage_guidance,
-          buttons: [
-            CustomButtonAlertBox(Icons.close, 'Fechar', () {
-              this.setState(() {
-                this._usage_guidance = false;
-              });
-            }, primaryColor)
-          ],
+          visible: this._usageGuidance,
+          close: () {
+            if (!CameraHandler.instance.usageGuidanceShowAgain) {
+              this.addPrefs('usage_guidance', 'no');
+            }
+
+            this.setState(() {
+              this._usageGuidance = false;
+            });
+          },
+          extra: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomCheckbox(
+                activeColor: primaryColor,
+                checkColor: ternaryColor,
+                caption: 'Não mostrar novamente?',
+                height: 30,
+                remember: (status) =>
+                    {CameraHandler.instance.usageGuidanceShowAgain = !status},
+              )
+            ],
+          ),
         ),
         CustomAlertBox(
           title: 'Resultado Fictício',
@@ -195,8 +218,6 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
                   .then((_) => this.setState(() {
                         Navigator.pop(context);
                       }))
-                  .catchError((error) => this
-                      .printError('Erro ao salvar dados, tentar novamente!'))
                   .whenComplete(
                       () => this.setState(() => this._loading = false));
             }, primaryColor),
@@ -296,9 +317,6 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
               .then((ExecutionClassificationModel execution) {
             if (execution != null)
               this.setState(() => this._linearBarValue = execution.percentage);
-            print(execution.index.toString() +
-                ' - ' +
-                execution.percentage.toString());
           });
           await Future.delayed(Duration(seconds: 1));
         }
@@ -314,7 +332,6 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
         }
       }
     } catch (error) {
-      this.printError('Erro na execução da filmage!');
       this._reset();
     }
   }
