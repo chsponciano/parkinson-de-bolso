@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 import 'package:parkinson_de_bolso/model/patient_model.dart';
 import 'package:parkinson_de_bolso/service/patient_service.dart';
 import 'package:parkinson_de_bolso/util/datetime_util.dart';
@@ -140,7 +140,8 @@ class _PatientFormState extends State<PatientForm>
             : Text('Editar Paciente'),
         leading: IconButton(
           tooltip: 'Voltar',
-          icon: Icon(Icons.arrow_back_sharp, color: primaryColorDashboardBar),
+          icon: Icon(Icons.arrow_back_sharp,
+              color: ThemeConfig.primaryColorDashboardBar),
           onPressed: () => (this.widget.patient != null)
               ? Function.apply(this.widget.callHigher, [this._patient])
               : this.widget.callHigher.call(),
@@ -148,15 +149,15 @@ class _PatientFormState extends State<PatientForm>
         actions: [
           IconButton(
             tooltip: 'Salvar',
-            icon: Icon(Icons.save, color: primaryColorDashboardBar),
+            icon: Icon(Icons.save, color: ThemeConfig.primaryColorDashboardBar),
             onPressed: () => this._submit(),
           ),
         ],
-        backgroundColor: dashboardBarColor,
+        backgroundColor: ThemeConfig.dashboardBarColor,
       ),
       body: CustomBackground(
-          topColor: dashboardBarColor,
-          bottomColor: ternaryColor,
+          topColor: ThemeConfig.dashboardBarColor,
+          bottomColor: ThemeConfig.ternaryColor,
           loading: this.loading,
           bottom: Container(
             padding: EdgeInsets.only(top: 30),
@@ -166,8 +167,8 @@ class _PatientFormState extends State<PatientForm>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomCircleAvatarButton(
-                    background: formBackgroundColor,
-                    foreground: formForegroundColor,
+                    background: ThemeConfig.formBackgroundColor,
+                    foreground: ThemeConfig.formForegroundColor,
                     radius: 100.0,
                     icon: Icons.add_a_photo,
                     image: this._patient.image,

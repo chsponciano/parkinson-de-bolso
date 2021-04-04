@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/constant/assest_path.dart';
+import 'package:parkinson_de_bolso/config/app_config.dart';
 
 class CustomTitlePage extends StatelessWidget {
   final String title;
@@ -7,7 +7,11 @@ class CustomTitlePage extends StatelessWidget {
   final double distanceNextLine;
   final bool addIcon;
 
-  CustomTitlePage({@required this.title, @required this.color, this.distanceNextLine, this.addIcon = false});
+  CustomTitlePage(
+      {@required this.title,
+      @required this.color,
+      this.distanceNextLine,
+      this.addIcon = false});
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +19,10 @@ class CustomTitlePage extends StatelessWidget {
       children: [
         if (this.addIcon)
           Image(
-            image: AssetImage(icon),
+            image: AppConfig.instance.assetConfig.get('icon'),
             height: 120,
           ),
-          SizedBox(height: 15),
+        SizedBox(height: 15),
         Text(
           this.title,
           style: TextStyle(

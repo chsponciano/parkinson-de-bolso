@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:parkinson_de_bolso/config/route_config.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 import 'package:parkinson_de_bolso/modules/auth/auth_module.dart';
 import 'package:parkinson_de_bolso/modules/auth/change_password/verification_code.dart';
 import 'package:parkinson_de_bolso/service/aws_cognito_service.dart';
@@ -17,7 +17,8 @@ class RedefinePassword extends StatefulWidget {
   _RedefinePasswordState createState() => _RedefinePasswordState();
 }
 
-class _RedefinePasswordState extends State<RedefinePassword> with ValidationFieldUtil {
+class _RedefinePasswordState extends State<RedefinePassword>
+    with ValidationFieldUtil {
   GlobalKey<FormState> _formKey;
   TextEditingController _email;
   EdgeInsets _padding;
@@ -26,7 +27,7 @@ class _RedefinePasswordState extends State<RedefinePassword> with ValidationFiel
   bool _loading;
 
   @override
-  void initState() { 
+  void initState() {
     this._formKey = GlobalKey<FormState>();
     this._email = TextEditingController();
     this._padding = EdgeInsets.symmetric(vertical: 20, horizontal: 0);
@@ -43,7 +44,7 @@ class _RedefinePasswordState extends State<RedefinePassword> with ValidationFiel
         response = 'E-mail inválido';
       }
     } else {
-        response = 'Campo obrigatório';
+      response = 'Campo obrigatório';
     }
     return response;
   }
@@ -51,20 +52,20 @@ class _RedefinePasswordState extends State<RedefinePassword> with ValidationFiel
   @override
   Widget build(BuildContext context) {
     return AuthModule(
-      widgetTitle: titleRedefinePassword,
+      widgetTitle: 'Redefinir senha',
       activateBackButton: true,
       loading: this._loading,
       children: [
         if (this._errorInserting)
-          CustomErrorBox(message: 'Ocorreu algum erro, favor tentar novamente!'),
-          SizedBox(height: 10),
+          CustomErrorBox(
+              message: 'Ocorreu algum erro, favor tentar novamente!'),
+        SizedBox(height: 10),
         Text(
           'Esqueceu a senha? Preecha o campo abaixo para reiniciar a senha.',
           style: TextStyle(
-            color: ternaryColor,
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold
-          ),
+              color: ThemeConfig.ternaryColor,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 10),
         Form(
@@ -89,7 +90,7 @@ class _RedefinePasswordState extends State<RedefinePassword> with ValidationFiel
         CustomRaisedButton(
           label: 'Redefinir senha',
           width: double.infinity,
-          background: ternaryColor,
+          background: ThemeConfig.ternaryColor,
           padding: EdgeInsets.symmetric(vertical: 5.0),
           paddingInternal: EdgeInsets.all(15.0),
           onPressed: () {
@@ -98,16 +99,19 @@ class _RedefinePasswordState extends State<RedefinePassword> with ValidationFiel
                 this._loading = true;
                 this._errorInserting = false;
               });
-              AwsCognitoService.instance.forgotPassword(this._email.text).then((_) {
-                RouteHandler.arguments.clear();
-                RouteHandler.arguments.add(this._email.text);
-                Navigator.pushNamed(context, VerificationCode.routeName);
-              })
-              .catchError((_) => this._errorInserting = true)
-              .whenComplete(() => this.setState(() => this._loading = false));
+              AwsCognitoService.instance
+                  .forgotPassword(this._email.text)
+                  .then((_) {
+                    RouteConfig.arguments.clear();
+                    RouteConfig.arguments.add(this._email.text);
+                    Navigator.pushNamed(context, VerificationCode.routeName);
+                  })
+                  .catchError((_) => this._errorInserting = true)
+                  .whenComplete(
+                      () => this.setState(() => this._loading = false));
             }
           },
-          textColor: primaryColor,
+          textColor: ThemeConfig.primaryColor,
           elevation: 5.0,
           style: TextStyle(
             letterSpacing: 1.5,

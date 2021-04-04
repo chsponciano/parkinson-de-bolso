@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 import 'package:parkinson_de_bolso/model/user_model.dart';
 import 'package:parkinson_de_bolso/modules/auth/auth_module.dart';
 import 'package:parkinson_de_bolso/modules/auth/sign_in/sign_in.dart';
@@ -129,7 +129,7 @@ class _SignUpState extends State<SignUp>
   @override
   Widget build(BuildContext context) {
     return AuthModule(
-      widgetTitle: titleSignUp,
+      widgetTitle: 'Criar conta',
       activateBackButton: true,
       loading: this._loading,
       children: [
@@ -195,7 +195,7 @@ class _SignUpState extends State<SignUp>
                 CustomRaisedButton(
                   label: 'Criar conta',
                   width: double.infinity,
-                  background: ternaryColor,
+                  background: ThemeConfig.ternaryColor,
                   padding: EdgeInsets.symmetric(vertical: 10.0),
                   paddingInternal: EdgeInsets.all(15.0),
                   onPressed: () {
@@ -220,7 +220,7 @@ class _SignUpState extends State<SignUp>
                           () => this.setState(() => this._loading = false));
                     }
                   },
-                  textColor: primaryColor,
+                  textColor: ThemeConfig.primaryColor,
                   elevation: 5.0,
                   style: TextStyle(
                     letterSpacing: 1.5,

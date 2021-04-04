@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:parkinson_de_bolso/config/route_config.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 import 'package:parkinson_de_bolso/modules/auth/auth_module.dart';
 import 'package:parkinson_de_bolso/modules/auth/change_password/change_password.dart';
 import 'package:parkinson_de_bolso/widget/custom_error_box.dart';
@@ -24,7 +24,7 @@ class _VerificationCodeState extends State<VerificationCode> {
   bool _loading;
 
   @override
-  void initState() { 
+  void initState() {
     this._formKey = GlobalKey<FormState>();
     this._code = TextEditingController();
     this._padding = EdgeInsets.symmetric(vertical: 20, horizontal: 0);
@@ -44,20 +44,20 @@ class _VerificationCodeState extends State<VerificationCode> {
   @override
   Widget build(BuildContext context) {
     return AuthModule(
-      widgetTitle: titleRedefinePassword,
+      widgetTitle: 'Redefinir senha',
       activateBackButton: true,
       loading: this._loading,
       children: [
         if (this._errorInserting)
-          CustomErrorBox(message: 'Código inválido, favor conferir seu e-mail!'),
-          SizedBox(height: 10),
+          CustomErrorBox(
+              message: 'Código inválido, favor conferir seu e-mail!'),
+        SizedBox(height: 10),
         Text(
           'Digite o código enviado em seu e-mail.',
           style: TextStyle(
-            color: ternaryColor,
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold
-          ),
+              color: ThemeConfig.ternaryColor,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 10),
         Form(
@@ -82,16 +82,16 @@ class _VerificationCodeState extends State<VerificationCode> {
         CustomRaisedButton(
           label: 'Confirmar reinicio',
           width: double.infinity,
-          background: ternaryColor,
+          background: ThemeConfig.ternaryColor,
           padding: EdgeInsets.symmetric(vertical: 25.0),
           paddingInternal: EdgeInsets.all(15.0),
           onPressed: () {
             if (this._formKey.currentState.validate()) {
-              RouteHandler.arguments.add(this._code.text);
+              RouteConfig.arguments.add(this._code.text);
               Navigator.pushNamed(context, ChangePassword.routeName);
             }
           },
-          textColor: primaryColor,
+          textColor: ThemeConfig.primaryColor,
           elevation: 5.0,
           style: TextStyle(
             letterSpacing: 1.5,

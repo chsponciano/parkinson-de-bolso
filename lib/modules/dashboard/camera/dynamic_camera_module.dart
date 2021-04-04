@@ -3,8 +3,9 @@ import 'package:camera/camera.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:parkinson_de_bolso/config/app_config.dart';
 import 'package:parkinson_de_bolso/config/camera_config.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 import 'package:parkinson_de_bolso/model/execution_classification_model.dart';
 import 'package:parkinson_de_bolso/model/patient_classification_model.dart';
 import 'package:parkinson_de_bolso/model/patient_model.dart';
@@ -61,12 +62,7 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
   // control status of the dynamic camera
   CountDownController _countDownController;
   AnimationController _alertErrorController;
-  bool _stop,
-      _loading,
-      _runnig,
-      _alert,
-      _usageGuidance,
-      _usageGuidanceShowAgain;
+  bool _stop, _loading, _runnig, _alert, _usageGuidance;
   Future _initializeControllerFuture;
   PredictService _predictService;
   CameraController _controller;
@@ -90,7 +86,7 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
     this._alertErrorController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     this._controller =
-        CameraController(CameraHandler.instance.camera, ResolutionPreset.max);
+        CameraController(CameraConfig.instance.camera, ResolutionPreset.max);
     this._initializeControllerFuture = this._controller.initialize();
     this._countDownController = CountDownController();
     this._predictService = PredictService.instance;
@@ -100,7 +96,7 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
     this._runnig = false;
     this._alert = false;
     this._usageGuidance = this.widget.type == DynamicCameraType.VIDEO &&
-        CameraHandler.instance.usageGuidanceShowAgain;
+        AppConfig.instance.usageGuidance;
     this._linearBarValue = 0.0;
     super.initState();
     this._loadButtonConfiguration();
@@ -142,15 +138,15 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
                     } else {
                       return Center(
                           child: CustomCircularProgress(
-                        valueColor: primaryColor,
+                        valueColor: ThemeConfig.primaryColor,
                       ));
                     }
                   },
                 ),
         ),
         CustomBackButton(
-          backgroundColor: primaryColor,
-          iconColor: ternaryColor,
+          backgroundColor: ThemeConfig.primaryColor,
+          iconColor: ThemeConfig.ternaryColor,
           paddingValue: 20,
           onPressed: () =>
               (this._type != null) ? Navigator.pop(context) : this._reset(),
@@ -178,7 +174,7 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
           element: UsageInformation(),
           visible: this._usageGuidance,
           close: () {
-            if (!CameraHandler.instance.usageGuidanceShowAgain) {
+            if (!AppConfig.instance.usageGuidance) {
               this.addPrefs('usage_guidance', 'no');
             }
 
@@ -190,12 +186,12 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomCheckbox(
-                activeColor: primaryColor,
-                checkColor: ternaryColor,
+                activeColor: ThemeConfig.primaryColor,
+                checkColor: ThemeConfig.ternaryColor,
                 caption: 'Não mostrar novamente?',
                 height: 30,
                 remember: (status) =>
-                    {CameraHandler.instance.usageGuidanceShowAgain = !status},
+                    {AppConfig.instance.usageGuidance = !status},
               )
             ],
           ),
@@ -220,7 +216,7 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
                       }))
                   .whenComplete(
                       () => this.setState(() => this._loading = false));
-            }, primaryColor),
+            }, ThemeConfig.primaryColor),
             CustomButtonAlertBox(Icons.thumb_down, 'Marcar como erro',
                 () => this.setState(() => this._alert = false), Colors.red[900])
           ],

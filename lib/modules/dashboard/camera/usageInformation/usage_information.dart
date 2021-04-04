@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
-import 'package:parkinson_de_bolso/constant/assest_path.dart';
+import 'package:parkinson_de_bolso/config/app_config.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 
 class UsageInformation extends StatefulWidget {
   final List cardList = [
-    BoxStage(text: 'Primeiramente, posicione o paciente.', image: oneState),
+    BoxStage(
+        text: 'Primeiramente, posicione o paciente.',
+        image: AppConfig.instance.assetConfig.get('oneState')),
     BoxStage(
         text: 'Agora, aponte o celular verticalmente em direção ao paciente.',
-        image: twoState),
+        image: AppConfig.instance.assetConfig.get('twoState')),
     BoxStage(
         text: 'Clique no botão e acompanhe o paciente caminhar.',
-        image: threeState),
+        image: AppConfig.instance.assetConfig.get('threeState')),
     BoxStage(
       text: 'Estamos em fase de teste, não se preocupe com o resultado.',
-      image: fourState,
+      image: AppConfig.instance.assetConfig.get('fourState'),
       width: 100,
     ),
   ];
@@ -52,7 +54,7 @@ class _UsageInformationState extends State<UsageInformation> {
               height: MediaQuery.of(context).size.height * 0.30,
               width: MediaQuery.of(context).size.width,
               child: Card(
-                color: primaryColor,
+                color: ThemeConfig.primaryColor,
                 child: card,
               ),
             );
@@ -65,7 +67,7 @@ class _UsageInformationState extends State<UsageInformation> {
 
 class BoxStage extends StatelessWidget {
   final String text;
-  final String image;
+  final AssetImage image;
   final double width;
 
   const BoxStage({Key key, this.text, this.image, this.width})
@@ -75,8 +77,8 @@ class BoxStage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Image.asset(
-          this.image,
+        Image(
+          image: this.image,
           width: width,
         ),
         Padding(
@@ -84,7 +86,7 @@ class BoxStage extends StatelessWidget {
           child: Text(
             this.text,
             textAlign: TextAlign.center,
-            style: TextStyle(color: ternaryColor),
+            style: TextStyle(color: ThemeConfig.ternaryColor),
           ),
         )
       ],

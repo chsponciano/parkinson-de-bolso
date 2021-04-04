@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 import 'package:parkinson_de_bolso/widget/custom_value_title.dart';
 
 class CustomButtonAlertBox {
@@ -52,7 +52,7 @@ class CustomAlertBox extends StatelessWidget {
                 width: _size,
                 padding: EdgeInsets.all(_padding),
                 decoration: BoxDecoration(
-                    color: primaryColor,
+                    color: ThemeConfig.primaryColor,
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(this.borderRadius),
                         topRight: Radius.circular(this.borderRadius))),
@@ -66,12 +66,14 @@ class CustomAlertBox extends StatelessWidget {
                       this.title,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: ternaryColor, fontSize: this.fontSize),
+                          color: ThemeConfig.ternaryColor,
+                          fontSize: this.fontSize),
                     ),
                     (this.buttons != null)
                         ? SizedBox()
                         : IconButton(
-                            icon: Icon(Icons.close, color: ternaryColor),
+                            icon: Icon(Icons.close,
+                                color: ThemeConfig.ternaryColor),
                             onPressed: this.close,
                           )
                   ],

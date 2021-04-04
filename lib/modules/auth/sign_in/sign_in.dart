@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 import 'package:parkinson_de_bolso/modules/auth/auth_module.dart';
 import 'package:parkinson_de_bolso/modules/auth/change_password/redefine_password.dart';
 import 'package:parkinson_de_bolso/modules/auth/sign_up/sign_up.dart';
@@ -21,7 +21,8 @@ class SignIn extends StatefulWidget {
   _SignInState createState() => _SignInState();
 }
 
-class _SignInState extends State<SignIn> with SharedPreferencesUtil, ValidationFieldUtil {
+class _SignInState extends State<SignIn>
+    with SharedPreferencesUtil, ValidationFieldUtil {
   GlobalKey<FormState> _formKey;
   TextEditingController _email;
   TextEditingController _password;
@@ -33,7 +34,7 @@ class _SignInState extends State<SignIn> with SharedPreferencesUtil, ValidationF
   var _loading;
 
   @override
-  void initState() { 
+  void initState() {
     this._formKey = GlobalKey<FormState>();
     this._email = TextEditingController();
     this._password = TextEditingController();
@@ -49,7 +50,10 @@ class _SignInState extends State<SignIn> with SharedPreferencesUtil, ValidationF
   void validateCachedUser() async {
     String email = await this.getPrefs('user_email');
     String password = await this.getPrefs('user_password');
-    if (email != null && email.isNotEmpty && password != null && password.isNotEmpty) {
+    if (email != null &&
+        email.isNotEmpty &&
+        password != null &&
+        password.isNotEmpty) {
       this.authenticate(email, password, true);
     }
   }
@@ -61,11 +65,10 @@ class _SignInState extends State<SignIn> with SharedPreferencesUtil, ValidationF
         response = 'E-mail inválido';
       }
     } else {
-        response = 'Campo obrigatório';
+      response = 'Campo obrigatório';
     }
     return response;
   }
-
 
   void authenticate(String email, String password, bool inCache) {
     if (inCache || this._formKey.currentState.validate()) {
@@ -83,82 +86,84 @@ class _SignInState extends State<SignIn> with SharedPreferencesUtil, ValidationF
       }).catchError((error) {
         this.setState(() {
           this._errorAuthenticate = true;
-          if (error is String)
-            this._errorMessage = error;
+          if (error is String) this._errorMessage = error;
         });
       }).whenComplete(() => this.setState(() {
-        this._loading = false;
-      }));
+            this._loading = false;
+          }));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return AuthModule(
-      widgetTitle: titleSignIn,
+      widgetTitle: 'Acessar conta',
       loading: this._loading,
       children: [
         Form(
-          key: this._formKey,
-          child: Column(
-            children: [
-              if (this._errorAuthenticate)
-                CustomErrorBox(message: (this._errorMessage != null) ? this._errorMessage : 'Ocorreu algum erro, favor tentar novamente!'),
-              CustomTextFormField(
-                controller: this._email,
-                fieldName: 'Email',
-                hintText: 'Digite seu e-mail',
-                prefixIcon: Icons.email,
-                inputFormatters: [new LengthLimitingTextInputFormatter(30)],
-                type: TextInputType.emailAddress,
-                transparent: true,
-                padding: this._padding,
-                internalPadding: this._internalPadding,
-                validation: validateEmailField,
-              ),
-              CustomTextFormField(
-                controller: this._password,
-                fieldName: 'Senha',
-                hintText: 'Digite sua senha',
-                prefixIcon: Icons.lock,
-                inputFormatters: [new LengthLimitingTextInputFormatter(30)],
-                type: TextInputType.visiblePassword,
-                transparent: true,
-                isPassword: true,
-                padding: this._padding,
-                internalPadding: this._internalPadding,
-              ),
-            ],
-          )
-        ),
+            key: this._formKey,
+            child: Column(
+              children: [
+                if (this._errorAuthenticate)
+                  CustomErrorBox(
+                      message: (this._errorMessage != null)
+                          ? this._errorMessage
+                          : 'Ocorreu algum erro, favor tentar novamente!'),
+                CustomTextFormField(
+                  controller: this._email,
+                  fieldName: 'Email',
+                  hintText: 'Digite seu e-mail',
+                  prefixIcon: Icons.email,
+                  inputFormatters: [new LengthLimitingTextInputFormatter(30)],
+                  type: TextInputType.emailAddress,
+                  transparent: true,
+                  padding: this._padding,
+                  internalPadding: this._internalPadding,
+                  validation: validateEmailField,
+                ),
+                CustomTextFormField(
+                  controller: this._password,
+                  fieldName: 'Senha',
+                  hintText: 'Digite sua senha',
+                  prefixIcon: Icons.lock,
+                  inputFormatters: [new LengthLimitingTextInputFormatter(30)],
+                  type: TextInputType.visiblePassword,
+                  transparent: true,
+                  isPassword: true,
+                  padding: this._padding,
+                  internalPadding: this._internalPadding,
+                ),
+              ],
+            )),
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             CustomCheckbox(
-              activeColor: ternaryColor,
-              checkColor: primaryColor,
+              activeColor: ThemeConfig.ternaryColor,
+              checkColor: ThemeConfig.primaryColor,
               caption: 'Lembrar',
               remember: (value) => setState(() => this._remember = value),
               height: 20.0,
             ),
             CustomAnchorText(
-              alignment: Alignment.centerRight,
-              caption: 'Esqueceu a senha?',
-              color: ternaryColor,
-              onPressed: () => Navigator.pushNamed(context, RedefinePassword.routeName)
-            )
+                alignment: Alignment.centerRight,
+                caption: 'Esqueceu a senha?',
+                color: ThemeConfig.ternaryColor,
+                onPressed: () =>
+                    Navigator.pushNamed(context, RedefinePassword.routeName))
           ],
         ),
         SizedBox(height: 5),
         CustomRaisedButton(
           label: 'Acessar',
           width: double.infinity,
-          background: ternaryColor,
+          background: ThemeConfig.ternaryColor,
           padding: EdgeInsets.symmetric(vertical: 25.0),
           paddingInternal: EdgeInsets.all(15.0),
-          onPressed: () => this.authenticate(this._email.text, this._password.text, false),
-          textColor: primaryColor,
+          onPressed: () =>
+              this.authenticate(this._email.text, this._password.text, false),
+          textColor: ThemeConfig.primaryColor,
           elevation: 5.0,
           style: TextStyle(
             letterSpacing: 1.5,

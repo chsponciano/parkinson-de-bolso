@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 
 class ListItem {
   int value;
@@ -55,7 +55,9 @@ class _CustomDropdownItemState extends State<CustomDropdownItem> {
         Text(
           this.widget.label,
           style: TextStyle(
-              color: (this.widget.disabled) ? Colors.grey : primaryColor,
+              color: (this.widget.disabled)
+                  ? Colors.grey
+                  : ThemeConfig.primaryColor,
               fontSize: 16),
         ),
         SizedBox(width: 5),

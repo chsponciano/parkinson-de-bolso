@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
-import 'package:parkinson_de_bolso/constant/assest_path.dart';
+import 'package:parkinson_de_bolso/config/app_config.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 
 class InformativeIllustration extends StatelessWidget {
   @override
@@ -12,27 +12,25 @@ class InformativeIllustration extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Image(
-            image: AssetImage(onboardingImage),
+            image: AppConfig.instance.assetConfig.get('onboarding'),
             height: 400.0,
           ),
           Text(
-            applicationName,
+            AppConfig.instance.applicationName,
             style: TextStyle(
-                color: ternaryColor,
+                color: ThemeConfig.ternaryColor,
                 fontSize: 30.0,
                 fontWeight: FontWeight.w300,
-                letterSpacing: 1.0
-            ),
+                letterSpacing: 1.0),
           ),
           SizedBox(height: 10.0),
           Text(
-            caption,
+            AppConfig.instance.caption,
             style: TextStyle(
-                color: ternaryColor,
+                color: ThemeConfig.ternaryColor,
                 fontSize: 18.0,
                 fontWeight: FontWeight.w300,
-                letterSpacing: 1.0
-            ),
+                letterSpacing: 1.0),
           )
         ],
       ),

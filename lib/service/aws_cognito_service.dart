@@ -1,36 +1,39 @@
-
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:amazon_cognito_identity_dart_2/sig_v4.dart';
-import 'package:parkinson_de_bolso/config/route_config.dart';
+import 'package:parkinson_de_bolso/config/app_config.dart';
 import 'package:parkinson_de_bolso/model/user_model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AwsCognitoService {
   AwsCognitoService._privateConstructor();
-  static final AwsCognitoService instance = AwsCognitoService._privateConstructor();
-  final CognitoUserPool _userPool = CognitoUserPool(env['AWS_USER_POOL_ID'], env['AWS_CLIENT_ID']);
+  static final AwsCognitoService instance =
+      AwsCognitoService._privateConstructor();
+  final CognitoUserPool _userPool =
+      CognitoUserPool(env['AWS_USER_POOL_ID'], env['AWS_CLIENT_ID']);
 
-  SigV4Request getSigV4Request(String method, String path, {Map queryParams, Map body}) {
-    final CognitoCredentials credentials = CognitoCredentials(env['AWS_IDENTITY_POOL_ID'], this._userPool);
-    final AwsSigV4Client awsSigV4Client = AwsSigV4Client(credentials.accessKeyId, credentials.secretAccessKey, env['AWS_HOST']);
-    
-    return SigV4Request(
-      awsSigV4Client, 
-      method: method, 
-      path: path, 
-      authorizationHeader: RouteHandler.session.getIdToken().getJwtToken(),
-      queryParams: queryParams,
-      body: body
-    );
+  SigV4Request getSigV4Request(String method, String path,
+      {Map queryParams, Map body}) {
+    final CognitoCredentials credentials =
+        CognitoCredentials(env['AWS_IDENTITY_POOL_ID'], this._userPool);
+    final AwsSigV4Client awsSigV4Client = AwsSigV4Client(
+        credentials.accessKeyId, credentials.secretAccessKey, env['AWS_HOST']);
+
+    return SigV4Request(awsSigV4Client,
+        method: method,
+        path: path,
+        authorizationHeader:
+            AppConfig.instance.session.getIdToken().getJwtToken(),
+        queryParams: queryParams,
+        body: body);
   }
 
   Future signUp(UserModel user) async {
     try {
-      final userAttributes = [
-        AttributeArg(name: 'name', value: user.name)
-      ];
+      final userAttributes = [AttributeArg(name: 'name', value: user.name)];
 
-      await this._userPool.signUp(user.email, user.password, userAttributes: userAttributes);
+      await this
+          ._userPool
+          .signUp(user.email, user.password, userAttributes: userAttributes);
     } on CognitoClientException catch (e) {
       if (e.code == 'UsernameExistsException') {
         throw 'E-mail já cadastrado';
@@ -51,16 +54,15 @@ class AwsCognitoService {
     } on CognitoClientException catch (_) {
       throw 'E-mail e/ou senha incorreta';
     }
-    
-    Map<String, String> attributes = await this.getAttributes(cognitoUser);
-    RouteHandler.loggedInUser = UserModel(
-      email: email, 
-      password: password, 
-      name: attributes['name'],
-      id: attributes['id']
-    );
 
-    RouteHandler.session = session;
+    Map<String, String> attributes = await this.getAttributes(cognitoUser);
+    AppConfig.instance.loggedInUser = UserModel(
+        email: email,
+        password: password,
+        name: attributes['name'],
+        id: attributes['id']);
+
+    AppConfig.instance.session = session;
   }
 
   Future<void> forgotPassword(String email) async {
@@ -68,20 +70,23 @@ class AwsCognitoService {
     await cognitoUser.forgotPassword();
   }
 
-  Future<bool> changePassword(String email, String code, String newPassword) async {
+  Future<bool> changePassword(
+      String email, String code, String newPassword) async {
     final cognitoUser = new CognitoUser(email, this._userPool);
     return await cognitoUser.confirmPassword(code, newPassword);
   }
 
   Future<bool> deleteUser() async {
-    final cognitoUser = new CognitoUser(RouteHandler.loggedInUser.email, this._userPool);
+    final cognitoUser =
+        new CognitoUser(AppConfig.instance.loggedInUser.email, this._userPool);
     return await cognitoUser.deleteUser();
   }
 
   Future<Map<String, String>> getAttributes(CognitoUser cognitoUser) async {
     final Map<String, String> attributes = Map();
 
-    (await cognitoUser.getUserAttributes()).forEach((CognitoUserAttribute userAttributes) {
+    (await cognitoUser.getUserAttributes())
+        .forEach((CognitoUserAttribute userAttributes) {
       if (userAttributes.name == 'sub') {
         attributes['id'] = userAttributes.value;
       }

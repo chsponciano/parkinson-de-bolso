@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
-import 'package:parkinson_de_bolso/constant/assest_path.dart';
+import 'package:parkinson_de_bolso/config/app_config.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 import 'package:parkinson_de_bolso/model/patient_classification_model.dart';
 import 'package:parkinson_de_bolso/util/datetime_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_dropdown_item.dart';
@@ -167,7 +167,7 @@ class _PatientEvolutionState extends State<PatientEvolution> with DateTimeUtil {
             children: [
               CustomToggle(
                 trackColor: Colors.indigo[800],
-                background: primaryColor,
+                background: ThemeConfig.primaryColor,
                 action: (status) {
                   this.setState(() {
                     this._annualFilter = status;
@@ -184,7 +184,7 @@ class _PatientEvolutionState extends State<PatientEvolution> with DateTimeUtil {
                   this._dataMonth = this._getDataMonths(this._currentYear);
                   this._currentMonth = this._dataMonth.last.value;
                 }),
-                color: primaryColor,
+                color: ThemeConfig.primaryColor,
               ),
             ],
           ),
@@ -194,7 +194,7 @@ class _PatientEvolutionState extends State<PatientEvolution> with DateTimeUtil {
             children: [
               CustomToggle(
                 trackColor: Colors.indigo[800],
-                background: primaryColor,
+                background: ThemeConfig.primaryColor,
                 action: (status) {
                   this.setState(() {
                     this._dataFilter = status;
@@ -209,7 +209,7 @@ class _PatientEvolutionState extends State<PatientEvolution> with DateTimeUtil {
                 initialValue: this._dataMonth.last,
                 onChange: (ListItem item) =>
                     this.setState(() => this._currentMonth = item.value),
-                color: primaryColor,
+                color: ThemeConfig.primaryColor,
               ),
             ],
           )
@@ -232,14 +232,14 @@ class _PatientEvolutionState extends State<PatientEvolution> with DateTimeUtil {
                       ? 'de ${this.months[this._currentMonth - 1]} '
                       : '') +
                   'de ${this._currentYear}',
-              style: TextStyle(color: primaryColor, fontSize: 15),
+              style: TextStyle(color: ThemeConfig.primaryColor, fontSize: 15),
             )
           ],
         ),
         Container(
           child: AnimatedCrossFade(
               firstChild: CustomTable(
-                borderColor: primaryColor,
+                borderColor: ThemeConfig.primaryColor,
                 data: this._cacheData,
                 titles: ['Data', 'Porcentagem'],
               ),
@@ -276,7 +276,7 @@ class _PatientEvolutionState extends State<PatientEvolution> with DateTimeUtil {
                     Text(
                       'Evolução do Parkinson',
                       style: TextStyle(
-                          color: primaryColor,
+                          color: ThemeConfig.primaryColor,
                           fontSize: 18,
                           letterSpacing: 1.0),
                     ),
@@ -296,9 +296,7 @@ class _PatientEvolutionState extends State<PatientEvolution> with DateTimeUtil {
         ],
       );
     } else {
-      return CustomNoData(
-        image: AssetImage(noData),
-      );
+      return CustomNoData(image: AppConfig.instance.assetConfig.get('noData'));
     }
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 
 class CustomTextField extends StatelessWidget {
   final double height;
@@ -47,7 +47,7 @@ class CustomTextField extends StatelessWidget {
             style: TextStyle(
               color: this.color,
               fontWeight: FontWeight.bold,
-              fontFamily: defaultFont,
+              fontFamily: ThemeConfig.defaultFont,
             ),
           ),
         SizedBox(height: 10.0),
@@ -81,7 +81,7 @@ class CustomTextField extends StatelessWidget {
                 (value.isEmpty) ? 'Campo obrigatório' : null,
             style: TextStyle(
               color: this.color,
-              fontFamily: defaultFont,
+              fontFamily: ThemeConfig.defaultFont,
             ),
             decoration: (this.inputDecoration != null)
                 ? this.inputDecoration
@@ -95,7 +95,7 @@ class CustomTextField extends StatelessWidget {
                     hintText: this.hint,
                     hintStyle: TextStyle(
                       color: this.color,
-                      fontFamily: defaultFont,
+                      fontFamily: ThemeConfig.defaultFont,
                     ),
                   ),
           ),

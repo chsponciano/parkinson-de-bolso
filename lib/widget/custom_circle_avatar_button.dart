@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/camera/dynamic_camera_module.dart';
 
 class CustomCircleAvatarButton extends StatefulWidget {
@@ -12,15 +12,23 @@ class CustomCircleAvatarButton extends StatefulWidget {
   final String imageUrl;
   final Function setImage;
 
-  CustomCircleAvatarButton({@required this.background, @required this.foreground, @required this.radius, @required this.icon, this.image, this.imageUrl, @required this.setImage});
+  CustomCircleAvatarButton(
+      {@required this.background,
+      @required this.foreground,
+      @required this.radius,
+      @required this.icon,
+      this.image,
+      this.imageUrl,
+      @required this.setImage});
 
   @override
-  _CustomCircleAvatarButtonState createState() => _CustomCircleAvatarButtonState();
+  _CustomCircleAvatarButtonState createState() =>
+      _CustomCircleAvatarButtonState();
 }
 
 class _CustomCircleAvatarButtonState extends State<CustomCircleAvatarButton> {
   File _image;
-  
+
   @override
   void initState() {
     if (this.widget.image != null) {
@@ -41,7 +49,7 @@ class _CustomCircleAvatarButtonState extends State<CustomCircleAvatarButton> {
 
   Widget _buildIcon() {
     if (this.widget.imageUrl != null) {
-      return CircleAvatar (
+      return CircleAvatar(
         radius: this.widget.radius,
         backgroundImage: NetworkImage(this.widget.imageUrl),
       );
@@ -67,16 +75,16 @@ class _CustomCircleAvatarButtonState extends State<CustomCircleAvatarButton> {
         alignment: Alignment.topRight,
         children: [
           GestureDetector(
-            onTap: () => this.getImage(),
-            child: CircleAvatar(
-              radius: this.widget.radius,
-              child: Center(
-                child: (this._image == null) ? this._buildIcon() : this._buildImage()
-              ),
-              backgroundColor: this.widget.background,
-              foregroundColor: this.widget.foreground,
-            )
-          ),
+              onTap: () => this.getImage(),
+              child: CircleAvatar(
+                radius: this.widget.radius,
+                child: Center(
+                    child: (this._image == null)
+                        ? this._buildIcon()
+                        : this._buildImage()),
+                backgroundColor: this.widget.background,
+                foregroundColor: this.widget.foreground,
+              )),
           Visibility(
             visible: this.widget.image != null || this.widget.imageUrl != null,
             child: GestureDetector(
@@ -84,12 +92,11 @@ class _CustomCircleAvatarButtonState extends State<CustomCircleAvatarButton> {
               child: Container(
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: primaryColor,
-                  borderRadius: BorderRadius.circular(50)
-                ),
+                    color: ThemeConfig.primaryColor,
+                    borderRadius: BorderRadius.circular(50)),
                 child: Icon(
                   Icons.close,
-                  color: ternaryColor,
+                  color: ThemeConfig.ternaryColor,
                   size: 25,
                 ),
               ),

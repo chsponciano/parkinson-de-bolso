@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:parkinson_de_bolso/config/app_config.dart';
 import 'package:parkinson_de_bolso/config/route_config.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 import 'package:parkinson_de_bolso/service/notify_service.dart';
 import 'package:parkinson_de_bolso/service/setting_service.dart';
 import 'package:parkinson_de_bolso/util/string_util.dart';
@@ -39,8 +40,8 @@ class _SettingModuleState extends State<SettingModule> with StringUtil {
       padding: EdgeInsets.all(10),
       paddingInternal: EdgeInsets.all(20),
       label: action.label,
-      background: primaryColor,
-      textColor: ternaryColor,
+      background: ThemeConfig.primaryColor,
+      textColor: ThemeConfig.ternaryColor,
       onPressed: action.action,
       width: double.infinity,
       elevation: 0,
@@ -66,7 +67,7 @@ class _SettingModuleState extends State<SettingModule> with StringUtil {
             this.setState(() => this._loading = true);
             SettingService.instance
                 .deleteAccount()
-                .then((_) => RouteHandler.instance.exit(context))
+                .then((_) => RouteConfig.instance.exit(context))
                 .whenComplete(() => this.setState(() => this._loading = false));
           }))
         ],
@@ -81,7 +82,7 @@ class _SettingModuleState extends State<SettingModule> with StringUtil {
           padding: EdgeInsets.all(30),
           child: Text(
             'Deixar um comentário',
-            style: TextStyle(color: primaryColor, fontSize: 20),
+            style: TextStyle(color: ThemeConfig.primaryColor, fontSize: 20),
           ),
         ),
         SingleChildScrollView(
@@ -93,7 +94,7 @@ class _SettingModuleState extends State<SettingModule> with StringUtil {
               controller: this.comment,
               decoration: InputDecoration(
                   border: OutlineInputBorder(
-                      borderSide: BorderSide(color: primaryColor))),
+                      borderSide: BorderSide(color: ThemeConfig.primaryColor))),
               keyboardType: TextInputType.multiline,
               maxLines: null,
             ),
@@ -103,7 +104,7 @@ class _SettingModuleState extends State<SettingModule> with StringUtil {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CustomRaisedButton(
-              background: primaryColor,
+              background: ThemeConfig.primaryColor,
               label: 'Enviar',
               padding: EdgeInsets.all(10),
               onPressed: () {
@@ -112,11 +113,11 @@ class _SettingModuleState extends State<SettingModule> with StringUtil {
                   this._leaveComment = false;
                 });
               },
-              textColor: ternaryColor,
+              textColor: ThemeConfig.ternaryColor,
               elevation: 0,
             ),
             CustomRaisedButton(
-              background: primaryColor,
+              background: ThemeConfig.primaryColor,
               label: 'Voltar',
               padding: EdgeInsets.all(10),
               onPressed: () {
@@ -124,7 +125,7 @@ class _SettingModuleState extends State<SettingModule> with StringUtil {
                   this._leaveComment = false;
                 });
               },
-              textColor: ternaryColor,
+              textColor: ThemeConfig.ternaryColor,
               elevation: 0,
             )
           ],
@@ -136,30 +137,31 @@ class _SettingModuleState extends State<SettingModule> with StringUtil {
   @override
   Widget build(BuildContext context) {
     this.comment.clear();
-    if (RouteHandler.loggedInUser == null) return Text('User not logged in');
+    if (AppConfig.instance.loggedInUser == null)
+      return Text('User not logged in');
 
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
           automaticallyImplyLeading: false,
           centerTitle: true,
-          backgroundColor: dashboardBarColor,
+          backgroundColor: ThemeConfig.dashboardBarColor,
           title: Text('Configurações'),
           actions: [
             IconButton(
               tooltip: 'Sair',
               icon: Icon(
                 Icons.logout,
-                color: ternaryColor,
+                color: ThemeConfig.ternaryColor,
               ),
-              onPressed: () => RouteHandler.instance.exit(context),
+              onPressed: () => RouteConfig.instance.exit(context),
             )
           ],
         ),
         body: CustomBackground(
             margin: 10.0,
-            topColor: dashboardBarColor,
-            bottomColor: ternaryColor,
+            topColor: ThemeConfig.dashboardBarColor,
+            bottomColor: ThemeConfig.ternaryColor,
             loading: this._loading,
             top: Container(
               padding: EdgeInsets.all(15),
@@ -171,8 +173,8 @@ class _SettingModuleState extends State<SettingModule> with StringUtil {
                     padding: EdgeInsets.only(right: 20),
                     child: CustomCircleAvatar(
                       radius: 20,
-                      background: ternaryColor,
-                      foreground: primaryColor,
+                      background: ThemeConfig.ternaryColor,
+                      foreground: ThemeConfig.primaryColor,
                     ),
                   ),
                   Column(
@@ -180,13 +182,15 @@ class _SettingModuleState extends State<SettingModule> with StringUtil {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        RouteHandler.loggedInUser.name,
-                        style: TextStyle(color: ternaryColor, fontSize: 18),
+                        AppConfig.instance.loggedInUser.name,
+                        style: TextStyle(
+                            color: ThemeConfig.ternaryColor, fontSize: 18),
                       ),
                       SizedBox(height: 5),
                       Text(
-                        RouteHandler.loggedInUser.email,
-                        style: TextStyle(color: ternaryColor, fontSize: 16),
+                        AppConfig.instance.loggedInUser.email,
+                        style: TextStyle(
+                            color: ThemeConfig.ternaryColor, fontSize: 16),
                       )
                     ],
                   ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:parkinson_de_bolso/config/route_config.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 import 'package:parkinson_de_bolso/modules/auth/auth_module.dart';
 import 'package:parkinson_de_bolso/modules/auth/sign_in/sign_in.dart';
 import 'package:parkinson_de_bolso/service/aws_cognito_service.dart';
@@ -26,7 +26,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   bool _loading;
 
   @override
-  void initState() { 
+  void initState() {
     this._formKey = GlobalKey<FormState>();
     this._password = TextEditingController();
     this._confirmPassword = TextEditingController();
@@ -40,20 +40,16 @@ class _ChangePasswordState extends State<ChangePassword> {
   @override
   Widget build(BuildContext context) {
     return AuthModule(
-      widgetTitle: titleRedefinePassword,
+      widgetTitle: 'Redefinir senha',
       activateBackButton: true,
       loading: this._loading,
       children: [
-        if (this._errorInserting)
-          CustomErrorBox(message: 'Código Inválido!'),
-          SizedBox(height: 10),
+        if (this._errorInserting) CustomErrorBox(message: 'Código Inválido!'),
+        SizedBox(height: 10),
         Text(
           'Digite sua nova senha!',
           style: TextStyle(
-            color: ternaryColor,
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold
-          ),
+              color: ThemeConfig.ternaryColor, fontSize: 18.0, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 20),
         Form(
@@ -101,7 +97,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         CustomRaisedButton(
           label: 'Redefinir senha',
           width: double.infinity,
-          background: ternaryColor,
+          background: ThemeConfig.ternaryColor,
           padding: EdgeInsets.symmetric(vertical: 25.0),
           paddingInternal: EdgeInsets.all(15.0),
           onPressed: () {
@@ -110,7 +106,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                 this._loading = true;
                 this._errorInserting = false;
               });
-              AwsCognitoService.instance.changePassword(RouteHandler.arguments[0], RouteHandler.arguments[1], this._password.text).then((value) {
+              AwsCognitoService.instance
+                  .changePassword(RouteConfig.arguments[0],
+                      RouteConfig.arguments[1], this._password.text)
+                  .then((value) {
                 if (value) {
                   Navigator.pushNamed(context, SignIn.routeName);
                 } else {
@@ -119,7 +118,7 @@ class _ChangePasswordState extends State<ChangePassword> {
               }).whenComplete(() => this.setState(() => this._loading = false));
             }
           },
-          textColor: primaryColor,
+          textColor: ThemeConfig.primaryColor,
           elevation: 5.0,
           style: TextStyle(
             letterSpacing: 1.5,

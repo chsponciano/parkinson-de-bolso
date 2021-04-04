@@ -1,10 +1,8 @@
 import 'dart:collection';
 
-import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:parkinson_de_bolso/config/camera_config.dart';
-import 'package:parkinson_de_bolso/model/user_model.dart';
+import 'package:parkinson_de_bolso/config/app_config.dart';
 import 'package:parkinson_de_bolso/modules/auth/change_password/change_password.dart';
 import 'package:parkinson_de_bolso/modules/auth/change_password/redefine_password.dart';
 import 'package:parkinson_de_bolso/modules/auth/change_password/verification_code.dart';
@@ -22,12 +20,11 @@ class _Route {
   _Route({@required this.route, @required this.handler, @required this.logged});
 }
 
-class RouteHandler with SharedPreferencesUtil {
-  RouteHandler._privateConstructor();
-  static final RouteHandler instance = RouteHandler._privateConstructor();
+class RouteConfig with SharedPreferencesUtil {
+  RouteConfig._privateConstructor();
+  static final RouteConfig instance = RouteConfig._privateConstructor();
+  final AppConfig _appConfig = AppConfig.instance;
 
-  static UserModel loggedInUser;
-  static CognitoUserSession session;
   static List arguments = <String>[];
   final Map routeMap = HashMap<String, _Route>();
 
@@ -44,9 +41,9 @@ class RouteHandler with SharedPreferencesUtil {
     this.removePrefs('user_email');
     this.removePrefs('user_password');
     this.removePrefs('usage_guidance');
-    RouteHandler.loggedInUser = null;
-    RouteHandler.session = null;
-    CameraHandler.instance.usageGuidanceShowAgain = true;
+    this._appConfig.loggedInUser = null;
+    this._appConfig.session = null;
+    this._appConfig.usageGuidance = null;
     Navigator.pushNamed(context, SignIn.routeName);
   }
 
@@ -55,12 +52,14 @@ class RouteHandler with SharedPreferencesUtil {
       _Route route = this.routeMap[settings.name];
 
       if (route.logged &&
-          (RouteHandler.session == null || RouteHandler.loggedInUser == null)) {
+          (this._appConfig.session == null ||
+              this._appConfig.loggedInUser == null)) {
         route = this.routeMap[SignIn.routeName];
       }
 
       if (!route.logged &&
-          (RouteHandler.session != null && RouteHandler.loggedInUser != null)) {
+          (this._appConfig.session != null &&
+              this._appConfig.loggedInUser != null)) {
         route = this.routeMap[DashboardModule.routeName];
       }
 
@@ -70,7 +69,7 @@ class RouteHandler with SharedPreferencesUtil {
   }
 
   static void configureRoutes() {
-    RouteHandler route = RouteHandler.instance;
+    RouteConfig route = RouteConfig.instance;
     route.define(Onboarding.routeName, Onboarding(), false);
     route.define(SignIn.routeName, SignIn(), false);
     route.define(SignUp.routeName, SignUp(), false);

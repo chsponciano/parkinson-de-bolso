@@ -1,10 +1,9 @@
 import 'package:camera/camera.dart';
 
-class CameraHandler {
-  CameraHandler._privateConstructor();
-  static final CameraHandler instance = CameraHandler._privateConstructor();
+class CameraConfig {
+  CameraConfig._privateConstructor();
+  static final CameraConfig instance = CameraConfig._privateConstructor();
   CameraDescription _camera;
-  bool usageGuidanceShowAgain;
 
   Future<void> load() async {
     if (this._camera == null) {

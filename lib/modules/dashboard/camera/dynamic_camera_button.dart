@@ -1,7 +1,7 @@
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 
 class DynamicCameraButton extends StatefulWidget {
   final CountDownController countDownController;
@@ -15,7 +15,19 @@ class DynamicCameraButton extends StatefulWidget {
   final bool isLoading;
   final bool visible;
 
-  const DynamicCameraButton({Key key, @required this.countDownController, this.tooltip, this.backgroundColor, this.icon, this.onPressed, this.companionLabel, this.onStart, this.onComplete, this.isLoading = false, @required this.visible}) : super(key: key);
+  const DynamicCameraButton(
+      {Key key,
+      @required this.countDownController,
+      this.tooltip,
+      this.backgroundColor,
+      this.icon,
+      this.onPressed,
+      this.companionLabel,
+      this.onStart,
+      this.onComplete,
+      this.isLoading = false,
+      @required this.visible})
+      : super(key: key);
 
   @override
   _DynamicCameraButtonState createState() => _DynamicCameraButtonState();
@@ -53,8 +65,11 @@ class _DynamicCameraButtonState extends State<DynamicCameraButton> {
                     width: _size,
                     height: _size,
                     color: Colors.grey[300],
-                    fillColor: (this._runnig) ? Colors.red[900] : Colors.grey[300],
-                    backgroundColor: (this.widget.backgroundColor != null) ? this.widget.backgroundColor : primaryColor,
+                    fillColor:
+                        (this._runnig) ? Colors.red[900] : Colors.grey[300],
+                    backgroundColor: (this.widget.backgroundColor != null)
+                        ? this.widget.backgroundColor
+                        : ThemeConfig.primaryColor,
                     strokeWidth: 5.0,
                     strokeCap: StrokeCap.round,
                     isReverse: false,
@@ -73,23 +88,27 @@ class _DynamicCameraButtonState extends State<DynamicCameraButton> {
                     },
                   ),
                   IconButton(
-                    tooltip: this.widget.tooltip,
-                    icon: (this.widget.isLoading) ? CircularProgressIndicator(
-                      strokeWidth: 3.0,
-                      valueColor: AlwaysStoppedAnimation<Color>(ternaryColor),
-                    ) : (this.widget.companionLabel == null) ? Icon(
-                      this.widget.icon,
-                      color: ternaryColor,
-                      size: 30,
-                    ) : Text(
-                      this.widget.companionLabel,
-                      style: TextStyle(
-                        fontSize: 30,
-                        color: ternaryColor,
-                      ),
-                    ), 
-                    onPressed: this.widget.onPressed
-                  ),
+                      tooltip: this.widget.tooltip,
+                      icon: (this.widget.isLoading)
+                          ? CircularProgressIndicator(
+                              strokeWidth: 3.0,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  ThemeConfig.ternaryColor),
+                            )
+                          : (this.widget.companionLabel == null)
+                              ? Icon(
+                                  this.widget.icon,
+                                  color: ThemeConfig.ternaryColor,
+                                  size: 30,
+                                )
+                              : Text(
+                                  this.widget.companionLabel,
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    color: ThemeConfig.ternaryColor,
+                                  ),
+                                ),
+                      onPressed: this.widget.onPressed),
                 ],
               ),
             ],
@@ -98,5 +117,4 @@ class _DynamicCameraButtonState extends State<DynamicCameraButton> {
       ),
     );
   }
-
 }

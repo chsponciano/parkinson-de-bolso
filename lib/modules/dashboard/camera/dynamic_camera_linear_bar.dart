@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 
 class DynamicCameraLinearBar extends StatelessWidget {
   final double porcentage;
@@ -21,7 +21,7 @@ class DynamicCameraLinearBar extends StatelessWidget {
             displayText: '%',
             direction: Axis.vertical,
             verticalDirection: VerticalDirection.up,
-            progressColor: primaryColor,
+            progressColor: ThemeConfig.primaryColor,
           ),
         ),
       ),

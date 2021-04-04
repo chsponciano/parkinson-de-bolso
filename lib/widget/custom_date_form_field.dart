@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 import 'package:parkinson_de_bolso/widget/custom_text_form_field.dart';
 
 class CustomDateFormField extends StatefulWidget {
@@ -54,7 +54,8 @@ class _CustomDateFormFieldState extends State<CustomDateFormField> {
         return Theme(
           data: ThemeData.light().copyWith(
             dialogBackgroundColor: Colors.white,
-            colorScheme: ColorScheme.light(primary: dashboardBarColor),
+            colorScheme:
+                ColorScheme.light(primary: ThemeConfig.dashboardBarColor),
           ),
           child: child,
         );

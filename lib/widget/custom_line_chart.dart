@@ -1,6 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 import 'package:parkinson_de_bolso/util/datetime_util.dart';
 import 'package:parkinson_de_bolso/util/serelization_data_util.dart';
 
@@ -39,8 +39,10 @@ class _CustomLineChartState extends State<CustomLineChart> with DateTimeUtil {
         bottomTitles: SideTitles(
           showTitles: true,
           reservedSize: 22,
-          getTextStyles: (value) => const TextStyle(
-              color: primaryColor, fontWeight: FontWeight.bold, fontSize: 8),
+          getTextStyles: (value) => TextStyle(
+              color: ThemeConfig.primaryColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 8),
           getTitles: (value) => (this.widget.type == CustomLineChartType.ANNUAL)
               ? this.getMonth(value.toInt() - 1)
               : value.toInt().toString(),
@@ -50,8 +52,8 @@ class _CustomLineChartState extends State<CustomLineChart> with DateTimeUtil {
           interval:
               (this.widget.dimensions.maxY - this.widget.dimensions.minY) / 3,
           showTitles: true,
-          getTextStyles: (value) => const TextStyle(
-            color: primaryColor,
+          getTextStyles: (value) => TextStyle(
+            color: ThemeConfig.primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: 15,
           ),
@@ -69,13 +71,13 @@ class _CustomLineChartState extends State<CustomLineChart> with DateTimeUtil {
                   e.createSpot(this.widget.type == CustomLineChartType.ANNUAL))
               .toList(),
           isCurved: true,
-          colors: defaultGradient.colors,
+          colors: ThemeConfig.defaultGradient.colors,
           barWidth: 5,
           isStrokeCapRound: true,
           dotData: FlDotData(show: true),
           belowBarData: BarAreaData(
             show: true,
-            colors: defaultGradient.colors
+            colors: ThemeConfig.defaultGradient.colors
                 .map((color) => color.withOpacity(0.8))
                 .toList(),
           ),

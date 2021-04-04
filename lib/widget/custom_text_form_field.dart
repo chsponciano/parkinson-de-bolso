@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 
 class CustomTextFormField extends StatelessWidget {
   final String fieldName;
@@ -47,7 +47,8 @@ class CustomTextFormField extends StatelessWidget {
 
   InputDecoration _getTransparent(double paddingValue) {
     final OutlineInputBorder _inputBorder = OutlineInputBorder(
-        borderSide: BorderSide(color: alternativeColorTransparency));
+        borderSide:
+            BorderSide(color: ThemeConfig.alternativeColorTransparency));
 
     return InputDecoration(
       suffixIcon: this.suffix,
@@ -56,13 +57,13 @@ class CustomTextFormField extends StatelessWidget {
       errorBorder: _inputBorder,
       focusedErrorBorder: _inputBorder,
       errorStyle: TextStyle(
-        color: alternativeColorTransparency,
+        color: ThemeConfig.alternativeColorTransparency,
       ),
       prefixIcon: Icon(
         this.prefixIcon,
-        color: alternativeColorTransparency,
+        color: ThemeConfig.alternativeColorTransparency,
       ),
-      hintStyle: TextStyle(color: alternativeColorTransparency),
+      hintStyle: TextStyle(color: ThemeConfig.alternativeColorTransparency),
       hintText: this.hintText,
       contentPadding: this.internalPadding != null
           ? this.internalPadding
@@ -78,14 +79,14 @@ class CustomTextFormField extends StatelessWidget {
       suffixIcon: this.suffix,
       prefixIcon: Icon(
         this.prefixIcon,
-        color: formForegroundColor,
+        color: ThemeConfig.formForegroundColor,
       ),
-      hintStyle: TextStyle(color: formForegroundColor),
+      hintStyle: TextStyle(color: ThemeConfig.formForegroundColor),
       hintText: this.hintText,
       contentPadding: EdgeInsets.all(paddingValue),
       border: InputBorder.none,
       filled: true,
-      fillColor: formBackgroundColor,
+      fillColor: ThemeConfig.formBackgroundColor,
     );
   }
 
@@ -119,7 +120,8 @@ class CustomTextFormField extends StatelessWidget {
                   : TextCapitalization.none,
           style: this.transparent
               ? TextStyle(
-                  color: alternativeColorTransparency, fontSize: this.fontSize)
+                  color: ThemeConfig.alternativeColorTransparency,
+                  fontSize: this.fontSize)
               : TextStyle(fontSize: this.fontSize),
         ),
       ),

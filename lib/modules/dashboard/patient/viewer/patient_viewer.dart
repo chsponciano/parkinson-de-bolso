@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 import 'package:parkinson_de_bolso/model/patient_classification_model.dart';
 import 'package:parkinson_de_bolso/model/patient_model.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/camera/dynamic_camera_module.dart';
@@ -60,13 +60,15 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
         elevation: 0,
         leading: IconButton(
           tooltip: 'Voltar',
-          icon: Icon(Icons.arrow_back_sharp, color: primaryColorDashboardBar),
+          icon: Icon(Icons.arrow_back_sharp,
+              color: ThemeConfig.primaryColorDashboardBar),
           onPressed: () => this.widget.callHigher.call(),
         ),
         actions: [
           IconButton(
             tooltip: 'Classificador de parkinson',
-            icon: Icon(Icons.video_call, color: primaryColorDashboardBar),
+            icon: Icon(Icons.video_call,
+                color: ThemeConfig.primaryColorDashboardBar),
             onPressed: () async {
               await DynamicCameraModule.processImageSequence(
                   context, this.widget.patient);
@@ -75,12 +77,13 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
           ),
           IconButton(
             tooltip: 'Editar',
-            icon: Icon(Icons.edit, color: primaryColorDashboardBar),
+            icon: Icon(Icons.edit, color: ThemeConfig.primaryColorDashboardBar),
             onPressed: () => this.widget.callEdition.call(),
           ),
           IconButton(
             tooltip: 'Excluir',
-            icon: Icon(Icons.delete, color: primaryColorDashboardBar),
+            icon:
+                Icon(Icons.delete, color: ThemeConfig.primaryColorDashboardBar),
             onPressed: () {
               PatientService.instance
                   .delete(this.widget.patient.id)
@@ -88,11 +91,11 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
             },
           ),
         ],
-        backgroundColor: dashboardBarColor,
+        backgroundColor: ThemeConfig.dashboardBarColor,
       ),
       body: CustomBackground(
-        topColor: dashboardBarColor,
-        bottomColor: ternaryColor,
+        topColor: ThemeConfig.dashboardBarColor,
+        bottomColor: ThemeConfig.ternaryColor,
         horizontalPadding: this.widget.horizontalPadding,
         margin: 50.0,
         top: Container(
@@ -105,8 +108,8 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: CustomCircleAvatar(
                   radius: 75,
-                  background: ternaryColor,
-                  foreground: primaryColor,
+                  background: ThemeConfig.ternaryColor,
+                  foreground: ThemeConfig.primaryColor,
                   imagePath: this.widget.patient.imageUrl,
                 ),
               ),
@@ -119,7 +122,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                       this.widget.patient.fullname.split(' ')[0],
                       style: TextStyle(
                           fontSize: 30,
-                          color: ternaryColor,
+                          color: ThemeConfig.ternaryColor,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 1.0),
                     ),
@@ -131,7 +134,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                               .getCurrentAge(this.widget.patient.birthdate)
                               .toString() +
                           ' anos',
-                      color: ternaryColor,
+                      color: ThemeConfig.ternaryColor,
                     ),
                     SizedBox(height: this.widget.spacingBetweenFields - 15),
                     CustomValueTitle(
@@ -141,21 +144,21 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                               .getCurrentAge(this.widget.patient.diagnosis)
                               .toString() +
                           ' anos',
-                      color: ternaryColor,
+                      color: ThemeConfig.ternaryColor,
                     ),
                     SizedBox(height: this.widget.spacingBetweenFields - 15),
                     CustomValueTitle(
                       size: 18,
                       title: 'Peso',
                       value: this.widget.patient.weight + ' kg',
-                      color: ternaryColor,
+                      color: ThemeConfig.ternaryColor,
                     ),
                     SizedBox(height: this.widget.spacingBetweenFields - 15),
                     CustomValueTitle(
                       size: 18,
                       title: 'Altura',
                       value: this.widget.patient.height + ' m',
-                      color: ternaryColor,
+                      color: ThemeConfig.ternaryColor,
                     )
                   ],
                 ),
@@ -173,7 +176,7 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
                         snapshot.data, this._changeFilter);
                   } else {
                     return CustomCircularProgress(
-                      valueColor: primaryColor,
+                      valueColor: ThemeConfig.primaryColor,
                     );
                   }
                 },
@@ -186,10 +189,10 @@ class _PatientViewerState extends State<PatientViewer> with DateTimeUtil {
         tooltip: (this._changeFilter) ? 'Visualizar dados' : 'Filtrar dados',
         child: Icon(
           (this._changeFilter) ? Icons.bar_chart : Icons.filter_list_alt,
-          color: primaryColorDashboardBar,
+          color: ThemeConfig.primaryColorDashboardBar,
           size: 40,
         ),
-        backgroundColor: floatingButtonDashboard,
+        backgroundColor: ThemeConfig.floatingButtonDashboard,
       ),
     );
   }

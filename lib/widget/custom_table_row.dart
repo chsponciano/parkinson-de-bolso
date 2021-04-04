@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/constant/app_constant.dart';
+import 'package:parkinson_de_bolso/config/theme_config.dart';
 
 class CustomTableRow {
   final List<String> values;
@@ -11,7 +11,9 @@ class CustomTableRow {
 
   TableRow build() {
     return TableRow(
-        decoration: this.isTitle ? BoxDecoration(color: primaryColor) : null,
+        decoration: this.isTitle
+            ? BoxDecoration(color: ThemeConfig.primaryColor)
+            : null,
         children: this
             .values
             .map((e) => Container(
@@ -19,8 +21,9 @@ class CustomTableRow {
                   child: this.isTitle
                       ? Center(
                           child: Text(e,
-                              style:
-                                  TextStyle(color: ternaryColor, fontSize: 16)))
+                              style: TextStyle(
+                                  color: ThemeConfig.ternaryColor,
+                                  fontSize: 16)))
                       : Text(e),
                 ))
             .toList());
