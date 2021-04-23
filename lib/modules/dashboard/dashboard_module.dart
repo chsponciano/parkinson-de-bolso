@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:parkinson_de_bolso/config/notification_config.dart';
 import 'package:parkinson_de_bolso/config/theme_config.dart';
 import 'package:parkinson_de_bolso/model/navegation_model.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/patient/patient_module.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/report/report_module.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/setting/setting_module.dart';
+import 'package:parkinson_de_bolso/modules/notification/notification_module.dart';
 
 class DashboardModule extends StatefulWidget {
   static const String routeName = '/dashboard';
@@ -20,6 +22,18 @@ class _DashboardModuleState extends State<DashboardModule>
     NavegationModel('Relatórios', Icons.analytics, NavegationType.REPORT),
     NavegationModel('Configurações', Icons.settings, NavegationType.SETTING)
   ];
+
+  @override
+  void initState() {
+    NotificationConfig.instance.initialize(NotificationModule().getContext());
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    NotificationConfig.instance.dispose();
+    super.dispose();
+  }
 
   Widget _getNavegationWidget(NavegationType type) {
     switch (type) {

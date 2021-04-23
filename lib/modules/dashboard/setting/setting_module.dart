@@ -7,6 +7,7 @@ import 'package:parkinson_de_bolso/service/notify_service.dart';
 import 'package:parkinson_de_bolso/service/setting_service.dart';
 import 'package:parkinson_de_bolso/util/string_util.dart';
 import 'package:parkinson_de_bolso/widget/custom_background.dart';
+import 'package:parkinson_de_bolso/widget/custom_buttom_notification.dart';
 import 'package:parkinson_de_bolso/widget/custom_circle_avatar.dart';
 import 'package:parkinson_de_bolso/widget/custom_raised_button.dart';
 
@@ -142,6 +143,7 @@ class _SettingModuleState extends State<SettingModule> with StringUtil {
 
     return Scaffold(
         appBar: AppBar(
+          leading: CustomButtomNotification(),
           elevation: 0,
           automaticallyImplyLeading: false,
           centerTitle: true,

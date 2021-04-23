@@ -4,9 +4,9 @@ import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:parkinson_de_bolso/config/app_config.dart';
+import 'package:parkinson_de_bolso/config/asset_config.dart';
 import 'package:parkinson_de_bolso/config/camera_config.dart';
 import 'package:parkinson_de_bolso/config/theme_config.dart';
-import 'package:parkinson_de_bolso/model/execution_classification_model.dart';
 import 'package:parkinson_de_bolso/model/patient_classification_model.dart';
 import 'package:parkinson_de_bolso/model/patient_model.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/camera/dynamic_camera_linear_bar.dart';
@@ -62,12 +62,18 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
   // control status of the dynamic camera
   CountDownController _countDownController;
   AnimationController _alertErrorController;
-  bool _stop, _loading, _runnig, _alert, _usageGuidance;
+  bool _stop,
+      _loading,
+      _runnig,
+      _alert,
+      _usageGuidance,
+      _recordingType,
+      _finalNewsletter;
   Future _initializeControllerFuture;
   PredictService _predictService;
   CameraController _controller;
   DynamicCameraType _type;
-  String _messageError;
+  String _messageError, _messageFinalNewsletter;
   File _image;
 
   // dynamic camera button states
@@ -95,9 +101,12 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
     this._loading = false;
     this._runnig = false;
     this._alert = false;
+    this._finalNewsletter = false;
+    this._recordingType = false;
     this._usageGuidance = this.widget.type == DynamicCameraType.VIDEO &&
         AppConfig.instance.usageGuidance;
     this._linearBarValue = 0.0;
+    this._messageFinalNewsletter = '';
     super.initState();
     this._loadButtonConfiguration();
   }
@@ -117,6 +126,39 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
         child: GestureDetector(
             onTap: () => FocusScope.of(context).unfocus(),
             child: this._buildDynamicCamera()),
+      ),
+    );
+  }
+
+  Widget _buildWalkTypeCard(
+      String assetName, String title, double width, bool isCollection) {
+    return GestureDetector(
+      onTap: () {
+        this.setState(() => this._recordingType = false);
+        this.startShooting(isCollection);
+      },
+      child: Container(
+        width: 100,
+        height: 150,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            border: Border.all(color: ThemeConfig.primaryColor)),
+        padding: EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Image(
+              image: AssetConfig.instance.get(assetName),
+              width: width,
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Text(
+              title,
+              style: TextStyle(color: ThemeConfig.primaryColor),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -150,7 +192,10 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
           paddingValue: 20,
           onPressed: () =>
               (this._type != null) ? Navigator.pop(context) : this._reset(),
-          visible: !this._alert && !this._usageGuidance,
+          visible: !this._alert &&
+              !this._usageGuidance &&
+              !this._recordingType &&
+              !this._finalNewsletter,
         ),
         DynamicCameraButton(
           countDownController: this._countDownController,
@@ -162,13 +207,52 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
           onStart: this._cameraButtonOnStart,
           onComplete: this._cameraButtonOnComplete,
           isLoading: this._loading,
-          visible: !this._alert && !this._usageGuidance,
+          visible: !this._alert &&
+              !this._usageGuidance &&
+              !this._recordingType &&
+              !this._finalNewsletter,
         ),
         if (this._type == DynamicCameraType.VIDEO)
           DynamicCameraLinearBar(
             porcentage: this._linearBarValue,
-            visible: !this._stop,
+            visible: !this._stop && this._linearBarValue > 0,
           ),
+        CustomAlertBox(
+          title: 'Informativo',
+          visible: this._finalNewsletter,
+          close: () => this.setState(() => this._finalNewsletter = false),
+          element: Padding(
+            padding: EdgeInsets.all(10),
+            child: Text(
+              this._messageFinalNewsletter,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        CustomAlertBox(
+          title: 'Tipo de gravação',
+          visible: this._recordingType,
+          close: () => this.setState(() => this._recordingType = false),
+          element: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  this._buildWalkTypeCard('walkOne', 'Perfil', 50, false),
+                  this._buildWalkTypeCard('walkTwo', 'Frontal', 60, true)
+                ],
+              ),
+              SizedBox(height: 5),
+              Text(
+                'A gravação frontal está em fase de coleta de imagem sem retornar a porcentagem de Parkinson',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: ThemeConfig.primaryColor,
+                ),
+              )
+            ],
+          ),
+        ),
         CustomAlertBox(
           title: 'Orientações de uso',
           element: UsageInformation(),
@@ -246,13 +330,11 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
         break;
       case DynamicCameraType.VIDEO:
         this._cameraButtonIcon = Icons.videocam;
-        this._cameraButtonOnPressed = () => this.startShooting();
+        this._cameraButtonOnPressed =
+            () => this.setState(() => this._recordingType = true);
         this._cameraButtonTooltip = 'Filmar';
         this._cameraButtonOnStart = () {
-          this.setState(() {
-            this._stop = false;
-            this._linearBarValue = 50.0;
-          });
+          this.setState(() => this._stop = false);
           this._activateStopButton();
         };
         this._cameraButtonOnComplete = () {
@@ -291,17 +373,19 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
     this._loadButtonConfiguration();
   }
 
-  void startShooting() async {
+  void startShooting(bool isCollection) async {
     try {
       if (!this._runnig) {
-        this.setState(() {
-          this._runnig = true;
-        });
+        // execution started
+        this.setState(() => this._runnig = true);
 
+        // create a run id
+        String _predictId = await this._predictService.getId();
+
+        // initializes the screen timer
         await this._countdown(3);
         await this._initializeControllerFuture;
         this._countDownController.start();
-
         int _imageCounter = 0;
         XFile _capture;
 
@@ -309,22 +393,39 @@ class _DynamicCameraModuleState extends State<DynamicCameraModule>
           _capture = await this._controller.takePicture();
           this
               ._predictService
-              .evaluator(this.widget.patient.id, _imageCounter++, _capture)
-              .then((ExecutionClassificationModel execution) {
-            if (execution != null)
-              this.setState(() => this._linearBarValue = execution.percentage);
+              .evaluator(_predictId, this.widget.patient.id, _imageCounter++,
+                  _capture, isCollection)
+              .then((Map response) {
+            if (response != null)
+              this.setState(() => this._linearBarValue =
+                  double.tryParse(response['percentage']));
           });
           await Future.delayed(Duration(seconds: 1));
         }
 
-        final Map _conclude =
-            await this._predictService.conclude(this.widget.patient.id);
-
-        if (_conclude != null) {
+        if (isCollection) {
           this.setState(() {
-            this._linearBarValue = double.tryParse(_conclude['percentage']);
-            this._alert = true;
+            this._finalNewsletter = true;
+            this._messageFinalNewsletter =
+                'Coleta efetuada com sucesso, muito obrigado pela ajuda!';
           });
+        } else {
+          final Map _conclude = await this._predictService.conclude(_predictId);
+          if (_conclude != null) {
+            double porcentage = double.tryParse(_conclude['percentage']);
+            if (porcentage > 0) {
+              this.setState(() {
+                this._linearBarValue = porcentage;
+                this._alert = true;
+              });
+            } else {
+              this.setState(() {
+                this._finalNewsletter = true;
+                this._messageFinalNewsletter =
+                    'Paciente sem características de Parkinson!';
+              });
+            }
+          }
         }
       }
     } catch (error) {

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:amazon_cognito_identity_dart_2/sig_v4.dart';
 import 'package:camera/camera.dart';
 import 'package:http/http.dart' as http;
-import 'package:parkinson_de_bolso/model/execution_classification_model.dart';
 import 'package:parkinson_de_bolso/service/aws_cognito_service.dart';
 
 class PredictService {
@@ -11,13 +10,28 @@ class PredictService {
   final AwsCognitoService awsCognitoService = AwsCognitoService.instance;
   static final String path = '/api/predict';
 
-  Future<ExecutionClassificationModel> evaluator(
-      String patientId, int index, XFile image) async {
+  Future<String> getId() async {
+    final SigV4Request signedRequest = this
+        .awsCognitoService
+        .getSigV4Request('POST', path + '/initialize', body: {});
+    final http.Response response = await http.post(signedRequest.url,
+        headers: signedRequest.headers, body: signedRequest.body);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body)['predictid'];
+    } else {
+      throw Exception('Failure to acquire authorization for prediction');
+    }
+  }
+
+  Future<Map> evaluator(String predictId, String patientId, int index,
+      XFile image, bool isCollection) async {
     try {
       final SigV4Request signedRequest =
           this.awsCognitoService.getSigV4Request('POST', path, body: {
+        'predictid': predictId,
         'patientid': patientId,
         'index': index,
+        'isCollection': isCollection,
         'image': {
           'data': base64Encode(await image.readAsBytes()),
           'filename': image.path.split('/').last
@@ -27,7 +41,7 @@ class PredictService {
           headers: signedRequest.headers, body: signedRequest.body);
 
       if (response.statusCode == 200) {
-        return ExecutionClassificationModel.fromJson(jsonDecode(response.body));
+        return jsonDecode(response.body);
       } else {
         throw Exception('Failed to evaluator predict');
       }
@@ -36,13 +50,12 @@ class PredictService {
     }
   }
 
-  Future<Map> conclude(String patientId) async {
-    final SigV4Request signedRequest =
-        this.awsCognitoService.getSigV4Request('DELETE', path);
-    final http.Response response = await http.delete(
-        '${signedRequest.url}/$patientId',
-        headers: signedRequest.headers);
-
+  Future<Map> conclude(String predictId) async {
+    final SigV4Request signedRequest = this.awsCognitoService.getSigV4Request(
+        'POST', path + '/conclude',
+        body: {'predictid': predictId});
+    final http.Response response = await http.post(signedRequest.url,
+        headers: signedRequest.headers, body: signedRequest.body);
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {

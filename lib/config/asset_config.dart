@@ -13,6 +13,8 @@ class AssetConfig {
     'twoState': AssetImage('assets/images/img-2.gif'),
     'threeState': AssetImage('assets/images/img-3.gif'),
     'fourState': AssetImage('assets/images/img-4.png'),
+    'walkOne': AssetImage('assets/images/walk_1.png'),
+    'walkTwo': AssetImage('assets/images/walk_2.png')
   };
 
   AssetImage get(String name) => this._contents[name];

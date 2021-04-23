@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:parkinson_de_bolso/config/app_config.dart';
 import 'package:parkinson_de_bolso/config/theme_config.dart';
 import 'package:parkinson_de_bolso/widget/custom_background.dart';
+import 'package:parkinson_de_bolso/widget/custom_buttom_notification.dart';
 import 'package:parkinson_de_bolso/widget/custom_circular_progress.dart';
 import 'package:parkinson_de_bolso/widget/custom_no_data.dart';
 
@@ -62,6 +63,7 @@ class _CustomListSearchState extends State<CustomListSearch> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: CustomButtomNotification(),
         elevation: 0,
         centerTitle: true,
         automaticallyImplyLeading: false,

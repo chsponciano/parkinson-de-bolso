@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/config/theme_config.dart';
 import 'package:parkinson_de_bolso/widget/custom_background.dart';
+import 'package:parkinson_de_bolso/widget/custom_buttom_notification.dart';
 
 class ReportModule extends StatefulWidget {
   ReportModule({Key key}) : super(key: key);
@@ -14,6 +15,7 @@ class _ReportModuleState extends State<ReportModule> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          leading: CustomButtomNotification(),
           elevation: 0,
           automaticallyImplyLeading: false,
           centerTitle: true,
