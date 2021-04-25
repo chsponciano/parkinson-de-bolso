@@ -206,7 +206,7 @@ class _SignUpPageState extends State<SignUpPage>
                           context,
                           DialogType.ERROR,
                           'Erro no processo',
-                          'Ocorreu algum erro, favor tentar novamente!',
+                          error,
                         );
                       }).whenComplete(
                         () => this.setState(() => this._loading = false),

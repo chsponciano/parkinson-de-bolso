@@ -8,6 +8,9 @@ import 'package:parkinson_de_bolso/widget/custom_text_form_field.dart';
 
 class VerificationCodePage extends StatefulWidget {
   static const String routeName = '/VerificationCodePageRoute';
+  final String email;
+
+  const VerificationCodePage({Key key, this.email}) : super(key: key);
 
   @override
   _VerificationCodePageState createState() => _VerificationCodePageState();
@@ -80,8 +83,11 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
           paddingInternal: EdgeInsets.all(15.0),
           onPressed: () {
             if (this._formKey.currentState.validate()) {
-              // RouteConfig.arguments.add(this._code.text);
-              Navigator.pushNamed(context, ChangePasswordPage.routeName);
+              Navigator.pushNamed(context, ChangePasswordPage.routeName,
+                  arguments: {
+                    'email': this.widget.email,
+                    'code': this._code.text,
+                  });
             }
           },
           textColor: ThemeConfig.primaryColor,

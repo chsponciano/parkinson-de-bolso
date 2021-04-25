@@ -15,7 +15,7 @@ import 'package:parkinson_de_bolso/widget/custom_raised_button.dart';
 import 'package:parkinson_de_bolso/widget/custom_text_form_field.dart';
 
 class SignInPage extends StatefulWidget {
-  static const String routeName = '/';
+  static const String routeName = '/signIn';
 
   @override
   _SignInPageState createState() => _SignInPageState();
@@ -81,7 +81,7 @@ class _SignInPageState extends State<SignInPage>
           context,
           DialogType.ERROR,
           'Erro no processo',
-          'Ocorreu algum erro, favor tentar novamente!',
+          error.toString(),
         );
       }).whenComplete(
         () => this.setState(() => this._loading = false),

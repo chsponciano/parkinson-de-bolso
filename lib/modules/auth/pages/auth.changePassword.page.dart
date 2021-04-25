@@ -1,12 +1,20 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:parkinson_de_bolso/adapter/aws.adpater.dart';
+import 'package:parkinson_de_bolso/adapter/dialog.adapter.dart';
 import 'package:parkinson_de_bolso/config/theme.config.dart';
+import 'package:parkinson_de_bolso/modules/auth/pages/auth.signIn.page.dart';
 import 'package:parkinson_de_bolso/modules/auth/pages/extra/auth.base.dart';
 import 'package:parkinson_de_bolso/widget/custom_raised_button.dart';
 import 'package:parkinson_de_bolso/widget/custom_text_form_field.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   static const String routeName = '/ChangePasswordPageRoute';
+  final String email;
+  final String code;
+
+  const ChangePasswordPage({Key key, this.email, this.code}) : super(key: key);
 
   @override
   _ChangePasswordPageState createState() => _ChangePasswordPageState();
@@ -98,6 +106,24 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           onPressed: () {
             if (this._formKey.currentState.validate()) {
               this.setState(() => this._loading = true);
+              AwsAdapter.instance
+                  .changePassword(
+                this.widget.email,
+                this.widget.code,
+                this._password.text,
+              )
+                  .then((value) {
+                if (value) {
+                  Navigator.pushNamed(context, SignInPage.routeName);
+                } else {
+                  DialogAdapter.instance.show(
+                    context,
+                    DialogType.ERROR,
+                    'Erro no processo',
+                    'Ocorreu um erro, favor tentar novamente!',
+                  );
+                }
+              }).whenComplete(() => this.setState(() => this._loading = false));
             }
           },
           textColor: ThemeConfig.primaryColor,

@@ -8,7 +8,7 @@ import 'package:parkinson_de_bolso/modules/auth/pages/auth.verification.page.dar
 
 RouteFactory authRoutes() {
   return (settings) {
-    // final Map<String, dynamic> arguments = settings.arguments;
+    final Map<String, String> arguments = settings.arguments;
 
     Widget screen;
     switch (settings.name) {
@@ -22,13 +22,18 @@ RouteFactory authRoutes() {
         screen = OnboardingPage();
         break;
       case ChangePasswordPage.routeName:
-        screen = ChangePasswordPage();
+        screen = ChangePasswordPage(
+          code: arguments['code'],
+          email: arguments['email'],
+        );
         break;
       case RedefinePasswordPage.routeName:
         screen = RedefinePasswordPage();
         break;
       case VerificationCodePage.routeName:
-        screen = VerificationCodePage();
+        screen = VerificationCodePage(
+          email: arguments['email'],
+        );
         break;
       default:
         screen = SignInPage();

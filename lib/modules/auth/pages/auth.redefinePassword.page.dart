@@ -92,7 +92,10 @@ class _RedefinePasswordPageState extends State<RedefinePasswordPage>
             if (this._formKey.currentState.validate()) {
               this.setState(() => this._loading = true);
               AwsAdapter.instance.forgotPassword(this._email.text).then((_) {
-                Navigator.pushNamed(context, VerificationCodePage.routeName);
+                Navigator.pushNamed(context, VerificationCodePage.routeName,
+                    arguments: {
+                      'email': this._email.text,
+                    });
               }).catchError((_) {
                 DialogAdapter.instance.show(
                   context,

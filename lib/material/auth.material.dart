@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:parkinson_de_bolso/config/app.config.dart';
 import 'package:parkinson_de_bolso/config/theme.config.dart';
+import 'package:parkinson_de_bolso/modules/auth/pages/auth.onboarding.page.dart';
+import 'package:parkinson_de_bolso/modules/auth/pages/auth.signIn.page.dart';
 import 'package:parkinson_de_bolso/route/auth.route.dart';
 
 class AuthMaterial extends StatelessWidget {
@@ -18,7 +20,7 @@ class AuthMaterial extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: authRoutes(),
-      // home: AppConfig.instance.firstAccess ? Onboarding() : SignIn(),
+      home: AppConfig.instance.firstAccess ? OnboardingPage() : SignInPage(),
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate
