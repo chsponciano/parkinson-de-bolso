@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:parkinson_de_bolso/config/theme_config.dart';
+import 'package:parkinson_de_bolso/config/theme.config.dart';
 
 class CustomTextFormField extends StatelessWidget {
   final String fieldName;

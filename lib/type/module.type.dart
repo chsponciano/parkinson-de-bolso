@@ -1,0 +1,1 @@
+enum ModuleType { AUTH, DASHBOARD, CAMERA, NOTIFICATION }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/config/theme_config.dart';
+import 'package:parkinson_de_bolso/config/theme.config.dart';
 
 class CustomTableRow {
   final List<String> values;

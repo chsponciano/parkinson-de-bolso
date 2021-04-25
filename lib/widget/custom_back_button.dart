@@ -7,7 +7,14 @@ class CustomBackButton extends StatelessWidget {
   final VoidCallback onPressed;
   final bool visible;
 
-  const CustomBackButton({Key key, this.backgroundColor, this.paddingValue, this.onPressed, this.iconColor, this.visible}) : super(key: key);
+  const CustomBackButton(
+      {Key key,
+      this.backgroundColor,
+      this.paddingValue,
+      this.onPressed,
+      this.iconColor,
+      this.visible})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

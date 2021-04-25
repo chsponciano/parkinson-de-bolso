@@ -1,0 +1,1 @@
+enum CameraType { IMAGE, VIDEO }

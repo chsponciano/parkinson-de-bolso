@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
-import 'package:parkinson_de_bolso/config/theme_config.dart';
-import 'package:parkinson_de_bolso/util/datetime_util.dart';
+import 'package:parkinson_de_bolso/config/theme.config.dart';
+import 'package:parkinson_de_bolso/util/datetime.util.dart';
 
 class CustomDateFilter extends StatefulWidget {
   final String label;

@@ -1,8 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/config/theme_config.dart';
-import 'package:parkinson_de_bolso/util/datetime_util.dart';
-import 'package:parkinson_de_bolso/util/serelization_data_util.dart';
+import 'package:parkinson_de_bolso/config/theme.config.dart';
+import 'package:parkinson_de_bolso/util/datetime.util.dart';
+import 'package:parkinson_de_bolso/util/serelization.util.dart';
 
 enum CustomLineChartType { ANNUAL, MONTHLY }
 

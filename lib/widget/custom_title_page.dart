@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/config/app_config.dart';
+import 'package:parkinson_de_bolso/config/app.config.dart';
 
 class CustomTitlePage extends StatelessWidget {
   final String title;

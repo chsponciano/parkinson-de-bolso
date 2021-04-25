@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:parkinson_de_bolso/config/theme_config.dart';
+import 'package:parkinson_de_bolso/config/theme.config.dart';
 import 'package:parkinson_de_bolso/widget/custom_text_form_field.dart';
 
 class CustomDateFormField extends StatefulWidget {
