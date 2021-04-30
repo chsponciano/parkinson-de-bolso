@@ -3,6 +3,7 @@ import 'package:amazon_cognito_identity_dart_2/sig_v4.dart';
 import 'package:camera/camera.dart';
 import 'package:http/http.dart' as http;
 import 'package:parkinson_de_bolso/adapter/aws.adpater.dart';
+import 'package:parkinson_de_bolso/config/app.config.dart';
 
 class PredictService {
   PredictService._privateConstructor();
@@ -10,10 +11,10 @@ class PredictService {
   final AwsAdapter awsAdapter = AwsAdapter.instance;
   static final String path = '/api/predict';
 
-  Future<String> getId() async {
+  Future<String> createPredictionAuthCode() async {
     final SigV4Request signedRequest = this.awsAdapter.getSigV4Request(
       'POST',
-      path + '/initialize',
+      '$path/create/id',
       body: {},
     );
 
@@ -30,15 +31,18 @@ class PredictService {
     }
   }
 
-  Future<Map> evaluator(String predictId, String patientId, int index,
-      XFile image, bool isCollection) async {
+  Future<Map> addImageQueue(
+    String predictId,
+    int index,
+    XFile image,
+    bool isCollection,
+  ) async {
     try {
       final SigV4Request signedRequest = this.awsAdapter.getSigV4Request(
         'POST',
-        path,
+        '$path/add/image',
         body: {
           'predictid': predictId,
-          'patientid': patientId,
           'index': index,
           'isCollection': isCollection,
           'image': {
@@ -57,18 +61,22 @@ class PredictService {
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
-        throw Exception('Failed to evaluator predict');
+        throw Exception('Failed to add image prediction queue');
       }
     } catch (error) {
       return null;
     }
   }
 
-  Future<Map> conclude(String predictId) async {
+  Future<Map> requestTerminate(String predictId, String patiendId) async {
     final SigV4Request signedRequest = this.awsAdapter.getSigV4Request(
       'POST',
-      path + '/conclude',
-      body: {'predictid': predictId},
+      '$path/request/terminate',
+      body: {
+        'predictid': predictId,
+        'patiendid': patiendId,
+        'userid': AppConfig.instance.loggedInUser.id,
+      },
     );
 
     final http.Response response = await http.post(
@@ -80,7 +88,7 @@ class PredictService {
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
-      throw Exception('Failed to conclude predict');
+      throw Exception('Failed to request terminate predict');
     }
   }
 }

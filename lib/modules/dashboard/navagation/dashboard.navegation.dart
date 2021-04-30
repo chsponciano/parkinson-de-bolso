@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/config/theme.config.dart';
 import 'package:parkinson_de_bolso/model/navegation.model.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/action/dashboard.actions.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/page/patient/patient.main.page.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/page/report/report.page.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/page/setting/setting.page.dart';
@@ -20,10 +21,18 @@ class _DashboardNavegationState extends State<DashboardNavegation> {
     NavegationModel(ReportPage.name, Icons.analytics, NavegationType.REPORT),
     NavegationModel(SettingPage.name, Icons.settings, NavegationType.SETTING)
   ];
-  int _currentIndex = 0;
+  int _currentIndex;
+  bool _activeNavigation;
 
   @override
   void initState() {
+    this._currentIndex = 0;
+    this._activeNavigation = true;
+    DashboardActions.instance.setOnActiveNavegationFunction(
+      (bool active) => this.setState(
+        () => this._activeNavigation = active,
+      ),
+    );
     DashboardRoutes.instance.setChangeNavegationIndexFunction(
       (int index) => this.setState(
         () => this._currentIndex = index,
@@ -49,21 +58,24 @@ class _DashboardNavegationState extends State<DashboardNavegation> {
               .toList(),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: ThemeConfig.dashboardBarColor,
-        unselectedItemColor: ThemeConfig.secondaryColorDashboardBar,
-        selectedItemColor: ThemeConfig.primaryColorDashboardBar,
-        currentIndex: this._currentIndex,
-        onTap: (int index) => DashboardRoutes.instance.setRouteNavagtion(index),
-        items: this._navegation.map((NavegationModel navegation) {
-          return BottomNavigationBarItem(
-            icon: Icon(
-              navegation.icon,
-            ),
-            label: navegation.title,
-          );
-        }).toList(),
-      ),
+      bottomNavigationBar: (this._activeNavigation)
+          ? BottomNavigationBar(
+              backgroundColor: ThemeConfig.dashboardBarColor,
+              unselectedItemColor: ThemeConfig.secondaryColorDashboardBar,
+              selectedItemColor: ThemeConfig.primaryColorDashboardBar,
+              currentIndex: this._currentIndex,
+              onTap: (int index) =>
+                  DashboardRoutes.instance.setRouteNavagtion(index),
+              items: this._navegation.map((NavegationModel navegation) {
+                return BottomNavigationBarItem(
+                  icon: Icon(
+                    navegation.icon,
+                  ),
+                  label: navegation.title,
+                );
+              }).toList(),
+            )
+          : null,
     );
   }
 

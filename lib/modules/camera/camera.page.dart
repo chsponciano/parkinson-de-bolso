@@ -240,8 +240,12 @@ class _CameraPageState extends State<CameraPage>
           iconColor: ThemeConfig.ternaryColor,
           paddingValue: 20,
           onPressed: () {
-            (this._type != null) ? Navigator.pop(context) : this._reset();
-            DashboardActions.instance.onRelocateInnerPage();
+            if (this._type != null) {
+              Navigator.pop(context);
+              DashboardActions.instance.onRelocateInnerPage();
+            } else {
+              this._reset();
+            }
           },
           visible: true,
         ),
@@ -318,8 +322,12 @@ class _CameraPageState extends State<CameraPage>
   void takePicture() async {
     await this._initializeControllerFuture;
     XFile file = await this._controller.takePicture();
+    var _path = AppConfig.instance.isAnEmulator
+        ? await AssetConfig.instance.getTestImagePath()
+        : file.path;
+
     this.setState(() {
-      this._image = File(file.path);
+      this._image = File(_path);
       this._type = null;
     });
     this._loadButtonConfiguration();
@@ -332,7 +340,8 @@ class _CameraPageState extends State<CameraPage>
         this.setState(() => this._runnig = true);
 
         // create a run id
-        String _predictId = await this._predictService.getId();
+        String _authCode =
+            await this._predictService.createPredictionAuthCode();
 
         // initializes the screen timer
         await this._countdown(3);
@@ -343,9 +352,13 @@ class _CameraPageState extends State<CameraPage>
 
         while (!this._stop) {
           _capture = await this._controller.takePicture();
-          this._predictService.evaluator(
-                _predictId,
-                this.widget.patient.id,
+
+          if (AppConfig.instance.isAnEmulator) {
+            _capture = new XFile(await AssetConfig.instance.getTestImagePath());
+          }
+
+          this._predictService.addImageQueue(
+                _authCode,
                 _imageCounter++,
                 _capture,
                 isCollection,
@@ -359,7 +372,10 @@ class _CameraPageState extends State<CameraPage>
             DialogType.SUCCES,
           );
         } else {
-          this._predictService.conclude(_predictId);
+          this._predictService.requestTerminate(
+                _authCode,
+                this.widget.patient.id,
+              );
           this._informativeDialog(
             'Estamos analisando as imagens, em instantes receberá os resultados!',
             DialogType.INFO,

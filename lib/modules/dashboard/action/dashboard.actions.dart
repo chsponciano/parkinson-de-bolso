@@ -22,6 +22,7 @@ class DashboardActions {
   Function _onChangeInternalPagePatientFunction;
   Function _onDeleteFunction;
   Function _onSearchStatusFunction;
+  Function _onActiveNavegationFunction;
   PatientInternalType _returnPatientType;
   Function _onReloadDataFunction;
   BuildContext _context;
@@ -115,10 +116,11 @@ class DashboardActions {
   }
 
   setPatientSearchRoute() {
-    this._onSearchStatusFunction(true);
+    final FocusNode focusNode = new FocusNode();
     this._appConfig.changeModule(
           ModuleType.DASHBOARD,
           TextField(
+            focusNode: focusNode,
             autofocus: true,
             textInputAction: TextInputAction.go,
             decoration: InputDecoration(
@@ -139,6 +141,7 @@ class DashboardActions {
             AppBarButtonModel(
               icon: Icon(Icons.close),
               action: () {
+                this._onActiveNavegationFunction(true);
                 this._onSearchStatusFunction(false);
                 this._onItemChangedFunction('');
                 this.setPatientListRoute();
@@ -147,6 +150,9 @@ class DashboardActions {
           ],
           null,
         );
+    this._onSearchStatusFunction(true);
+    this._onActiveNavegationFunction(false);
+    focusNode.requestFocus();
   }
 
   setPatientViewRoute() {
@@ -240,5 +246,18 @@ class DashboardActions {
     this._onReloadDataFunction = onReloadDataFunction;
     this._context = context;
     this._patient = patient;
+  }
+
+  setOnActiveNavegationFunction(Function f) {
+    this._onActiveNavegationFunction = f;
+  }
+
+  reset() {
+    if (this._onActiveNavegationFunction != null) {
+      this._onActiveNavegationFunction(true);
+    }
+    if (this._onSearchStatusFunction != null) {
+      this._onSearchStatusFunction(false);
+    }
   }
 }

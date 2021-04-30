@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:parkinson_de_bolso/config/asset.config.dart';
 import 'package:parkinson_de_bolso/model/appBarButton.model.dart';
 import 'package:parkinson_de_bolso/model/user.model.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/action/dashboard.actions.dart';
 import 'package:parkinson_de_bolso/type/module.type.dart';
 import 'package:parkinson_de_bolso/util/sharedPreferences.util.dart';
 
@@ -22,6 +23,7 @@ class AppConfig with SharedPreferencesUtil {
   Widget appBarTitle;
   List<AppBarButtonModel> actions;
   IconButton leading;
+  bool isAnEmulator;
 
   Future<void> initialize() async {
     await DotEnv.load(fileName: '.env');
@@ -45,6 +47,9 @@ class AppConfig with SharedPreferencesUtil {
     bool cache = false,
   }) {
     this.moduleType = type;
+    if (type == ModuleType.DASHBOARD) {
+      DashboardActions.instance.reset();
+    }
     if (cache) {
       this._changeModuleFunction(
         type,
@@ -53,7 +58,7 @@ class AppConfig with SharedPreferencesUtil {
         this.leading,
       );
     } else {
-      if (type != ModuleType.NOTIFICATION) {
+      if (type != ModuleType.NOTIFICATION && type != ModuleType.CAMERA) {
         this.appBarTitle = appBarTitle;
         this.actions = actions;
         this.leading = leading;
