@@ -68,13 +68,13 @@ class PredictService {
     }
   }
 
-  Future<Map> requestTerminate(String predictId, String patiendId) async {
+  Future<bool> requestTerminate(String predictId, String patientId) async {
     final SigV4Request signedRequest = this.awsAdapter.getSigV4Request(
       'POST',
       '$path/request/terminate',
       body: {
         'predictid': predictId,
-        'patiendid': patiendId,
+        'patientid': patientId,
         'userid': AppConfig.instance.loggedInUser.id,
       },
     );
@@ -86,7 +86,7 @@ class PredictService {
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      return true;
     } else {
       throw Exception('Failed to request terminate predict');
     }

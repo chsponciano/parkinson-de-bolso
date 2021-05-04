@@ -69,6 +69,8 @@ class _CameraPageState extends State<CameraPage>
   CameraController _controller;
   CameraType _type;
   File _image;
+  int _capturedImagesCounter = 0;
+  int _senderImagesCounter = 0;
 
   // dynamic camera button states
   VoidCallback _cameraButtonOnPressed,
@@ -336,6 +338,9 @@ class _CameraPageState extends State<CameraPage>
   void startShooting(bool isCollection) async {
     try {
       if (!this._runnig) {
+        // dismiss dialogs
+        this._dialogAdapter.dismiss();
+
         // execution started
         this.setState(() => this._runnig = true);
 
@@ -347,7 +352,8 @@ class _CameraPageState extends State<CameraPage>
         await this._countdown(3);
         await this._initializeControllerFuture;
         this._countDownController.start();
-        int _imageCounter = 0;
+        this._capturedImagesCounter = 0;
+        this._senderImagesCounter = 0;
         XFile _capture;
 
         while (!this._stop) {
@@ -357,12 +363,15 @@ class _CameraPageState extends State<CameraPage>
             _capture = new XFile(await AssetConfig.instance.getTestImagePath());
           }
 
-          this._predictService.addImageQueue(
+          this
+              ._predictService
+              .addImageQueue(
                 _authCode,
-                _imageCounter++,
+                this._capturedImagesCounter++,
                 _capture,
                 isCollection,
-              );
+              )
+              .whenComplete(() => this._senderImagesCounter++);
           await Future.delayed(Duration(seconds: 1));
         }
 
@@ -372,10 +381,7 @@ class _CameraPageState extends State<CameraPage>
             DialogType.SUCCES,
           );
         } else {
-          this._predictService.requestTerminate(
-                _authCode,
-                this.widget.patient.id,
-              );
+          this.terminate(_authCode);
           this._informativeDialog(
             'Estamos analisando as imagens, em instantes receberá os resultados!',
             DialogType.INFO,
@@ -397,6 +403,18 @@ class _CameraPageState extends State<CameraPage>
       timer--;
       await Future.delayed(Duration(seconds: 1));
     }
+  }
+
+  Future terminate(code) async {
+    do {
+      await Future.delayed(Duration(seconds: 1));
+    } while (this._runnig ||
+        this._senderImagesCounter < this._capturedImagesCounter);
+
+    this._predictService.requestTerminate(
+          code,
+          this.widget.patient.id,
+        );
   }
 
   void _activateStopButton() {

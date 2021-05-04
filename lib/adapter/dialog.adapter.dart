@@ -6,6 +6,12 @@ import 'package:parkinson_de_bolso/config/theme.config.dart';
 class DialogAdapter {
   DialogAdapter._privateConstructor();
   static final DialogAdapter instance = DialogAdapter._privateConstructor();
+  AwesomeDialog dialog;
+
+  dismiss() {
+    this.dialog?.dissmiss();
+    this.dialog = null;
+  }
 
   show(
     BuildContext context,
@@ -20,7 +26,7 @@ class DialogAdapter {
     Widget closeIcon,
     Widget body,
   }) {
-    AwesomeDialog(
+    this.dialog = AwesomeDialog(
       context: context,
       dialogType: type,
       buttonsBorderRadius: BorderRadius.all(
@@ -38,6 +44,8 @@ class DialogAdapter {
       closeIcon: closeIcon,
       btnOk: btnOk,
       btnCancel: btnCancel,
-    ).show();
+    );
+
+    this.dialog.show();
   }
 }
