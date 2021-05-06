@@ -24,7 +24,6 @@ class DashboardActions {
   Function _onSearchStatusFunction;
   Function _onActiveNavegationFunction;
   PatientInternalType _returnPatientType;
-  Function _onReloadDataFunction;
   BuildContext _context;
   PatientModel _patient;
 
@@ -168,7 +167,6 @@ class DashboardActions {
                   this._context,
                   this._patient,
                 );
-                await this._onReloadDataFunction();
               },
             ),
             AppBarButtonModel(
@@ -239,11 +237,9 @@ class DashboardActions {
   }
 
   setAttibuteProcessImageSequence(
-    Function onReloadDataFunction,
     BuildContext context,
     PatientModel patient,
   ) {
-    this._onReloadDataFunction = onReloadDataFunction;
     this._context = context;
     this._patient = patient;
   }

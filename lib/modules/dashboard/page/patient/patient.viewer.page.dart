@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/config/theme.config.dart';
-import 'package:parkinson_de_bolso/model/patientClassification.model.dart';
 import 'package:parkinson_de_bolso/model/patient.model.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/action/dashboard.actions.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/page/patient/patient.evolution.page.dart';
-import 'package:parkinson_de_bolso/service/patientClassification.service.dart';
 import 'package:parkinson_de_bolso/util/datetime.util.dart';
 import 'package:parkinson_de_bolso/widget/custom_background.dart';
 import 'package:parkinson_de_bolso/widget/custom_circle_avatar.dart';
-import 'package:parkinson_de_bolso/widget/custom_circular_progress.dart';
 import 'package:parkinson_de_bolso/widget/custom_value_title.dart';
 
 class PatientViewerPage extends StatefulWidget {
@@ -29,30 +26,28 @@ class PatientViewerPage extends StatefulWidget {
 
 class _PatientViewerPageState extends State<PatientViewerPage>
     with DateTimeUtil {
-  List<PatientClassificationModel> _data;
-  bool _changeFilter;
+  // bool _changeFilter;
 
   @override
   void initState() {
-    this._changeFilter = false;
+    // this._changeFilter = false;
     DashboardActions.instance.setAttibuteProcessImageSequence(
-      this._reload,
       context,
       this.widget.patient,
     );
     super.initState();
   }
 
-  Widget _getPatientEvolution(
-    List<PatientClassificationModel> data,
-    bool changeFilter,
-  ) {
-    return PatientEvolutionPage(
-      data: data,
-      changeFilter: changeFilter,
-      spacingBetweenFields: this.widget.spacingBetweenFields,
-    );
-  }
+  // Widget _getPatientEvolution(
+  //   List<PatientClassificationModel> data,
+  //   bool changeFilter,
+  // ) {
+  //   return PatientEvolutionPage(
+  //     data: data,
+  //     changeFilter: changeFilter,
+  //     spacingBetweenFields: this.widget.spacingBetweenFields,
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -143,50 +138,45 @@ class _PatientViewerPageState extends State<PatientViewerPage>
             ],
           ),
         ),
-        bottom: (this._data == null)
-            ? FutureBuilder(
-                future: PatientClassificationService.instance.getAll(
-                  this.widget.patient.id,
-                ),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return this._getPatientEvolution(
-                      snapshot.data,
-                      this._changeFilter,
-                    );
-                  } else {
-                    return CustomCircularProgress(
-                      valueColor: ThemeConfig.primaryColor,
-                    );
-                  }
-                },
-              )
-            : this._getPatientEvolution(
-                _data,
-                this._changeFilter,
-              ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => this.setState(
-          () => this._changeFilter = !this._changeFilter,
+        bottom: PatientEvolutionPage(
+          patient: this.widget.patient,
         ),
-        tooltip: (this._changeFilter) ? 'Visualizar dados' : 'Filtrar dados',
-        child: Icon(
-          (this._changeFilter) ? Icons.bar_chart : Icons.filter_list_alt,
-          color: ThemeConfig.primaryColorDashboardBar,
-          size: 40,
-        ),
-        backgroundColor: ThemeConfig.floatingButtonDashboard,
-      ),
-    );
-  }
 
-  Future<void> _reload() async {
-    var data = await PatientClassificationService.instance.getAll(
-      this.widget.patient.id,
+        //   (this._data == null)
+        //       ? FutureBuilder(
+        //           future: PatientClassificationService.instance.getAll(
+        //             this.widget.patient.id,
+        //           ),
+        //           builder: (context, snapshot) {
+        //             if (snapshot.hasData) {
+        //               return this._getPatientEvolution(
+        //                 snapshot.data,
+        //                 this._changeFilter,
+        //               );
+        //             } else {
+        //               return CustomCircularProgress(
+        //                 valueColor: ThemeConfig.primaryColor,
+        //               );
+        //             }
+        //           },
+        //         )
+        //       : this._getPatientEvolution(
+        //           _data,
+        //           this._changeFilter,
+        //         ),
+        // ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () => this.setState(
+        //     () => this._changeFilter = !this._changeFilter,
+        //   ),
+        //   tooltip: (this._changeFilter) ? 'Visualizar dados' : 'Filtrar dados',
+        //   child: Icon(
+        //     (this._changeFilter) ? Icons.bar_chart : Icons.filter_list_alt,
+        //     color: ThemeConfig.primaryColorDashboardBar,
+        //     size: 40,
+        //   ),
+        //   backgroundColor: ThemeConfig.floatingButtonDashboard,
+      ),
     );
-    this.setState(() {
-      this._data = data;
-    });
   }
 }

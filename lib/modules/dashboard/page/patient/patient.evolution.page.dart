@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/config/app.config.dart';
 import 'package:parkinson_de_bolso/config/theme.config.dart';
+import 'package:parkinson_de_bolso/model/patient.model.dart';
 import 'package:parkinson_de_bolso/model/patientClassification.model.dart';
+import 'package:parkinson_de_bolso/service/patientClassification.service.dart';
 import 'package:parkinson_de_bolso/util/datetime.util.dart';
+import 'package:parkinson_de_bolso/widget/custom_circular_progress.dart';
 import 'package:parkinson_de_bolso/widget/custom_dropdown_item.dart';
 import 'package:parkinson_de_bolso/widget/custom_line_chart.dart';
 import 'package:parkinson_de_bolso/widget/custom_no_data.dart';
-import 'package:parkinson_de_bolso/widget/custom_table.dart';
 import 'package:parkinson_de_bolso/widget/custom_toggle.dart';
 
 class PatientEvolutionPage extends StatefulWidget {
-  final List<PatientClassificationModel> data;
-  final bool changeFilter;
-  final double spacingBetweenFields;
+  final PatientModel patient;
 
-  PatientEvolutionPage(
-      {@required this.data,
-      @required this.spacingBetweenFields,
-      this.changeFilter});
+  PatientEvolutionPage({
+    @required this.patient,
+  });
 
   @override
   _PatientEvolutionPageState createState() => _PatientEvolutionPageState();
@@ -25,40 +24,64 @@ class PatientEvolutionPage extends StatefulWidget {
 
 class _PatientEvolutionPageState extends State<PatientEvolutionPage>
     with DateTimeUtil {
-  List<PatientClassificationModel> _data;
-  List<PatientClassificationModel> _cacheData;
-  List<ListItem> _dataYear;
-  List<ListItem> _dataMonth;
-  bool _annualFilter, _dataFilter;
+  List<PatientClassificationModel> _evolution, _cacheData;
+  List<ListItem> _filterDataYear, _filterDataMonth;
+  bool _viewTypeFilter, _groupTypeFilter;
   int _currentYear, _currentMonth;
 
   @override
   void initState() {
-    this._annualFilter = false;
-    this._dataFilter = false;
-    this.initializeData();
+    this._viewTypeFilter = false;
+    this._groupTypeFilter = false;
     super.initState();
   }
 
-  void initializeData() {
-    this._data = this.widget.data;
-    if (this._data.length > 0) {
-      this._data.sort((a, b) => a.date.compareTo(b.date));
-      this._dataYear = this._getDataYears();
-      this._dataMonth = this._getDataMonths(this._dataYear[0].value);
-      this._currentYear = this._dataYear[0].value;
-      this._currentMonth = this._dataMonth.last.value;
-      this._cacheData = this._data;
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: this.getEvolution(this.widget.patient.id),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<PatientClassificationModel> evolution = snapshot.data;
+          this._evolution = evolution;
+
+          if (evolution.length > 0) {
+            this._loadFilterData(evolution);
+            this._filter();
+            return this._buildEvolutionScreen();
+          } else {
+            return CustomNoData(
+              image: AppConfig.instance.assetConfig.get('noData'),
+            );
+          }
+        } else {
+          return CustomCircularProgress(
+            valueColor: ThemeConfig.primaryColor,
+          );
+        }
+      },
+    );
+  }
+
+  Future<List<PatientClassificationModel>> getEvolution(String id) async {
+    List<PatientClassificationModel> evolution =
+        await PatientClassificationService.instance.getAll(id);
+    evolution.sort((a, b) => a.date.compareTo(b.date));
+    return evolution;
+  }
+
+  void _loadFilterData(List<PatientClassificationModel> evolution) {
+    this._filterDataYear = this._buildYearFilterData();
+    if (this._filterDataYear.isNotEmpty) {
+      this._currentYear = this._filterDataYear[0].value;
+      this._filterDataMonth = this._buildMonthFilterData(this._currentYear);
+      this._currentMonth = this._filterDataMonth[0].value;
     }
   }
 
-  List<ListItem> _getDataYears() {
+  List<ListItem> _buildYearFilterData() {
     Set<int> years = Set();
-
-    this._data.forEach((item) {
-      years.add(item.date.year);
-    });
-
+    this._evolution.forEach((item) => years.add(item.date.year));
     return years
         .map((e) => ListItem(e, e.toString()))
         .toList()
@@ -66,23 +89,21 @@ class _PatientEvolutionPageState extends State<PatientEvolutionPage>
         .toList();
   }
 
-  List<ListItem> _getDataMonths(int year) {
+  List<ListItem> _buildMonthFilterData(int year) {
     Set<int> months = Set();
-
-    this._data.forEach((item) {
+    this._evolution.forEach((item) {
       if (item.date.year == year) {
         months.add(item.date.month);
       }
     });
-
     return months.map((e) => ListItem(e, this.getMonth(e - 1))).toList();
   }
 
   void _normalizeData() {
     if (this._cacheData.length == 1) {
       DateTime currentDate = this._cacheData[0].date;
-      DateTime previousDate =
-          currentDate.subtract(Duration(days: (this._annualFilter) ? 31 : 1));
+      DateTime previousDate = currentDate
+          .subtract(Duration(days: (this._groupTypeFilter) ? 31 : 1));
 
       this._cacheData = <PatientClassificationModel>[
         PatientClassificationModel(
@@ -117,15 +138,15 @@ class _PatientEvolutionPageState extends State<PatientEvolutionPage>
   }
 
   void _filter() {
-    if (this._annualFilter) {
+    if (this._groupTypeFilter) {
       this._cacheData = this
-          ._data
+          ._evolution
           .where((element) => element.date.year == this._currentYear)
           .toList();
       this.averagePercentages();
     } else {
       this._cacheData = this
-          ._data
+          ._evolution
           .where((element) =>
               element.date.year == this._currentYear &&
               element.date.month == this._currentMonth)
@@ -148,70 +169,100 @@ class _PatientEvolutionPageState extends State<PatientEvolutionPage>
         (curr, next) => curr.percentage < next.percentage ? curr : next);
 
     return CustomLineChartDim(
-        maxX:
-            ((this._annualFilter) ? maxX.date.month : maxX.date.day).toDouble(),
-        minX:
-            ((this._annualFilter) ? minX.date.month : minX.date.day).toDouble(),
+        maxX: ((this._groupTypeFilter) ? maxX.date.month : maxX.date.day)
+            .toDouble(),
+        minX: ((this._groupTypeFilter) ? minX.date.month : minX.date.day)
+            .toDouble(),
         maxY: maxY.percentage,
         minY: minY.percentage);
   }
 
-  Widget _getFilterScreen() {
+  Widget _buildEvolutionScreen() {
+    CustomLineChartDim _dimensions = this._getChartDimensions();
+
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.all(10),
+          child: Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Evolução do Parkinson',
+                    style: TextStyle(
+                      color: ThemeConfig.primaryColor,
+                      fontSize: 18,
+                      letterSpacing: 1.0,
+                    ),
+                  ),
+                ],
+              ),
+              this._buildEvolutionFilter(),
+              CustomLineChart(
+                  data: this._cacheData,
+                  type: (this._groupTypeFilter)
+                      ? CustomLineChartType.ANNUAL
+                      : CustomLineChartType.MONTHLY,
+                  dimensions: _dimensions)
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEvolutionFilter() {
     return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      padding: EdgeInsets.all(10),
+      margin: EdgeInsets.symmetric(horizontal: 5, vertical: 20),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      child: Column(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.end,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.max,
             children: [
               CustomToggle(
                 trackColor: Colors.indigo[800],
                 background: ThemeConfig.primaryColor,
-                action: (status) {
-                  this.setState(() {
-                    this._annualFilter = status;
-                  });
-                },
-                label: (this._annualFilter) ? 'Anual' : 'Mensal',
-              ),
-              CustomDropdownItem(
-                label: 'Ano: ',
-                items: this._dataYear,
-                initialValue: this._dataYear[0],
-                onChange: (ListItem item) => this.setState(() {
-                  this._currentYear = item.value;
-                  this._dataMonth = this._getDataMonths(this._currentYear);
-                  this._currentMonth = this._dataMonth.last.value;
+                action: (status) => this.setState(() {
+                  this._viewTypeFilter = !this._viewTypeFilter;
                 }),
-                color: ThemeConfig.primaryColor,
+                label: (this._viewTypeFilter) ? 'Dados' : 'Gráfico',
+              ),
+              CustomToggle(
+                trackColor: Colors.indigo[800],
+                background: ThemeConfig.primaryColor,
+                action: (status) => this.setState(() {
+                  this._groupTypeFilter = !this._groupTypeFilter;
+                }),
+                label: (this._groupTypeFilter) ? 'Anual' : 'Mensal',
               ),
             ],
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.end,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.max,
             children: [
-              CustomToggle(
-                trackColor: Colors.indigo[800],
-                background: ThemeConfig.primaryColor,
-                action: (status) {
-                  this.setState(() {
-                    this._dataFilter = status;
-                  });
-                },
-                label: (this._dataFilter) ? 'Dados' : 'Gráfico',
+              CustomDropdownItem(
+                label: 'Ano: ',
+                items: this._filterDataYear,
+                initialValue: this._filterDataYear[0],
+                onChange: (ListItem item) => print(item),
+                color: ThemeConfig.primaryColor,
               ),
               CustomDropdownItem(
-                disabled: this._annualFilter,
+                disabled: this._groupTypeFilter,
                 label: 'Mês: ',
-                items: this._dataMonth,
-                initialValue: this._dataMonth.last,
-                onChange: (ListItem item) =>
-                    this.setState(() => this._currentMonth = item.value),
+                items: this._filterDataMonth,
+                initialValue: this._filterDataMonth.last,
+                onChange: (ListItem item) => print(item),
                 color: ThemeConfig.primaryColor,
               ),
             ],
@@ -219,87 +270,5 @@ class _PatientEvolutionPageState extends State<PatientEvolutionPage>
         ],
       ),
     );
-  }
-
-  Widget _getDataScreen() {
-    CustomLineChartDim _dimensions = this._getChartDimensions();
-    return Column(
-      children: [
-        SizedBox(height: 15),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Dados ' +
-                  ((!this._annualFilter)
-                      ? 'de ${this.months[this._currentMonth - 1]} '
-                      : '') +
-                  'de ${this._currentYear}',
-              style: TextStyle(color: ThemeConfig.primaryColor, fontSize: 15),
-            )
-          ],
-        ),
-        Container(
-          child: AnimatedCrossFade(
-              firstChild: CustomTable(
-                borderColor: ThemeConfig.primaryColor,
-                data: this._cacheData,
-                titles: ['Data', 'Porcentagem'],
-              ),
-              secondChild: CustomLineChart(
-                  data: this._cacheData,
-                  type: (this._annualFilter)
-                      ? CustomLineChartType.ANNUAL
-                      : CustomLineChartType.MONTHLY,
-                  dimensions: _dimensions),
-              crossFadeState: this._dataFilter
-                  ? CrossFadeState.showFirst
-                  : CrossFadeState.showSecond,
-              duration: Duration(milliseconds: 300)),
-        ),
-      ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (this._data.length > 0) {
-      this._filter();
-
-      return Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(10),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Evolução do Parkinson',
-                      style: TextStyle(
-                          color: ThemeConfig.primaryColor,
-                          fontSize: 18,
-                          letterSpacing: 1.0),
-                    ),
-                  ],
-                ),
-                AnimatedCrossFade(
-                  firstChild: this._getFilterScreen(),
-                  secondChild: this._getDataScreen(),
-                  crossFadeState: this.widget.changeFilter
-                      ? CrossFadeState.showFirst
-                      : CrossFadeState.showSecond,
-                  duration: Duration(milliseconds: 300),
-                )
-              ],
-            ),
-          ),
-        ],
-      );
-    } else {
-      return CustomNoData(image: AppConfig.instance.assetConfig.get('noData'));
-    }
   }
 }

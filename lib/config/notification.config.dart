@@ -23,7 +23,7 @@ class NotificationConfig with SharedPreferencesUtil {
       this._notificationAdpater.initialiaze();
       this._onHandleCounterNotification = onHandleCounterNotification;
       this.getNewNotifications();
-      this._startBackgroundProcess();
+      // this._startBackgroundProcess();
     }
   }
 
