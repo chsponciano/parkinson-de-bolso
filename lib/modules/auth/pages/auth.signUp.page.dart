@@ -6,11 +6,11 @@ import 'package:parkinson_de_bolso/adapter/dialog.adapter.dart';
 import 'package:parkinson_de_bolso/config/theme.config.dart';
 import 'package:parkinson_de_bolso/model/user.model.dart';
 import 'package:parkinson_de_bolso/modules/auth/pages/auth.signIn.page.dart';
-import 'package:parkinson_de_bolso/modules/auth/pages/extra/auth.base.dart';
+import 'package:parkinson_de_bolso/modules/auth/extra/auth.base.dart';
 import 'package:parkinson_de_bolso/util/sharedPreferences.util.dart';
 import 'package:parkinson_de_bolso/util/validationField.util.dart';
-import 'package:parkinson_de_bolso/widget/custom_raised_button.dart';
-import 'package:parkinson_de_bolso/widget/custom_text_form_field.dart';
+import 'package:parkinson_de_bolso/widget/raisedButton.widget.dart';
+import 'package:parkinson_de_bolso/widget/textFormField.widget.dart';
 
 class SignUpPage extends StatefulWidget {
   static const String routeName = '/SignUpPageRoute';
@@ -135,7 +135,7 @@ class _SignUpPageState extends State<SignUpPage>
             key: this._formKey,
             child: Column(
               children: [
-                CustomTextFormField(
+                TextFormFieldWidget(
                   controller: this._name,
                   fieldName: 'Nome',
                   hintText: 'Digite seu nome',
@@ -147,7 +147,7 @@ class _SignUpPageState extends State<SignUpPage>
                   padding: this._padding,
                   internalPadding: this._internalPadding,
                 ),
-                CustomTextFormField(
+                TextFormFieldWidget(
                   controller: this._email,
                   fieldName: 'Email',
                   hintText: 'Digite seu e-mail',
@@ -160,7 +160,7 @@ class _SignUpPageState extends State<SignUpPage>
                   internalPadding: this._internalPadding,
                   validation: validateEmailField,
                 ),
-                CustomTextFormField(
+                TextFormFieldWidget(
                   onChanged: (value) => this._applyPolicies(value),
                   suffix: this._passwordPolicyIcon,
                   controller: this._password,
@@ -185,7 +185,7 @@ class _SignUpPageState extends State<SignUpPage>
                   ],
                 ),
                 SizedBox(height: 10),
-                CustomRaisedButton(
+                RaisedButtonWidget(
                   label: 'Criar conta',
                   width: double.infinity,
                   background: ThemeConfig.ternaryColor,

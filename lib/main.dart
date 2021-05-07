@@ -5,7 +5,6 @@ import 'package:parkinson_de_bolso/config/app.config.dart';
 import 'package:parkinson_de_bolso/config/camera.config.dart';
 import 'package:parkinson_de_bolso/material/auth.material.dart';
 import 'package:parkinson_de_bolso/material/dashboard.material.dart';
-import 'package:parkinson_de_bolso/model/appBarButton.model.dart';
 import 'package:parkinson_de_bolso/type/module.type.dart';
 import 'package:parkinson_de_bolso/util/sharedPreferences.util.dart';
 
@@ -26,30 +25,12 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> with SharedPreferencesUtil {
   ModuleType _moduleType;
-  Widget _appBarTitle;
-  List<AppBarButtonModel> _actions;
-  IconButton _leading;
 
   @override
   void initState() {
     super.initState();
     this._moduleType = ModuleType.AUTH;
-    AppConfig.instance.setChangeModuleFunction(
-      (
-        ModuleType type,
-        Widget appBarTitle,
-        List<AppBarButtonModel> actions,
-        IconButton leading,
-      ) =>
-          this.setState(
-        () {
-          this._moduleType = type;
-          this._appBarTitle = appBarTitle;
-          this._actions = actions;
-          this._leading = leading;
-        },
-      ),
-    );
+    AppConfig.instance.setChangeModuleFunction(changeModule);
     SystemChrome.setEnabledSystemUIOverlays([]);
     this.initPlatformState();
   }
@@ -72,14 +53,15 @@ class _AppState extends State<App> with SharedPreferencesUtil {
       case ModuleType.CAMERA:
       case ModuleType.DASHBOARD:
       case ModuleType.NOTIFICATION:
-        return DashboardMaterial(
-          appBarTitle: this._appBarTitle,
-          actions: this._actions,
-          leading: this._leading,
-          type: this._moduleType,
+        return DashMaterial(
+          moduleType: this._moduleType,
         );
       default:
         return AuthMaterial();
     }
+  }
+
+  changeModule(ModuleType type) {
+    this.setState(() => this._moduleType = type);
   }
 }

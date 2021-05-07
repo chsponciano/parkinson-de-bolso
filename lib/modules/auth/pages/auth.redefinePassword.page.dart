@@ -5,10 +5,10 @@ import 'package:parkinson_de_bolso/adapter/aws.adpater.dart';
 import 'package:parkinson_de_bolso/adapter/dialog.adapter.dart';
 import 'package:parkinson_de_bolso/config/theme.config.dart';
 import 'package:parkinson_de_bolso/modules/auth/pages/auth.verification.page.dart';
-import 'package:parkinson_de_bolso/modules/auth/pages/extra/auth.base.dart';
+import 'package:parkinson_de_bolso/modules/auth/extra/auth.base.dart';
 import 'package:parkinson_de_bolso/util/validationField.util.dart';
-import 'package:parkinson_de_bolso/widget/custom_raised_button.dart';
-import 'package:parkinson_de_bolso/widget/custom_text_form_field.dart';
+import 'package:parkinson_de_bolso/widget/raisedButton.widget.dart';
+import 'package:parkinson_de_bolso/widget/textFormField.widget.dart';
 
 class RedefinePasswordPage extends StatefulWidget {
   static const String routeName = '/RedefinePasswordPageRoute';
@@ -67,7 +67,7 @@ class _RedefinePasswordPageState extends State<RedefinePasswordPage>
           key: this._formKey,
           child: Column(
             children: [
-              CustomTextFormField(
+              TextFormFieldWidget(
                 controller: this._email,
                 fieldName: 'Email',
                 hintText: 'Digite seu e-mail',
@@ -82,7 +82,7 @@ class _RedefinePasswordPageState extends State<RedefinePasswordPage>
             ],
           ),
         ),
-        CustomRaisedButton(
+        RaisedButtonWidget(
           label: 'Redefinir senha',
           width: double.infinity,
           background: ThemeConfig.ternaryColor,

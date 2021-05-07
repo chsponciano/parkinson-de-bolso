@@ -1,9 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:parkinson_de_bolso/model/tableRow.model.dart';
 import 'package:parkinson_de_bolso/util/datetime.util.dart';
 import 'package:parkinson_de_bolso/util/serelization.util.dart';
-import 'package:parkinson_de_bolso/widget/custom_table_row.dart';
 
 class PatientClassificationModel extends SerelizationDataUtil
     with DateTimeUtil {
@@ -23,10 +23,10 @@ class PatientClassificationModel extends SerelizationDataUtil
 
   @override
   TableRow createRow() {
-    return CustomTableRow(padding: EdgeInsets.all(5), values: <String>[
+    return TableRowModel(padding: EdgeInsets.all(5), values: <String>[
       this.format.format(this.date),
       this.percentage.toString()
-    ]).build();
+    ]).create();
   }
 
   factory PatientClassificationModel.fromJson(Map<String, dynamic> json) {

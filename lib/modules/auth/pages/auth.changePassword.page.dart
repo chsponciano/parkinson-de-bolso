@@ -5,9 +5,9 @@ import 'package:parkinson_de_bolso/adapter/aws.adpater.dart';
 import 'package:parkinson_de_bolso/adapter/dialog.adapter.dart';
 import 'package:parkinson_de_bolso/config/theme.config.dart';
 import 'package:parkinson_de_bolso/modules/auth/pages/auth.signIn.page.dart';
-import 'package:parkinson_de_bolso/modules/auth/pages/extra/auth.base.dart';
-import 'package:parkinson_de_bolso/widget/custom_raised_button.dart';
-import 'package:parkinson_de_bolso/widget/custom_text_form_field.dart';
+import 'package:parkinson_de_bolso/modules/auth/extra/auth.base.dart';
+import 'package:parkinson_de_bolso/widget/raisedButton.widget.dart';
+import 'package:parkinson_de_bolso/widget/textFormField.widget.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   static const String routeName = '/ChangePasswordPageRoute';
@@ -59,7 +59,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           key: this._formKey,
           child: Column(
             children: [
-              CustomTextFormField(
+              TextFormFieldWidget(
                 controller: this._password,
                 fieldName: 'Nova senha',
                 hintText: 'Digite sua nova senha',
@@ -71,7 +71,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 isPassword: true,
                 internalPadding: this._internalPadding,
               ),
-              CustomTextFormField(
+              TextFormFieldWidget(
                 controller: this._confirmPassword,
                 fieldName: 'Confirme a senha',
                 hintText: 'Confirme sua nova senha',
@@ -97,7 +97,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             ],
           ),
         ),
-        CustomRaisedButton(
+        RaisedButtonWidget(
           label: 'Redefinir senha',
           width: double.infinity,
           background: ThemeConfig.ternaryColor,

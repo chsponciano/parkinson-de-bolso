@@ -12,13 +12,13 @@ import 'package:parkinson_de_bolso/config/theme.config.dart';
 import 'package:parkinson_de_bolso/model/patient.model.dart';
 import 'package:parkinson_de_bolso/modules/camera/extra/camera.button.dart';
 import 'package:parkinson_de_bolso/modules/camera/extra/camera.usage.information.dart';
-import 'package:parkinson_de_bolso/modules/dashboard/action/dashboard.actions.dart';
 import 'package:parkinson_de_bolso/service/predict.service.dart';
 import 'package:parkinson_de_bolso/type/camera.type.dart';
+import 'package:parkinson_de_bolso/type/module.type.dart';
 import 'package:parkinson_de_bolso/util/sharedPreferences.util.dart';
-import 'package:parkinson_de_bolso/widget/custom_back_button.dart';
-import 'package:parkinson_de_bolso/widget/custom_checkbox.dart';
-import 'package:parkinson_de_bolso/widget/custom_circular_progress.dart';
+import 'package:parkinson_de_bolso/widget/backButton.widget.dart';
+import 'package:parkinson_de_bolso/widget/checkbox.widget.dart';
+import 'package:parkinson_de_bolso/widget/circularProgress.widget.dart';
 
 class CameraPage extends StatefulWidget {
   final Color barColor;
@@ -50,7 +50,7 @@ class CameraPage extends StatefulWidget {
     CameraType cameraType, {
     PatientModel patientModel,
   }) async {
-    // AppConfig.instance.changeModule(ModuleType.CAMERA, null, [], null);
+    AppConfig.instance.changeModule(ModuleType.CAMERA);
     return await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return CameraPage(type: cameraType, patient: patientModel);
     }));
@@ -197,7 +197,7 @@ class _CameraPageState extends State<CameraPage>
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CustomCheckbox(
+                CheckboxWidget(
                   activeColor: ThemeConfig.primaryColor,
                   checkColor: ThemeConfig.ternaryColor,
                   caption: 'Não mostrar novamente?',
@@ -230,21 +230,21 @@ class _CameraPageState extends State<CameraPage>
                       return CameraPreview(this._controller);
                     } else {
                       return Center(
-                          child: CustomCircularProgress(
+                          child: CircularProgressWidget(
                         valueColor: ThemeConfig.primaryColor,
                       ));
                     }
                   },
                 ),
         ),
-        CustomBackButton(
+        BackButtonWidget(
           backgroundColor: ThemeConfig.primaryColor,
           iconColor: ThemeConfig.ternaryColor,
           paddingValue: 20,
           onPressed: () {
             if (this._type != null) {
               Navigator.pop(context);
-              DashboardActions.instance.onRelocateInnerPage();
+              // DashboardActions.instance.onRelocateInnerPage();
             } else {
               this._reset();
             }
@@ -301,7 +301,7 @@ class _CameraPageState extends State<CameraPage>
         this._cameraButtonIcon = Icons.done;
         this._cameraButtonOnPressed = () {
           Navigator.pop(context, this._image);
-          DashboardActions.instance.onRelocateInnerPage();
+          // DashboardActions.instance.onRelocateInnerPage();
         };
         this._cameraButtonTooltip = 'Confirmar';
         break;
