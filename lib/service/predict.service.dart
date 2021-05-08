@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:http/http.dart' as http;
 import 'package:parkinson_de_bolso/adapter/aws.adpater.dart';
 import 'package:parkinson_de_bolso/config/app.config.dart';
+import 'package:parkinson_de_bolso/model/execution.model.dart';
 
 class PredictService {
   PredictService._privateConstructor();
@@ -89,6 +90,25 @@ class PredictService {
       return true;
     } else {
       throw Exception('Failed to request terminate predict');
+    }
+  }
+
+  Future<List<ExecutionModel>> getAll(String predictId) async {
+    final SigV4Request signedRequest = this.awsAdapter.getSigV4Request(
+          'GET',
+          path,
+        );
+
+    final http.Response response = await http.get(
+      '${signedRequest.url}/$predictId',
+      headers: signedRequest.headers,
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      return data.map((item) => ExecutionModel.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load executation classification');
     }
   }
 }

@@ -1,17 +1,26 @@
 class ExecutionModel {
   String id;
   int index;
+  String image;
+  int isParkinson;
   double percentage;
-  String patientid;
 
-  ExecutionModel({this.id, this.index, this.percentage, this.patientid});
+  ExecutionModel({
+    this.id,
+    this.index,
+    this.percentage,
+    this.image,
+    this.isParkinson,
+  });
 
   factory ExecutionModel.fromJson(Map json) {
     return ExecutionModel(
-        id: json['_id'],
-        index: int.parse(json['index'].toString()),
-        percentage: double.parse(json['percentage'].toString() + '.0'),
-        patientid: json['patientid']);
+      id: json['_id'],
+      index: int.parse(json['index'].toString()),
+      percentage: double.parse(json['percentage'].toString()),
+      image: json['image'],
+      isParkinson: json['isParkinson'],
+    );
   }
 
   Map toJson(bool create) {
@@ -19,7 +28,8 @@ class ExecutionModel {
       if (!create) '_id': this.id,
       'index': this.index,
       'percentage': this.percentage,
-      'patientid': this.patientid,
+      'image': this.image,
+      'isParkinson': this.isParkinson,
     };
   }
 }

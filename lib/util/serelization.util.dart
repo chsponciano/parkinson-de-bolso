@@ -3,5 +3,5 @@ import 'package:flutter/material.dart';
 
 abstract class SerelizationDataUtil {
   FlSpot createSpot(bool isAnnual);
-  TableRow createRow();
+  TableRow createRow(BuildContext context);
 }

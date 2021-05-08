@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/model/patient.model.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/notification/notification.dash.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/patient/executation.patient.dash.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/patient/form.patient.dash.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/patient/search.patient.dash.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/patient/view.patient.dash.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/report/report.dash.dart';
+
+class RouteCache {
+  static PatientModel patientModel;
+}
 
 RouteFactory dashRoutes() {
   return (settings) {
@@ -18,6 +23,12 @@ RouteFactory dashRoutes() {
       case NotificationDash.routeName:
         screen = NotificationDash();
         break;
+      case ExecutationPatientDash.routeName:
+        screen = ExecutationPatientDash(
+          id: arguments['id'],
+          patient: RouteCache.patientModel,
+        );
+        break;
       case ReportDash.routeName:
         screen = ReportDash();
         break;
@@ -29,8 +40,8 @@ RouteFactory dashRoutes() {
         );
         break;
       case ViewPatientDash.routeName:
-        PatientModel _patient =
-            (arguments != null) ? arguments['patient'] : null;
+        PatientModel _patient = arguments['patient'];
+        RouteCache.patientModel = _patient;
         screen = ViewPatientDash(
           patient: _patient,
         );

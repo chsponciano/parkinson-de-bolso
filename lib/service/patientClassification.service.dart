@@ -45,26 +45,4 @@ class PatientClassificationService {
       throw Exception('Failed to delete patient classification');
     }
   }
-
-  Future<PatientClassificationModel> create(
-    PatientClassificationModel classification,
-  ) async {
-    final SigV4Request signedRequest = this.awsAdapter.getSigV4Request(
-          'POST',
-          path,
-          body: classification.toJson(true),
-        );
-
-    final http.Response response = await http.post(
-      signedRequest.url,
-      headers: signedRequest.headers,
-      body: signedRequest.body,
-    );
-
-    if (response.statusCode == 200) {
-      return PatientClassificationModel.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed to create classification');
-    }
-  }
 }

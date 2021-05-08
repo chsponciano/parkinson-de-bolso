@@ -1,36 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:parkinson_de_bolso/model/tableRow.model.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/patient/table/table.row.patient.dah.dart';
 import 'package:parkinson_de_bolso/util/serelization.util.dart';
 
-class TableWidget extends StatefulWidget {
+class TablePatient extends StatefulWidget {
   final Color borderColor;
   final List<SerelizationDataUtil> data;
   final List<String> titles;
 
-  TableWidget({
+  TablePatient({
     @required this.borderColor,
     @required this.data,
     @required this.titles,
   });
 
   @override
-  _TableWidgetState createState() => _TableWidgetState();
+  _TablePatientState createState() => _TablePatientState();
 }
 
-class _TableWidgetState extends State<TableWidget> {
+class _TablePatientState extends State<TablePatient> {
   List<TableRow> _data;
 
   void initializeData() {
     this._data = <TableRow>[
-      TableRowModel(
+      TableRowPatientDash(
               padding: EdgeInsets.all(5),
               values: this.widget.titles,
               isTitle: true)
-          .create()
+          .create(context)
     ];
 
     if (this.widget.data != null)
-      this._data.addAll(this.widget.data.map((e) => e.createRow()).toList());
+      this
+          ._data
+          .addAll(this.widget.data.map((e) => e.createRow(context)).toList());
   }
 
   @override
@@ -40,15 +42,17 @@ class _TableWidgetState extends State<TableWidget> {
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: Table(
+        columnWidths: {
+          0: FlexColumnWidth(2),
+          1: FlexColumnWidth(2),
+          2: FlexColumnWidth(2),
+        },
         border: TableBorder(
           horizontalInside: BorderSide(
-              color: this.widget.borderColor,
-              style: BorderStyle.solid,
-              width: 1.0),
-          verticalInside: BorderSide(
-              color: this.widget.borderColor,
-              style: BorderStyle.solid,
-              width: 1.0),
+            color: Colors.grey[300],
+            style: BorderStyle.solid,
+            width: 1.0,
+          ),
         ),
         children: this._data,
       ),

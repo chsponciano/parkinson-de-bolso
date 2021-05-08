@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/config/app.config.dart';
 import 'package:parkinson_de_bolso/config/theme.config.dart';
 import 'package:parkinson_de_bolso/model/patientClassification.model.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/patient/table/table.patient.dart';
 import 'package:parkinson_de_bolso/util/datetime.util.dart';
 import 'package:parkinson_de_bolso/widget/dropdownItem.widget.dart';
 import 'package:parkinson_de_bolso/widget/lineChart.widget.dart';
 import 'package:parkinson_de_bolso/widget/noData.widget.dart';
-import 'package:parkinson_de_bolso/widget/table.widget.dart';
 import 'package:parkinson_de_bolso/widget/toggle.widget.dart';
 
 class EvolutionPatientDash extends StatefulWidget {
@@ -96,13 +96,10 @@ class _EvolutionPatientDashState extends State<EvolutionPatientDash>
             ),
           ),
           child: AnimatedCrossFade(
-              firstChild: TableWidget(
+              firstChild: TablePatient(
                 borderColor: ThemeConfig.primaryColor,
                 data: this._cacheData,
-                titles: [
-                  'Data',
-                  'Porcentagem',
-                ],
+                titles: ['Data', 'Taxa', ''],
               ),
               secondChild: LineChartWidget(
                   data: this._cacheData,
@@ -220,6 +217,8 @@ class _EvolutionPatientDashState extends State<EvolutionPatientDash>
         PatientClassificationModel(
           date: previousDate,
           percentage: this._cacheData[0].percentage - 5,
+          isParkinson: this._cacheData[0].isParkinson,
+          executationid: this._cacheData[0].executationid,
         ),
         this._cacheData[0]
       ];
@@ -240,9 +239,14 @@ class _EvolutionPatientDashState extends State<EvolutionPatientDash>
     percentages.forEach((key, value) {
       double percentage =
           value.fold(0, (a, b) => a + b.percentage.toInt()) / value.length;
-      average.add(PatientClassificationModel(
+      average.add(
+        PatientClassificationModel(
           date: value[0].date,
-          percentage: double.parse(percentage.toStringAsFixed(2))));
+          percentage: double.parse(percentage.toStringAsFixed(7)),
+          executationid: value[0].executationid,
+          isParkinson: value[0].isParkinson,
+        ),
+      );
     });
 
     this._cacheData = average;
