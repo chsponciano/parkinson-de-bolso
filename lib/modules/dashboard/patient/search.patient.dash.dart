@@ -53,10 +53,7 @@ class _SearchPatientDashState extends State<SearchPatientDash> with StringUtil {
   @override
   void didChangeDependencies() {
     DashConfig.instance.setContext(context);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      DashConfig.instance.setBarAttributes(null, Text('Pacientes'), null);
-    });
-
+    WidgetsBinding.instance.addPostFrameCallback((_) => this._defaultBar());
     super.didChangeDependencies();
   }
 
@@ -92,41 +89,50 @@ class _SearchPatientDashState extends State<SearchPatientDash> with StringUtil {
     );
   }
 
-  Widget _buildSerchBar() {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(10),
-      child: TextField(
+  _activateSearchBar() {
+    DashConfig.instance.setBarAttributes(
+      IconButton(
+        icon: Icon(
+          Icons.arrow_back,
+          color: ThemeConfig.primaryColor,
+        ),
+        onPressed: this._defaultBar,
+      ),
+      TextField(
         focusNode: this._textFieldFocusNode,
-        // autofocus: true,
         textInputAction: TextInputAction.go,
         decoration: InputDecoration(
-          filled: true,
-          fillColor: ThemeConfig.primaryColor,
           border: InputBorder.none,
           hintStyle: TextStyle(
-            color: Colors.white,
+            color: ThemeConfig.primaryColor,
           ),
-          hintText: 'Pesquisar',
-          focusedBorder: UnderlineInputBorder(
-            borderRadius: new BorderRadius.circular(10),
-          ),
-          enabledBorder: UnderlineInputBorder(
-            borderRadius: new BorderRadius.circular(10),
-          ),
-          suffixIcon: Icon(
-            Icons.search,
-            color: ThemeConfig.ternaryColor,
-          ),
+          hintText: 'Pesquisar paciente',
         ),
         style: TextStyle(
-          color: Colors.white,
+          color: ThemeConfig.primaryColor,
           fontSize: 20.0,
         ),
-
         onChanged: (value) => this._onItemChanged(value),
       ),
+      null,
+      background: ThemeConfig.ternaryColor,
+      iconColor: ThemeConfig.primaryColor,
     );
+
+    this._textFieldFocusNode.requestFocus();
+  }
+
+  _defaultBar() {
+    DashConfig.instance.setBarAttributes(
+      IconButton(
+        icon: Icon(Icons.search),
+        onPressed: this._activateSearchBar,
+      ),
+      Text('Pacientes'),
+      null,
+    );
+
+    this._textFieldFocusNode.unfocus();
   }
 
   Widget _buildPatientCard(PatientModel patient) {
@@ -204,7 +210,7 @@ class _SearchPatientDashState extends State<SearchPatientDash> with StringUtil {
                 width: double.infinity,
                 child: Column(
                   children: [
-                    this._buildSerchBar(),
+                    // this._buildSerchBar(),
                     Expanded(
                       child: Container(
                         margin: EdgeInsets.symmetric(vertical: 5),

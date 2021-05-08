@@ -7,10 +7,12 @@ import 'package:parkinson_de_bolso/type/module.type.dart';
 
 class NotificationButtonWidget extends StatelessWidget {
   final int numberActiveNotifications;
+  final Color color;
 
   const NotificationButtonWidget({
     Key key,
     this.numberActiveNotifications,
+    this.color,
   }) : super(key: key);
 
   @override
@@ -21,7 +23,7 @@ class NotificationButtonWidget extends StatelessWidget {
           children: [
             Icon(
               Icons.notifications,
-              color: ThemeConfig.ternaryColor,
+              color: this.color,
               size: 30,
             ),
             if (this.numberActiveNotifications > 0)

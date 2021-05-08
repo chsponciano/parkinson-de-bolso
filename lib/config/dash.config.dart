@@ -22,8 +22,20 @@ class DashConfig with SharedPreferencesUtil {
     this._toAssignBarAttributesFunction = f;
   }
 
-  setBarAttributes(Widget leading, Widget title, List<Widget> actions) {
-    this._toAssignBarAttributesFunction(leading, title, actions);
+  setBarAttributes(
+    Widget leading,
+    Widget title,
+    List<Widget> actions, {
+    Color background,
+    Color iconColor,
+  }) {
+    this._toAssignBarAttributesFunction(
+      leading,
+      title,
+      actions,
+      background: background,
+      iconColor: iconColor,
+    );
   }
 
   logout() {

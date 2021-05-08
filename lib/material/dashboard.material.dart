@@ -26,6 +26,8 @@ class _DashMaterialState extends State<DashMaterial> {
   Widget _leading;
   Widget _title;
   List<Widget> _actions;
+  Color _background;
+  Color _iconColor;
   int _activeNotifications;
 
   @override
@@ -70,6 +72,7 @@ class _DashMaterialState extends State<DashMaterial> {
           key: this._scaffoldState,
           appBar: (this.widget.moduleType == ModuleType.DASHBOARD)
               ? AppBar(
+                  backgroundColor: this._background,
                   elevation: 0,
                   leading: this._leading,
                   automaticallyImplyLeading: false,
@@ -87,11 +90,21 @@ class _DashMaterialState extends State<DashMaterial> {
     );
   }
 
-  setBarAttributes(Widget leading, Widget title, List<Widget> actions) {
+  setBarAttributes(
+    Widget leading,
+    Widget title,
+    List<Widget> actions, {
+    Color background,
+    Color iconColor,
+  }) {
     this.setState(() {
       this._leading = leading;
       this._title = title;
       this._actions = actions;
+      this._background =
+          background == null ? ThemeConfig.primaryColor : background;
+      this._iconColor =
+          iconColor == null ? ThemeConfig.ternaryColor : iconColor;
     });
   }
 
@@ -102,12 +115,16 @@ class _DashMaterialState extends State<DashMaterial> {
     actions.add(
       NotificationButtonWidget(
         numberActiveNotifications: this._activeNotifications,
+        color: this._iconColor,
       ),
     );
 
     actions.add(
       IconButton(
-        icon: Icon(Icons.menu),
+        icon: Icon(
+          Icons.menu,
+          color: this._iconColor,
+        ),
         onPressed: () => this._scaffoldState.currentState.openEndDrawer(),
       ),
     );
