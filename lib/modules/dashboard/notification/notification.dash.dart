@@ -4,15 +4,22 @@ import 'package:parkinson_de_bolso/config/app.config.dart';
 import 'package:parkinson_de_bolso/config/notification.config.dart';
 import 'package:parkinson_de_bolso/config/theme.config.dart';
 import 'package:parkinson_de_bolso/model/receivedNotification.model.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/patient/executation.patient.dash.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/patient/search.patient.dash.dart';
 import 'package:parkinson_de_bolso/service/notify.service.dart';
 import 'package:parkinson_de_bolso/type/module.type.dart';
 import 'package:parkinson_de_bolso/widget/circularProgress.widget.dart';
 
 class NotificationDash extends StatefulWidget {
   static const String routeName = '/notification';
+  final bool externalCall;
   final String payload;
 
-  const NotificationDash({Key key, this.payload}) : super(key: key);
+  const NotificationDash({
+    Key key,
+    this.payload,
+    this.externalCall = false,
+  }) : super(key: key);
 
   @override
   _NotificationDashState createState() => _NotificationDashState();
@@ -46,7 +53,15 @@ class _NotificationDashState extends State<NotificationDash> {
               if (notification.payload == 'classification')
                 TextButton(
                   child: Text('VER RESULTADOS'),
-                  onPressed: () {/* ... */},
+                  onPressed: () {
+                    AppConfig.instance.changeModule(ModuleType.DASHBOARD);
+                    NotifyService.instance.markRead(notification);
+                    Navigator.pushNamed(
+                        context, ExecutationPatientDash.routeName, arguments: {
+                      'id': notification.additional,
+                      'externalCall': 0
+                    });
+                  },
                 ),
               TextButton(
                 child: const Text('MARCA COMO LIDO'),
@@ -74,7 +89,9 @@ class _NotificationDashState extends State<NotificationDash> {
             color: Colors.white,
           ),
           onPressed: () {
-            Navigator.pop(context);
+            (this.widget.externalCall)
+                ? Navigator.pushNamed(context, SearchPatientDash.routeName)
+                : Navigator.pop(context);
             AppConfig.instance.changeModule(
               ModuleType.DASHBOARD,
             );

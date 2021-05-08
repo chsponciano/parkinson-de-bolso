@@ -188,8 +188,13 @@ class _SearchPatientDashState extends State<SearchPatientDash> with StringUtil {
               );
 
           if (this._data.length == 0)
-            return NoDataWidget(
-              image: AppConfig.instance.assetConfig.get('noDataPatient'),
+            return Center(
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 30),
+                child: NoDataWidget(
+                  image: AppConfig.instance.assetConfig.get('noDataPatient'),
+                ),
+              ),
             );
 
           return Stack(

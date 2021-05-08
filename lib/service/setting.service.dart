@@ -12,16 +12,22 @@ class SettingService {
   Future<void> cleanData() async {
     final SigV4Request signedRequest = this.awsAdapter.getSigV4Request(
           'DELETE',
-          path,
+          '$path/clean/${AppConfig.instance.loggedInUser.id}',
         );
     await http.delete(
-      '${signedRequest.url}/${AppConfig.instance.loggedInUser.id}',
+      signedRequest.url,
       headers: signedRequest.headers,
     );
   }
 
-  Future<void> deleteAccount() async {
-    await this.cleanData();
-    this.awsAdapter.deleteUser();
+  Future<void> deleteUser() async {
+    final SigV4Request signedRequest = this.awsAdapter.getSigV4Request(
+          'DELETE',
+          '$path/delete/user/${AppConfig.instance.loggedInUser.id}',
+        );
+    await http.delete(
+      signedRequest.url,
+      headers: signedRequest.headers,
+    );
   }
 }

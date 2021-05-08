@@ -9,25 +9,30 @@ class ReceivedNotificationModel {
   final String payload;
   final String userid;
   final int read;
+  final String additional;
 
-  ReceivedNotificationModel(
-      {this.id,
-      @required this.notificationid,
-      @required this.title,
-      @required this.body,
-      @required this.payload,
-      this.userid,
-      this.read});
+  ReceivedNotificationModel({
+    this.id,
+    @required this.notificationid,
+    @required this.title,
+    @required this.body,
+    @required this.payload,
+    this.userid,
+    this.read,
+    this.additional,
+  });
 
   factory ReceivedNotificationModel.fromJson(Map<String, dynamic> json) {
     return ReceivedNotificationModel(
-        id: json['id'],
-        notificationid: json['notificationid'],
-        title: json['title'],
-        body: json['body'],
-        payload: json['payload'],
-        userid: json['userid'],
-        read: json['isread']);
+      id: json['id'],
+      notificationid: json['notificationid'],
+      title: json['title'],
+      body: json['body'],
+      payload: json['payload'],
+      userid: json['userid'],
+      read: json['isread'],
+      additional: json['additional'],
+    );
   }
 
   Map toJson(bool create) {

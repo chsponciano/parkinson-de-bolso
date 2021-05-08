@@ -103,14 +103,6 @@ class AwsAdapter {
     );
   }
 
-  Future<bool> deleteUser() async {
-    final cognitoUser = new CognitoUser(
-      AppConfig.instance.loggedInUser.email,
-      this._userPool,
-    );
-    return await cognitoUser.deleteUser();
-  }
-
   Future<Map<String, String>> getAttributes(CognitoUser cognitoUser) async {
     final Map<String, String> attributes = Map();
 

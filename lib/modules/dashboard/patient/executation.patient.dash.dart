@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:parkinson_de_bolso/config/app.config.dart';
 import 'package:parkinson_de_bolso/config/dash.config.dart';
 import 'package:parkinson_de_bolso/config/theme.config.dart';
 import 'package:parkinson_de_bolso/model/execution.model.dart';
 import 'package:parkinson_de_bolso/model/patient.model.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/notification/notification.dash.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/patient/view.patient.dash.dart';
 import 'package:parkinson_de_bolso/service/predict.service.dart';
+import 'package:parkinson_de_bolso/type/module.type.dart';
 import 'package:parkinson_de_bolso/widget/circleAvatar.widget.dart';
 import 'package:parkinson_de_bolso/widget/circularProgress.widget.dart';
 
@@ -13,11 +16,13 @@ class ExecutationPatientDash extends StatefulWidget {
   static const String routeName = '/patientEvolution';
   final PatientModel patient;
   final String id;
+  final bool externalCall;
 
   const ExecutationPatientDash({
     Key key,
     this.id,
     this.patient,
+    this.externalCall = false,
   }) : super(key: key);
 
   @override
@@ -32,13 +37,26 @@ class _ExecutationPatientDashState extends State<ExecutationPatientDash> {
       DashConfig.instance.setBarAttributes(
           IconButton(
             icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pushNamed(
-              context,
-              ViewPatientDash.routeName,
-              arguments: {
-                'patient': this.widget.patient,
-              },
-            ),
+            onPressed: () {
+              if (this.widget.externalCall) {
+                AppConfig.instance.changeModule(ModuleType.NOTIFICATION);
+                Navigator.pushNamed(
+                  context,
+                  NotificationDash.routeName,
+                  arguments: {
+                    'externalCall': 0,
+                  },
+                );
+              } else {
+                Navigator.pushNamed(
+                  context,
+                  ViewPatientDash.routeName,
+                  arguments: {
+                    'patient': this.widget.patient,
+                  },
+                );
+              }
+            },
           ),
           Text('Detalhes'),
           null);

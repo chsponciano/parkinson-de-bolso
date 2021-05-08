@@ -21,12 +21,16 @@ RouteFactory dashRoutes() {
         screen = SearchPatientDash();
         break;
       case NotificationDash.routeName:
-        screen = NotificationDash();
+        screen = NotificationDash(
+          externalCall:
+              arguments != null && arguments.containsKey('externalCall'),
+        );
         break;
       case ExecutationPatientDash.routeName:
         screen = ExecutationPatientDash(
           id: arguments['id'],
           patient: RouteCache.patientModel,
+          externalCall: arguments.containsKey('externalCall'),
         );
         break;
       case ReportDash.routeName:

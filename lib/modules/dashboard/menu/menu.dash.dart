@@ -71,7 +71,7 @@ class MenuDash extends StatelessWidget {
             title: Text('Excluir conta'),
             trailing: Icon(Icons.delete_forever),
             onTap: () {
-              SettingService.instance.deleteAccount().whenComplete(
+              SettingService.instance.deleteUser().whenComplete(
                     DashConfig.instance.logout,
                   );
             },
