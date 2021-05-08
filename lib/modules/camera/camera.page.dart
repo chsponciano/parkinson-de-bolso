@@ -243,8 +243,8 @@ class _CameraPageState extends State<CameraPage>
           paddingValue: 20,
           onPressed: () {
             if (this._type != null) {
+              AppConfig.instance.changeModule(ModuleType.DASHBOARD);
               Navigator.pop(context);
-              // DashboardActions.instance.onRelocateInnerPage();
             } else {
               this._reset();
             }
@@ -300,8 +300,8 @@ class _CameraPageState extends State<CameraPage>
       default:
         this._cameraButtonIcon = Icons.done;
         this._cameraButtonOnPressed = () {
+          AppConfig.instance.changeModule(ModuleType.DASHBOARD);
           Navigator.pop(context, this._image);
-          // DashboardActions.instance.onRelocateInnerPage();
         };
         this._cameraButtonTooltip = 'Confirmar';
         break;
@@ -389,6 +389,7 @@ class _CameraPageState extends State<CameraPage>
         }
       }
     } catch (error) {
+      print(error);
       this._reset();
       this._informativeDialog(
         'Ocorreu um erro, favor tentar novamente!',

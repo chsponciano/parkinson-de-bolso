@@ -23,7 +23,7 @@ class NotificationConfig with SharedPreferencesUtil {
       this._notificationAdpater.initialiaze();
       this._onHandleCounterNotification = onHandleCounterNotification;
       this.getNewNotifications();
-      // this._startBackgroundProcess();
+      this._startBackgroundProcess();
     }
   }
 
@@ -44,7 +44,8 @@ class NotificationConfig with SharedPreferencesUtil {
 
   getNewNotifications() async {
     print('looking for new notifications');
-    if (AppConfig.instance.moduleType == ModuleType.DASHBOARD) {
+    if (AppConfig.instance.moduleType == null ||
+        AppConfig.instance.moduleType == ModuleType.DASHBOARD) {
       NotifyService.instance.getAll().then((notifications) async {
         if (notifications != null) {
           List<String> localNotifications = await this.getListPrefs(

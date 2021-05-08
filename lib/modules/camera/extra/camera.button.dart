@@ -62,7 +62,7 @@ class _CameraButtonState extends State<CameraButton> {
                 children: [
                   CircularCountDownTimer(
                     duration: AppConfig.instance.isAnEmulator
-                        ? 10
+                        ? 4
                         : int.parse(env['MAX_PHOTO_SEQUENCE']),
                     controller: this.widget.countDownController,
                     width: _size,

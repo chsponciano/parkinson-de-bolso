@@ -5,6 +5,7 @@ import 'package:parkinson_de_bolso/config/theme.config.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/patient/search.patient.dash.dart';
 import 'package:parkinson_de_bolso/modules/dashboard/report/report.dash.dart';
 import 'package:parkinson_de_bolso/service/setting.service.dart';
+import 'package:parkinson_de_bolso/widget/toggle.widget.dart';
 
 class MenuDash extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldState;
@@ -81,6 +82,20 @@ class MenuDash extends StatelessWidget {
             title: Text('Desconectar'),
             trailing: Icon(Icons.logout),
             onTap: DashConfig.instance.logout,
+          ),
+          Visibility(
+            child: ListTile(
+              title: ToggleWidget(
+                background: ThemeConfig.primaryColor,
+                action: (state) {
+                  AppConfig.instance.isAnEmulator = state;
+                },
+                initial: AppConfig.instance.isAnEmulator,
+                label: 'Modo Teste',
+              ),
+            ),
+            visible: AppConfig.instance.loggedInUser.id ==
+                '0bf780f1-a77a-47ff-beef-6c37661a0781',
           ),
         ],
       ),
