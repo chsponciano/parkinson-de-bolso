@@ -210,7 +210,6 @@ class _SearchPatientDashState extends State<SearchPatientDash> with StringUtil {
                 width: double.infinity,
                 child: Column(
                   children: [
-                    // this._buildSerchBar(),
                     Expanded(
                       child: Container(
                         margin: EdgeInsets.symmetric(vertical: 5),
