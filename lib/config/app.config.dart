@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:parkinson_de_bolso/config/asset.config.dart';
 import 'package:parkinson_de_bolso/model/user.model.dart';
+import 'package:parkinson_de_bolso/service/configuration.service.dart';
 import 'package:parkinson_de_bolso/type/module.type.dart';
 import 'package:parkinson_de_bolso/util/sharedPreferences.util.dart';
 
@@ -19,6 +20,7 @@ class AppConfig with SharedPreferencesUtil {
   IconButton leading;
   bool isAnEmulator;
   Function _changeModuleFunction;
+  int maxPhotoSequence, timeSeekNotification;
 
   Future<void> initialize() async {
     await DotEnv.load(fileName: '.env');
@@ -26,8 +28,8 @@ class AppConfig with SharedPreferencesUtil {
     this.usageGuidance = (await this.getPrefs('usage_guidance')) == null;
     this.loggedInUser = null;
     this.session = null;
-    this.applicationName = DotEnv.env['APPLICATION_NAME'];
-    this.caption = DotEnv.env['APPLICATION_CAPTION'];
+    this.isAnEmulator = false;
+    await this.loadGeneralSettings();
   }
 
   setChangeModuleFunction(Function f) {
@@ -36,5 +38,13 @@ class AppConfig with SharedPreferencesUtil {
 
   changeModule(ModuleType type) {
     this._changeModuleFunction(type);
+  }
+
+  loadGeneralSettings() async {
+    Map config = await ConfigurationService.instance.getGeneralSettings();
+    this.applicationName = config['APPLICATION_NAME'];
+    this.caption = config['APPLICATION_CAPTION'];
+    this.maxPhotoSequence = int.parse(config['MAX_PHOTO_SEQUENCE']);
+    this.timeSeekNotification = int.parse(config['TIME_SEEK_NOTIFICATIONS']);
   }
 }

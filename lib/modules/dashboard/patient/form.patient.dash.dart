@@ -98,189 +98,178 @@ class _FormPatientDashState extends State<FormPatientDash> with DateTimeUtil {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: GestureDetector(
-        child: Scaffold(
-          body: Stack(
-            children: [
-              Container(
-                height: double.infinity,
-                width: double.infinity,
-                child: Expanded(
-                  child: Container(
-                    child: SingleChildScrollView(
-                      child: Container(
-                        margin: EdgeInsets.symmetric(vertical: 20),
-                        child: Form(
-                          key: this._formState,
-                          child: Column(
+        child: Stack(
+          children: [
+            Container(
+              child: SingleChildScrollView(
+                child: Container(
+                  margin: EdgeInsets.symmetric(vertical: 20),
+                  child: Form(
+                    key: this._formState,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CircleAvatarButtonWidget(
+                          background: ThemeConfig.formBackgroundColor,
+                          foreground: ThemeConfig.formForegroundColor,
+                          radius: 100.0,
+                          icon: Icons.add_a_photo,
+                          image: this._patient.image,
+                          imageUrl: this._patient.imageUrl,
+                          setImage: (image) {
+                            this.setState(
+                              () {
+                                this._patient.image = image;
+                                this._patient.imageUrl = null;
+                              },
+                            );
+                          },
+                        ),
+                        SizedBox(
+                          height: this.widget.distance,
+                        ),
+                        TextFormFieldWidget(
+                          focusNode: this._nameFocus,
+                          controller: this._nameFieldControl,
+                          fieldName: 'Nome',
+                          hintText: 'Nome Completo',
+                          prefixIcon: Icons.person,
+                          inputFormatters: [
+                            new LengthLimitingTextInputFormatter(30)
+                          ],
+                          onSaved: (name) => this._patient.fullname = name,
+                        ),
+                        SizedBox(
+                          height: this.widget.distance,
+                        ),
+                        Container(
+                          alignment: Alignment.topCenter,
+                          child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              CircleAvatarButtonWidget(
-                                background: ThemeConfig.formBackgroundColor,
-                                foreground: ThemeConfig.formForegroundColor,
-                                radius: 100.0,
-                                icon: Icons.add_a_photo,
-                                image: this._patient.image,
-                                imageUrl: this._patient.imageUrl,
-                                setImage: (image) {
-                                  this.setState(
-                                    () {
-                                      this._patient.image = image;
-                                      this._patient.imageUrl = null;
-                                    },
-                                  );
-                                },
-                              ),
-                              SizedBox(
-                                height: this.widget.distance,
-                              ),
-                              TextFormFieldWidget(
-                                focusNode: this._nameFocus,
-                                controller: this._nameFieldControl,
-                                fieldName: 'Nome',
-                                hintText: 'Nome Completo',
-                                prefixIcon: Icons.person,
-                                inputFormatters: [
-                                  new LengthLimitingTextInputFormatter(30)
+                              DateFormFieldWidget(
+                                controller: this._birthdayFieldControl,
+                                fieldName: 'Nascimento',
+                                width: _halfMediaWidth,
+                                hintText: 'Nascimento',
+                                prefixIcon: Icons.calendar_today,
+                                onSaved: (birthdate) =>
+                                    this._patient.birthdate = this.strToDate(
+                                  birthdate,
+                                  DateTimeFormatUtil.BR_DATE,
+                                ),
+                                focusNode: [
+                                  this._heightFocus,
+                                  this._weightFocus,
+                                  this._nameFocus
                                 ],
-                                onSaved: (name) =>
-                                    this._patient.fullname = name,
                               ),
-                              SizedBox(
-                                height: this.widget.distance,
-                              ),
-                              Container(
-                                alignment: Alignment.topCenter,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    DateFormFieldWidget(
-                                      controller: this._birthdayFieldControl,
-                                      fieldName: 'Nascimento',
-                                      width: _halfMediaWidth,
-                                      hintText: 'Nascimento',
-                                      prefixIcon: Icons.calendar_today,
-                                      onSaved: (birthdate) => this
-                                          ._patient
-                                          .birthdate = this.strToDate(
-                                        birthdate,
-                                        DateTimeFormatUtil.BR_DATE,
-                                      ),
-                                      focusNode: [
-                                        this._heightFocus,
-                                        this._weightFocus,
-                                        this._nameFocus
-                                      ],
-                                    ),
-                                    DateFormFieldWidget(
-                                      controller: this._diagnosticFieldControl,
-                                      fieldName: 'Diagnóstico',
-                                      width: _halfMediaWidth,
-                                      hintText: 'Diagnóstico',
-                                      prefixIcon: Icons.medical_services,
-                                      onSaved: (diagnosis) => this
-                                          ._patient
-                                          .diagnosis = this.strToDate(
-                                        diagnosis,
-                                        DateTimeFormatUtil.BR_DATE,
-                                      ),
-                                      focusNode: [
-                                        this._heightFocus,
-                                        this._weightFocus,
-                                        this._nameFocus
-                                      ],
-                                    ),
-                                  ],
+                              DateFormFieldWidget(
+                                controller: this._diagnosticFieldControl,
+                                fieldName: 'Diagnóstico',
+                                width: _halfMediaWidth,
+                                hintText: 'Diagnóstico',
+                                prefixIcon: Icons.medical_services,
+                                onSaved: (diagnosis) =>
+                                    this._patient.diagnosis = this.strToDate(
+                                  diagnosis,
+                                  DateTimeFormatUtil.BR_DATE,
                                 ),
-                              ),
-                              SizedBox(
-                                height: this.widget.distance,
-                              ),
-                              Container(
-                                alignment: Alignment.topCenter,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    TextFormFieldWidget(
-                                      focusNode: this._weightFocus,
-                                      controller: this._weightFieldControl,
-                                      fieldName: 'Peso',
-                                      width: _halfMediaWidth,
-                                      hintText: 'Peso',
-                                      prefixIcon: Icons.line_weight,
-                                      type: TextInputType.number,
-                                      inputFormatters: [
-                                        new LengthLimitingTextInputFormatter(10)
-                                      ],
-                                      onSaved: (weight) =>
-                                          this._patient.weight = weight,
-                                    ),
-                                    TextFormFieldWidget(
-                                      focusNode: this._heightFocus,
-                                      controller: this._heightFieldControl,
-                                      fieldName: 'Altura',
-                                      width: _halfMediaWidth,
-                                      hintText: 'Altura',
-                                      prefixIcon: Icons.height,
-                                      type: TextInputType.number,
-                                      inputFormatters: [
-                                        new LengthLimitingTextInputFormatter(10)
-                                      ],
-                                      onSaved: (height) =>
-                                          this._patient.height = height,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: this.widget.distance,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  RaisedButton(
-                                    color: ThemeConfig.primaryColor,
-                                    textColor: ThemeConfig.ternaryColor,
-                                    child: Text(
-                                      (this.widget.patient != null)
-                                          ? 'Alterar'
-                                          : 'Criar',
-                                    ),
-                                    onPressed: this._submit,
-                                  ),
-                                  SizedBox(
-                                    width: this.widget.distance * 2,
-                                  ),
-                                  RaisedButton(
-                                    color: ThemeConfig.ternaryColor,
-                                    textColor: ThemeConfig.primaryColor,
-                                    child: Text('Limpar'),
-                                    onPressed: this._reset,
-                                  ),
+                                focusNode: [
+                                  this._heightFocus,
+                                  this._weightFocus,
+                                  this._nameFocus
                                 ],
                               ),
                             ],
                           ),
                         ),
-                      ),
+                        SizedBox(
+                          height: this.widget.distance,
+                        ),
+                        Container(
+                          alignment: Alignment.topCenter,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextFormFieldWidget(
+                                focusNode: this._weightFocus,
+                                controller: this._weightFieldControl,
+                                fieldName: 'Peso',
+                                width: _halfMediaWidth,
+                                hintText: 'Peso',
+                                prefixIcon: Icons.line_weight,
+                                type: TextInputType.number,
+                                inputFormatters: [
+                                  new LengthLimitingTextInputFormatter(10)
+                                ],
+                                onSaved: (weight) =>
+                                    this._patient.weight = weight,
+                              ),
+                              TextFormFieldWidget(
+                                focusNode: this._heightFocus,
+                                controller: this._heightFieldControl,
+                                fieldName: 'Altura',
+                                width: _halfMediaWidth,
+                                hintText: 'Altura',
+                                prefixIcon: Icons.height,
+                                type: TextInputType.number,
+                                inputFormatters: [
+                                  new LengthLimitingTextInputFormatter(10)
+                                ],
+                                onSaved: (height) =>
+                                    this._patient.height = height,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: this.widget.distance,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            RaisedButton(
+                              color: ThemeConfig.primaryColor,
+                              textColor: ThemeConfig.ternaryColor,
+                              child: Text(
+                                (this.widget.patient != null)
+                                    ? 'Alterar'
+                                    : 'Criar',
+                              ),
+                              onPressed: this._submit,
+                            ),
+                            SizedBox(
+                              width: this.widget.distance * 2,
+                            ),
+                            RaisedButton(
+                              color: ThemeConfig.ternaryColor,
+                              textColor: ThemeConfig.primaryColor,
+                              child: Text('Limpar'),
+                              onPressed: this._reset,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-              Visibility(
-                visible: this._loading,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(255, 255, 255, 0.5),
-                  ),
-                  child: Center(
-                    child: CircularProgressWidget(
-                      valueColor: ThemeConfig.primaryColor,
-                    ),
+            ),
+            Visibility(
+              visible: this._loading,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(255, 255, 255, 0.5),
+                ),
+                child: Center(
+                  child: CircularProgressWidget(
+                    valueColor: ThemeConfig.primaryColor,
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

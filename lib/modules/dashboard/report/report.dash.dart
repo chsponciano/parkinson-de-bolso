@@ -62,7 +62,7 @@ class _ReportDashState extends State<ReportDash> {
               color: Colors.grey,
             ),
             Text(
-              'Relatórios disponiveis',
+              'Relatórios indisponiveis',
               style: TextStyle(
                 fontSize: 20,
                 color: Colors.grey,
@@ -119,13 +119,13 @@ class _ReportDashState extends State<ReportDash> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              IconData(
-                report.icon,
-                fontFamily: 'MaterialIcons',
-              ),
-              color: ThemeConfig.primaryColor,
-            ),
+            // Icon(
+            //   IconData(
+            //     report.icon,
+            //     fontFamily: 'MaterialIcons',
+            //   ),
+            //   color: ThemeConfig.primaryColor,
+            // ),
             SizedBox(
               width: 10,
             ),

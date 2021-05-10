@@ -32,7 +32,6 @@ dependencies:
   flutter_local_notifications: 1.4.4+1
   rxdart: ^0.24.0
   awesome_dialog: ^1.3.2
-  flutter_is_emulator: ^1.0.0
   flutter_localizations:
     sdk: flutter
 

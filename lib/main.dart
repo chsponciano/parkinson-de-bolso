@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_is_emulator/flutter_is_emulator.dart';
 import 'package:parkinson_de_bolso/config/app.config.dart';
 import 'package:parkinson_de_bolso/config/camera.config.dart';
 import 'package:parkinson_de_bolso/material/auth.material.dart';
@@ -32,17 +31,6 @@ class _AppState extends State<App> with SharedPreferencesUtil {
     this._moduleType = ModuleType.AUTH;
     AppConfig.instance.setChangeModuleFunction(changeModule);
     SystemChrome.setEnabledSystemUIOverlays([]);
-    this.initPlatformState();
-  }
-
-  initPlatformState() async {
-    try {
-      AppConfig.instance.isAnEmulator =
-          await FlutterIsEmulator.isDeviceAnEmulatorOrASimulator;
-      print('isAnEmulator: ${AppConfig.instance.isAnEmulator}');
-    } on PlatformException {
-      print('error loading platform type');
-    }
   }
 
   @override

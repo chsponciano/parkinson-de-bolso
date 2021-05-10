@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:parkinson_de_bolso/model/receivedNotification.model.dart';
+import 'package:parkinson_de_bolso/modules/dashboard/notification/notification.dash.dart';
 import 'package:rxdart/rxdart.dart';
 import 'dart:io' show Platform;
 
@@ -47,8 +48,9 @@ class NotificationAdpater {
 
   setOnNotificationClick(BuildContext context, Function onNotificationClick) {
     this.flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: (String payload) async =>
-            onNotificationClick(context, payload));
+        onSelectNotification: (String payload) async {
+      await Navigator.pushNamed(context, NotificationDash.routeName);
+    });
   }
 
   _requestIOSPermission() {
@@ -63,7 +65,10 @@ class NotificationAdpater {
         );
   }
 
-  Future<void> showNotification(ReceivedNotificationModel notification) async {
+  Future<void> showNotification(
+    ReceivedNotificationModel notification,
+    int id,
+  ) async {
     var androidChannelSpecifics = AndroidNotificationDetails(
       'CHANNEL_ID',
       'CHANNEL_NAME',
@@ -77,7 +82,7 @@ class NotificationAdpater {
       iosChannelSpecifics,
     );
     await this.flutterLocalNotificationsPlugin.show(
-          notification.notificationid,
+          id,
           notification.title,
           notification.body,
           platformChannelSpecifics,

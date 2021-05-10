@@ -21,7 +21,6 @@ class TextFormFieldWidget extends StatelessWidget {
   final EdgeInsets internalPadding;
   final Function validation;
   final Function onChanged;
-  final double fontSize = 16;
   final Widget suffix;
 
   TextFormFieldWidget(
@@ -99,6 +98,8 @@ class TextFormFieldWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fontSize = MediaQuery.of(context).size.width > 400.0 ? 16.0 : 12.0;
+
     return Container(
       alignment: Alignment.topCenter,
       width: this.width,
@@ -128,8 +129,8 @@ class TextFormFieldWidget extends StatelessWidget {
           style: this.transparent
               ? TextStyle(
                   color: ThemeConfig.alternativeColorTransparency,
-                  fontSize: this.fontSize)
-              : TextStyle(fontSize: this.fontSize),
+                  fontSize: fontSize)
+              : TextStyle(fontSize: fontSize),
         ),
       ),
     );

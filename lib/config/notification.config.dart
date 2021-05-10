@@ -36,10 +36,21 @@ class NotificationConfig with SharedPreferencesUtil {
     print('start background process');
     this._notificationTask = Timer.periodic(
       Duration(
-        seconds: int.parse(env['TIME_SEEK_NOTIFICATIONS']),
+        seconds: AppConfig.instance.timeSeekNotification,
       ),
       (Timer timer) async => this.getNewNotifications(),
     );
+  }
+
+  Future<int> getNotificationId() async {
+    var notificationid = await this.getPrefs("notification_id");
+    if (notificationid == null) {
+      notificationid = 1000;
+    } else {
+      notificationid = int.parse(notificationid) + 1;
+    }
+    this.addPrefs("notification_id", notificationid.toString());
+    return notificationid;
   }
 
   getNewNotifications() async {
@@ -52,9 +63,13 @@ class NotificationConfig with SharedPreferencesUtil {
             this._localNotificationListName,
           );
 
-          notifications.forEach((notification) {
+          notifications.forEach((notification) async {
             if (!localNotifications.contains(notification.id)) {
-              this._notificationAdpater.showNotification(notification);
+              int notificationid = await this.getNotificationId();
+              this._notificationAdpater.showNotification(
+                    notification,
+                    notificationid,
+                  );
               this.addListPrefs(
                 this._localNotificationListName,
                 notification.id,

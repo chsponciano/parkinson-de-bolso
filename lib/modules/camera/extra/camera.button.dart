@@ -1,6 +1,5 @@
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:parkinson_de_bolso/config/app.config.dart';
 import 'package:parkinson_de_bolso/config/theme.config.dart';
 
@@ -63,7 +62,7 @@ class _CameraButtonState extends State<CameraButton> {
                   CircularCountDownTimer(
                     duration: AppConfig.instance.isAnEmulator
                         ? 4
-                        : int.parse(env['MAX_PHOTO_SEQUENCE']),
+                        : AppConfig.instance.maxPhotoSequence,
                     controller: this.widget.countDownController,
                     width: _size,
                     height: _size,
