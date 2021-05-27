@@ -7,6 +7,7 @@ import 'package:parkinson_de_bolso/config/theme.config.dart';
 import 'package:parkinson_de_bolso/model/user.model.dart';
 import 'package:parkinson_de_bolso/modules/auth/pages/auth.signIn.page.dart';
 import 'package:parkinson_de_bolso/modules/auth/extra/auth.base.dart';
+import 'package:parkinson_de_bolso/service/notify.service.dart';
 import 'package:parkinson_de_bolso/util/sharedPreferences.util.dart';
 import 'package:parkinson_de_bolso/util/validationField.util.dart';
 import 'package:parkinson_de_bolso/widget/raisedButton.widget.dart';

@@ -9,6 +9,7 @@ import 'package:parkinson_de_bolso/modules/dashboard/patient/form.patient.dash.d
 import 'package:parkinson_de_bolso/modules/dashboard/patient/search.patient.dash.dart';
 import 'package:parkinson_de_bolso/service/patient.service.dart';
 import 'package:parkinson_de_bolso/service/patientClassification.service.dart';
+import 'package:parkinson_de_bolso/service/predict.service.dart';
 import 'package:parkinson_de_bolso/type/module.type.dart';
 import 'package:parkinson_de_bolso/util/datetime.util.dart';
 import 'package:parkinson_de_bolso/widget/circleAvatar.widget.dart';
@@ -36,7 +37,9 @@ class _ViewPatientDashState extends State<ViewPatientDash> with DateTimeUtil {
   @override
   void didChangeDependencies() {
     DashConfig.instance.setContext(context);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      int machineStatus = await PredictService.instance.machineStatus();
+
       DashConfig.instance.setBarAttributes(
         IconButton(
           icon: Icon(Icons.arrow_back),
@@ -46,14 +49,18 @@ class _ViewPatientDashState extends State<ViewPatientDash> with DateTimeUtil {
         null,
         [
           IconButton(
-            icon: Icon(Icons.video_call),
-            onPressed: () async {
-              AppConfig.instance.changeModule(ModuleType.CAMERA);
-              await CameraPage.processImageSequence(
-                context,
-                this.widget.patient,
-              );
-            },
+            icon: Icon(
+              (machineStatus == 1) ? Icons.video_call : Icons.videocam_off,
+            ),
+            onPressed: (machineStatus == 1)
+                ? () async {
+                    AppConfig.instance.changeModule(ModuleType.CAMERA);
+                    await CameraPage.processImageSequence(
+                      context,
+                      this.widget.patient,
+                    );
+                  }
+                : null,
           ),
           IconButton(
             icon: Icon(Icons.edit),

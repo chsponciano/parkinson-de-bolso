@@ -5,11 +5,13 @@ import 'package:parkinson_de_bolso/adapter/aws.adpater.dart';
 import 'package:parkinson_de_bolso/config/app.config.dart';
 import 'package:parkinson_de_bolso/model/receivedNotification.model.dart';
 import 'package:http/http.dart' as http;
+import 'package:parkinson_de_bolso/model/user.model.dart';
 
 class NotifyService {
   NotifyService._privateConstructor();
   static final NotifyService instance = NotifyService._privateConstructor();
   final AwsAdapter awsAdapter = AwsAdapter.instance;
+  final AppConfig appConfig = AppConfig.instance;
   static final String path = '/api/notification';
 
   Future<List<ReceivedNotificationModel>> getAll() async {
@@ -49,10 +51,14 @@ class NotifyService {
   }
 
   void sendComment(String comment) async {
+    String message = 'Usuário: ${this.appConfig.loggedInUser.name}\n';
+    message += 'ID: ${this.appConfig.loggedInUser.id}\n';
+    message += 'Comentário: $comment';
+
     final SigV4Request signedRequest = this.awsAdapter.getSigV4Request(
       'POST',
       '/api/comment',
-      body: {'comment': comment},
+      body: {'comment': message},
     );
 
     await http.post(signedRequest.url,

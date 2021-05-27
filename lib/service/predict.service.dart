@@ -111,4 +111,23 @@ class PredictService {
       throw Exception('Failed to load executation classification');
     }
   }
+
+  Future<int> machineStatus() async {
+    final SigV4Request signedRequest = this.awsAdapter.getSigV4Request(
+          'GET',
+          '$path/machine/status',
+        );
+
+    final http.Response response = await http.get(
+      signedRequest.url,
+      headers: signedRequest.headers,
+    );
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = jsonDecode(response.body);
+      return data['active'];
+    }
+
+    return 0;
+  }
 }
