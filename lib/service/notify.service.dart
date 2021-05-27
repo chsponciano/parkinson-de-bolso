@@ -5,7 +5,6 @@ import 'package:parkinson_de_bolso/adapter/aws.adpater.dart';
 import 'package:parkinson_de_bolso/config/app.config.dart';
 import 'package:parkinson_de_bolso/model/receivedNotification.model.dart';
 import 'package:http/http.dart' as http;
-import 'package:parkinson_de_bolso/model/user.model.dart';
 
 class NotifyService {
   NotifyService._privateConstructor();
