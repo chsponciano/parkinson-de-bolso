@@ -2,5 +2,4 @@
 <p> Final work of the Bachelor of Science in Computer Science at the Regional University of Blumenau - FURB. </p>
 <p> Application to assist in monitoring the evolution of Parkinson's disease. </p>
 
-# Demonstrative images of the APP
-<img src="assets/example/1.png" /> <img src="assets/example/2.png" /> <img src="assets/example/3.png" /> <img src="assets/example/4.png" />
+https://play.google.com/store/apps/details?id=com.parkinson_de_bolso.furb.tcc
