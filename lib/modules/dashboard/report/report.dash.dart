@@ -126,10 +126,7 @@ class _ReportDashState extends State<ReportDash> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              IconData(
-                report.icon,
-                fontFamily: 'MaterialIcons',
-              ),
+              Icons.picture_as_pdf,
               color: ThemeConfig.primaryColor,
             ),
             SizedBox(
