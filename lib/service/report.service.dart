@@ -28,4 +28,25 @@ class ReportService {
       throw Exception('Failed to load report');
     }
   }
+
+  Future<String> generatePdf(ReportModel report) async {
+    final SigV4Request signedRequest = this.awsAdapter.getSigV4Request(
+          'POST',
+          '$path/data',
+          body: report.toJson(),
+        );
+
+    final http.Response response = await http.post(
+      signedRequest.url,
+      headers: signedRequest.headers,
+      body: signedRequest.body,
+    );
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = jsonDecode(response.body);
+      return data['url'];
+    } else {
+      throw Exception('Failed to generate pdf');
+    }
+  }
 }

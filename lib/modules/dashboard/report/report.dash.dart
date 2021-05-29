@@ -5,6 +5,7 @@ import 'package:parkinson_de_bolso/config/theme.config.dart';
 import 'package:parkinson_de_bolso/model/report.model.dart';
 import 'package:parkinson_de_bolso/service/report.service.dart';
 import 'package:parkinson_de_bolso/widget/circularProgress.widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ReportDash extends StatefulWidget {
   static const String routeName = '/report';
@@ -108,6 +109,11 @@ class _ReportDashState extends State<ReportDash> {
 
   Widget _buildReportCard(ReportModel report) {
     return ListTile(
+      onTap: () {
+        ReportService.instance.generatePdf(report).then((url) {
+          launch(url);
+        });
+      },
       title: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -119,13 +125,13 @@ class _ReportDashState extends State<ReportDash> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Icon(
-            //   IconData(
-            //     report.icon,
-            //     fontFamily: 'MaterialIcons',
-            //   ),
-            //   color: ThemeConfig.primaryColor,
-            // ),
+            Icon(
+              IconData(
+                report.icon,
+                fontFamily: 'MaterialIcons',
+              ),
+              color: ThemeConfig.primaryColor,
+            ),
             SizedBox(
               width: 10,
             ),

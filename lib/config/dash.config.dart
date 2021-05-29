@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parkinson_de_bolso/config/app.config.dart';
+import 'package:parkinson_de_bolso/config/notification.config.dart';
 import 'package:parkinson_de_bolso/type/module.type.dart';
 import 'package:parkinson_de_bolso/util/sharedPreferences.util.dart';
 
@@ -45,6 +46,7 @@ class DashConfig with SharedPreferencesUtil {
     this._appConfig.loggedInUser = null;
     this._appConfig.session = null;
     this._appConfig.usageGuidance = null;
+    NotificationConfig.instance.dispose();
     this._appConfig.changeModule(ModuleType.AUTH);
   }
 }
